@@ -12,7 +12,7 @@
     <!-- Main content -->
     <div class="main-content" id="panel">
         <!-- Topnav -->
-        <nav class="navbar navbar-top navbar-expand navbar-dark  border-bottom" style="background-color:#420516;">
+        <nav class="navbar navbar-top navbar-expand navbar-dark  border-bottom" style="background-color:#2F2A34;">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Search form -->
