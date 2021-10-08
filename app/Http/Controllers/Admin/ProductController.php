@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Product;
-use DB;
 use PDF;
+use Exception;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -25,13 +27,13 @@ class ProductController extends Controller
             $product->original_quantity = 0;
             $product->sell_bill_id = 0;
             $product->buy_bill_id = 0;
-            $product->status = true;
+            $product->status = false;
             $product->type = $request->type;
             $product->save();
 
             DB::commit();
             return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['status' => 'error']);
         }
@@ -43,7 +45,7 @@ class ProductController extends Controller
         $to = $request->to;
         $products = DB::select('SELECT sold_products.quantity, sold_products.sell_price, sold_products.total_price, products.name, products.type, products.status FROM sold_products INNER JOIN products ON sold_products.product_id = products.id WHERE sold_products.created_at >= :from AND sold_products.created_at <= :to AND products.id = :id ORDER BY sold_products.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $i = 1; $total = 0; $total_soled = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
+        $i = 1; $total = 0; $total_soled = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
@@ -75,7 +77,7 @@ class ProductController extends Controller
             $total += $product->quantity; $i++;
             $total_soled += $product->sell_price;
         }
-        
+
         $table_content .= '</tbody></table>';
         PDF::SetTitle('جرد منتج');
         PDF::SetAuthor('اياد الهسي');
@@ -109,7 +111,7 @@ class ProductController extends Controller
         $to = $request->to;
         $products = DB::select('SELECT id, name, quantity, original_quantity, original_price, status, type FROM products WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
-        $i = 1; $total = 0; $available_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
+        $i = 1; $total = 0; $available_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
@@ -143,7 +145,7 @@ class ProductController extends Controller
             $total += $product->quantity * $product->original_price; $i++;
             $available_total += $product->quantity;
         }
-        
+
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل المنتجات');
         PDF::SetAuthor('اياد الهسي');

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
   <!-- Header -->
-  <div class="header pb-6" style="background-color:#420516;">
+  <div class="header pb-6" style="background-color:#2F2A34;">
     <div class="container-fluid">
       <div class="header-body">
         <div class="row align-items-center py-5">
@@ -283,7 +283,7 @@
                     <div class="form-group">
                       <label class="form-control-label">البيان</label>
                         <div class="input-group">
-                            <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="(في حال كان فارغ : لايوجد) البيان" autocomplete="byan" rows="6">{{ old('byan') }}</textarea>
+                            <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="(في حال كان فارغ : لايوجد) البيان" autocomplete="byan" rows="3">{{ old('byan') }}</textarea>
                         </div>
                         @error('byan')
                           <span class="text-danger">{{ $message }}</span>

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
 <!-- Header -->
-<div class="header pb-6"style="background-color:#420516;">
+<div class="header pb-6"style="background-color:#2F2A34;">
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-5">

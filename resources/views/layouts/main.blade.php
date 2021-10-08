@@ -8,7 +8,7 @@
     @include('includes.css')
 </head>
 
-<body style="font-family: 'Cairo', sans-serif; background-color: #F0D9FF;">
+<body style="font-family: 'Cairo', sans-serif; background-color: #CCCBC3;">
     <!-- Main content -->
     <div class="main-content" id="panel">
         <!-- Topnav -->

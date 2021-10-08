@@ -1,11 +1,12 @@
 <thead class="thead-light">
     <tr>
-        <th scope="col" class="text-center">الرقم</th>
+        <th scope="col" class="text-center">#</th>
         <th scope="col" class="text-center">رقم الفاتورة</th>
         <th scope="col" class="text-center">التاريخ</th>
         <th scope="col" class="text-center">المستهلك</th>
-        <th scope="col" class="text-center">المبلغ المدفوع</th>
-        <th scope="col" class="text-center">المبلغ المتبقي</th>
+        <th scope="col" class="text-center">المدفوع</th>
+        <th scope="col" class="text-center">المتبقي</th>
+        <th scope="col" class="text-center">المربح</th>
         <th scope="col" class="text-center">البيان</th>
         <th scope="col" class="text-center">خيارات</th>
     </tr>
@@ -13,7 +14,7 @@
 <tbody>
     @if ($sell_bills->isEmpty())
         <tr>
-            <td colspan="8" class="text-center">لا يوجد بيانات</td>
+            <td colspan="9" class="text-center">لا يوجد بيانات</td>
         </tr>
     @else
         @php $i=1; @endphp
@@ -42,6 +43,7 @@
                         - دائن -
                     @endif
                 </td>
+                <td class="display-3 text-center">{{ $sell_bill->byan }}</td>
                 <td class="display-3 text-center">{{ $sell_bill->byan }}</td>
                 <td class="display-3 text-center">
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
