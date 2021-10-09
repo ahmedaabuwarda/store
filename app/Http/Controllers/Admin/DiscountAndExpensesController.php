@@ -22,14 +22,15 @@ class DiscountAndExpensesController extends Controller
         $page = config('app.page');
         $discounts = Discount::select('date_created', 'balance', 'notes', 'done_by')->orderBy('date_created', 'DESC')->paginate($page);
         $users = DB::select('SELECT name FROM users ORDER BY created_at DESC');
+        $box = DB::select('SELECT remaining FROM box WHERE id = 2 ORDER BY created_at DESC');
         // if the request is ajax
-        if($request->ajax()){
+        if ($request->ajax()) {
             $table = view('admin.discount.table', compact('discounts'))->render();
             return response()->json(['table' => $table]);
-        // if the request is not ajax
+            // if the request is not ajax
         } else {
-            $pages = ceil(Discount::count()/$page);
-            return view('admin.discount.index', compact('discounts', 'pages', 'users'));
+            $pages = ceil(Discount::count() / $page);
+            return view('admin.discount.index', compact('discounts', 'pages', 'users', 'box'));
         }
     }
     public function store(DiscountStoreRequest $request)
@@ -41,7 +42,7 @@ class DiscountAndExpensesController extends Controller
             $discount->balance = $balance;
             $discount->date_created = $request->date_created;
             $discount->done_by = $request->done_by;
-            if($request->notes == null) {
+            if ($request->notes == null) {
                 $discount->notes = 'لا يوجد';
             } else {
                 $discount->notes = $request->notes;
@@ -60,8 +61,8 @@ class DiscountAndExpensesController extends Controller
                 END
             WHERE box.id IN(1, 2);', [$balance, $balance]);
 
-            $date = date($request['date_created'].' H:i:s');
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)',[$balance,'مصروف', $date]);
+            $date = date($request['date_created'] . ' H:i:s');
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)', [$balance, 'مصروف', $date]);
 
             DB::commit();
             return response()->json(['status' => 'success']);
@@ -74,34 +75,47 @@ class DiscountAndExpensesController extends Controller
     {
         $from = $request->from;
         $to = $request->to;
-        $discounts = DB::select('SELECT date_created, balance, notes from discounts where date_created >= :from AND date_created <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
+        $done_by = $request->done_by;
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل المصاريف</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'<p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        if ($done_by == "all") {
+            $discounts = DB::select('SELECT date_created, balance, notes, done_by from discounts where date_created >= :from AND date_created <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
+        } else {
+            $discounts = DB::select('SELECT date_created, balance, notes, done_by from discounts where date_created >= :from AND date_created <= :to AND done_by = :done_by ORDER BY id DESC', ['from' => $from, 'to' => $to, 'done_by' => $done_by]);
+        }
+
+        $i = 1;
+        $total = 0;
+        $time = date('H:i:s');
+        $date = date('Y-m-d');
+        $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل المصاريف</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '<p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="10%">الرقم</th>
-            <th width="40%">تاريخ الانشاء</th>
+            <th width="30%">تاريخ الانشاء</th>
+            <th width="20%">بواسطة</th>
             <th width="10%">المبلغ</th>
-            <th width="40%">ملاحظات</th>
+            <th width="30%">ملاحظات</th>
           </tr>
         </thead>
         <tbody>';
-        foreach($discounts as $discount) {
+        foreach ($discounts as $discount) {
             $table_content .= '<tr>
-              <td width="10%">'.$i.'</td>
-              <td width="40%">'.$discount->date_created.'</td>
-              <td width="10%">'.$discount->balance.'<span>&#8362;&#160;</span></td>
-              <td width="40%">'.$discount->notes.'</td>
+              <td width="10%">' . $i . '</td>
+              <td width="30%">' . $discount->date_created . '</td>
+              <td width="20%">' . $discount->done_by . '</td>
+              <td width="10%">' . $discount->balance . '<span>&#8362;&#160;</span></td>
+              <td width="30%">' . $discount->notes . '</td>
             </tr>';
-            $total += $discount->balance; $i++;
+            $total += $discount->balance;
+            $i++;
         }
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل المصاريف');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
-        $lg = Array();
+        $lg = array();
         $lg['a_meta_charset'] = 'UTF-8';
         $lg['a_meta_dir'] = 'rtl';
         $lg['a_meta_language'] = 'ar';
@@ -120,8 +134,8 @@ class DiscountAndExpensesController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%"></td><td width="40%">المجموع</td><td width="10%">'.$total.'<span>&#8362;&#160;</span></td></tr></tbody></table>');
-        PDF::Output('all_discounts.pdf','I');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%"></td><td width="40%">المجموع</td><td width="10%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+        PDF::Output('all_discounts.pdf', 'I');
         return response()->json(['status' => 'success']);
     }
 }

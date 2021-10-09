@@ -178,7 +178,7 @@
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers">
-                        <label class="custom-control-label" for="customRadio3">الموظفون</label>
+                        <label class="custom-control-label" for="customRadio3">المدراء</label>
                       </div>
                     </div>
 
@@ -217,7 +217,7 @@
                     </div>
 
                     <div class="form-group">
-                      <label class="form-control-label">الموظفون</label>
+                      <label class="form-control-label">المدراء</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>

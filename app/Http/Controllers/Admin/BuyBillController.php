@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\BuyBill;
-use App\Models\Provider;
-use App\Models\Customer;
-use App\Models\Worker;
-use App\Models\Product;
-use App\Models\BuyedProduct;
-use DB;
 use PDF;
+use Exception;
+// use App\Models\Worker;
+use App\Models\User;
+use App\Models\BuyBill;
+use App\Models\Product;
+use App\Models\Customer;
+use App\Models\Provider;
+use App\Models\BuyedProduct;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BuyBillController extends Controller
 {
@@ -47,6 +50,7 @@ class BuyBillController extends Controller
             $buy_bill = new BuyBill;
             $buy_bill->number = $request['number'];
             $buy_bill->date_created = $request['date_created'];
+
             if ($request['target'] == 'customers'){
                 $customer = Customer::where('id', $customer_id)->select('balance')->first();
                 if($customer != null){
@@ -64,9 +68,9 @@ class BuyBillController extends Controller
                     throw new Exception('Provider not found');
                 }
             } elseif($request['target'] == 'workers') {
-                $worker = Worker::where('id', $worker_id)->select('balance')->first();
+                $worker = User::where('id', $worker_id)->select('balance')->first();
                 if($worker != null){
-                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
+                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $buy_bill->worker_id = $worker_id;
                 } else {
                     throw new Exception('Worker not found');
@@ -90,7 +94,8 @@ class BuyBillController extends Controller
                     'quantity' => $product->quantity + $tblArray[$i*4 + 1],
                     'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
                     'original_price' => $tblArray[$i*4 + 2],
-                    'buy_bill_id' => $buy_bill->id
+                    'buy_bill_id' => $buy_bill->id,
+                    'status' => true
                 ]);
                 $buyed_product = new BuyedProduct;
                 $buyed_product->product_id = $tblArray[$i*4 + 0];
@@ -187,9 +192,9 @@ class BuyBillController extends Controller
                         throw new \Exception('Customer not found');
                     }
                 } elseif($request['worker_id'] > 0){
-                    $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
+                    $worker = User::where('id', $request['worker_id'])->select('balance')->first();
                     if($worker != null) {
-                        Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
+                        User::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
                     } else {
                         throw new \Exception('Worker not found');
                     }
@@ -235,8 +240,8 @@ class BuyBillController extends Controller
         $to = $request['to'];
         $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل فواتير الشراء</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل فواتير الشراء</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>

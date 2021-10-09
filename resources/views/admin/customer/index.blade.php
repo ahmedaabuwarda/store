@@ -20,13 +20,12 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
-              <h3 class="mb-0">كل الزبائن</h3>
+              <h3 class="mb-0">الزبائن</h3>
             </div>
             <div class="col-xl-8 col-md-12 text-center">
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن زبون">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
-              <a href="{{ URL('/customer/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_customer_modal"><i class="fa fa-plus"></i> اضافة زبون</a>
             </div>

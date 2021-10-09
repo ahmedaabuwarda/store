@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Sanadat_Qapd;
-use App\Models\Provider;
-use App\Models\Customer;
-use App\Models\Worker;
-use DB;
 use PDF;
+use App\Models\User;
+use App\Models\Customer;
+use App\Models\Provider;
+use App\Models\Sanadat_Qapd;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class SanadatQapdController extends Controller
 {
@@ -66,6 +67,7 @@ class SanadatQapdController extends Controller
                     $sanadat_qapd->customer_id = $customer_id;
                     $target = $customer->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'providers') {
@@ -75,15 +77,17 @@ class SanadatQapdController extends Controller
                     $sanadat_qapd->provider_id = $provider_id;
                     $target = $provider->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'workers') {
-                $worker = Worker::where('id', $worker_id)->select('name', 'balance')->first();
+                $worker = User::where('id', $worker_id)->select('name', 'balance')->first();
                 if($worker != null){
-                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
+                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
                     $sanadat_qapd->worker_id = $worker_id;
                     $target = $worker->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             }
@@ -127,6 +131,7 @@ class SanadatQapdController extends Controller
                 if($provider != null){
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance - $balance]);
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($sadat_qapd != null && $customer_id > 0) {
@@ -134,13 +139,15 @@ class SanadatQapdController extends Controller
                 if($customer != null){
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance - $balance]);
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($sadat_qapd != null && $worker_id > 0) {
-                $worker = Worker::where('id', $worker_id)->select('balance')->first();
+                $worker = User::where('id', $worker_id)->select('balance')->first();
                 if($worker != null){
-                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
+                    User::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } else {
@@ -176,7 +183,7 @@ class SanadatQapdController extends Controller
         $to = $request['to'];
         $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
+        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>

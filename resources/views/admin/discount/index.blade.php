@@ -22,18 +22,17 @@
                             <div class="col">
                                 <h3 class="mb-0">المصاريف</h3>
                             </div>
-                            <div class="col-xl-8 col-md-12 text-center">
+                            <div class="col-xl-7 col-md-12 text-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
                                     placeholder="...ابحث عن خصم او مصروف">
                             </div>
-                            <div class="col-xl-3 col-md-12 text-right">
-                                <a href="{{ URL('/discount/to_excel') }}" class="btn btn-success disabled"
-                                    data-toggle="tooltip" data-placement="top" title="تصدير excel"><i
-                                        class="fas fa-file-excel fa-lg mr-1"></i></a>
+                            <div class="col-xl-4 col-md-12 text-right">
                                 <button class="btn btn-danger" data-toggle="modal" data-target="#from_to_pdf_modal"><i
                                         class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                <a class="btn btn-dark text-white" data-toggle="modal"
-                                    data-target="#create_discount_modal"><i class="fa fa-minus"></i> مصروف</a>
+                                <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_discount_modal">
+                                    <span class="badge text-white bg-success mr-1">{{ $box[0]->remaining }} &#8362;
+                                    </span> مصروف
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -139,9 +138,8 @@
                                                     class="fa fa-heart text-info"></i></span>
                                         </div>
                                         <select class="form-control selectpicker" name="done_by">
-                                            @foreach ($users as $user)
-                                                <option value="{{ $user->name }}">{{ $user->name }}</option>
-                                            @endforeach
+                                            <option value="احمد شعبان">احمد شعبان</option>
+                                            <option value="محمد احمد">محمد احمد</option>
                                         </select>
                                     </div>
                                     @error('done_by')
@@ -238,7 +236,7 @@
             e.preventDefault();
             let from = $('input[name="from"]').val();
             let to = $('input[name="to"]').val();
-            let done_by = $('input[name="to"]').val();
+            let done_by = $('#done_by').val();
             let _token = $('input[name="_token"]').val();
             $.ajax({
                 url: "/discount/to_pdf",

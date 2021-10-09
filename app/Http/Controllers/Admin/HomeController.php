@@ -26,7 +26,7 @@ class HomeController extends Controller
         $page = config('app.page');
         if($request->ajax()){
             $products = Product::select('id','name','quantity','original_quantity','original_price','status','type')->orderBy('id','DESC')->paginate($page);
-            
+
             $box = DB::select('SELECT remaining, counter FROM box WHERE box.id IN (1,2,3,4,5,6,7)');
             $productsCount = DB::select('SELECT sum(sold_products.quantity) as total_soledProducts_quantity, (SELECT count(products.quantity) FROM products) as products_count, (SELECT sum(products.quantity) FROM products) as total_products_count, (SELECT sum(products.quantity * products.original_price) FROM products WHERE products.original_price > 0) AS total_cost_price FROM sold_products;');
 
@@ -66,8 +66,6 @@ class HomeController extends Controller
             $result = Provider::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         } else if ($target == 'customers') {
             $result = Customer::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
-        } else if ($target == 'workers') {
-            $result = Worker::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         }
         $pages = ceil(Provider::count()/$page);
         return view('website.search', compact('result', 'pages', 'target'));
@@ -95,10 +93,10 @@ class HomeController extends Controller
             $balance = '';
             if ($movement->type == 0) {
                 $balance = $movement->balance.'<span>&#8362;&#160;</span> - خارج';
-                $total -= $movement->balance; 
+                $total -= $movement->balance;
             } else {
                 $balance = $movement->balance.'<span>&#8362;&#160;</span> - داخل';
-                $total += $movement->balance; 
+                $total += $movement->balance;
             }
 
             $table_content .= '<tr>

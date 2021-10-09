@@ -25,7 +25,7 @@
                                 </div>
                                 @csrf
                                 <input class="form-control" name="search_field"
-                                    placeholder="...ابحث عن اسم مورد او زبون او موظف" type="text">
+                                    placeholder="...ابحث عن اسم مورد او زبون" type="text">
                                 <div class="input-group-append align-items-center">
                                     <div class="dropdown">
                                         <button class="btn btn-gray btn-sm btn-round dropdown-toggle" type="button"
@@ -46,14 +46,6 @@
                                                         type="radio" value="customers">
                                                     <label class="custom-control-label"
                                                         for="customRadio5">الزبائن</label>
-                                                </div>
-                                            </a>
-                                            <a class="dropdown-item" href="#">
-                                                <div class="custom-control custom-radio">
-                                                    <input name="target" class="custom-control-input" id="customRadio6"
-                                                        type="radio" value="workers">
-                                                    <label class="custom-control-label"
-                                                        for="customRadio6">الموظفون</label>
                                                 </div>
                                             </a>
                                         </div>

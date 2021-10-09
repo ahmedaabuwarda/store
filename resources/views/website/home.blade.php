@@ -31,9 +31,6 @@
                                     placeholder="...ابحث عن صنف">
                             </div>
                             <div class="col-xl-3 col-md-12 text-right">
-                                <a href="{{ URL('/product/to_excel') }}" class="btn btn-success disabled"
-                                    data-toggle="tooltip" data-placement="top" title="تصدير excel"><i
-                                        class="fas fa-file-excel fa-lg mr-1"></i></a>
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
                                 <a class="btn text-white btn-dark" data-toggle="modal"
@@ -157,8 +154,6 @@
                 <div class="modal-header align-items-center ">
                     <h5 class="modal-title" id="exampleModalCenterTitle">كشف حركات الصندوق</h5>
                     <div class="col-xl-4 col-md-12 text-right">
-                        <a href="{{ URL('/box/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip"
-                            data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
                         <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                             title="تصدير pdf" data-fromto="-1"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
