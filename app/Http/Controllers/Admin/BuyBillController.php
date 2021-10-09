@@ -30,7 +30,7 @@ class BuyBillController extends Controller
     {
         $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
-        $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
+        $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
         return view('admin.buy_bill.create', compact('providers', 'customers', 'workers', 'products'));
     }
@@ -101,14 +101,14 @@ class BuyBillController extends Controller
                 $buyed_product->save();
             }
 
-            DB::statement('UPDATE box SET box.remaining = CASE box.id 
+            DB::statement('UPDATE box SET box.remaining = CASE box.id
                 WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
                 WHEN 6 THEN (SELECT remaining FROM box WHERE box.id = 6)+?
                 ELSE box.remaining
                 END,
-            box.counter = CASE box.id 
+            box.counter = CASE box.id
                 WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 6 THEN (SELECT counter FROM box WHERE box.id = 6)+1 
+                WHEN 6 THEN (SELECT counter FROM box WHERE box.id = 6)+1
                 ELSE box.counter
                 END
             WHERE box.id IN(1, 6);', [$paid_balance, $paid_balance + abs($remaining_balance)]);
@@ -234,7 +234,7 @@ class BuyBillController extends Controller
         $from = $request['from'];
         $to = $request['to'];
         $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
-        
+
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل فواتير الشراء</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">

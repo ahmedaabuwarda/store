@@ -21,13 +21,11 @@
             <tr>
                 <th class="display-3 text-center">{{ $i }}</th>
                 <td class="display-3 text-center">{{ $product->name }}</td>
-                <td class="display-3 text-center">{{ $product->original_price }}<i
-                        class="fas fa-shekel-sign ml-1"></i>
+                <td class="display-3 text-center">{{ $product->original_price }}&nbsp;&#8362;
                 </td>
                 <td class="display-3 text-center">{{ $product->type }} - {{ $product->original_quantity }}</td>
                 <td class="display-3 text-center">{{ $product->type }} - {{ $product->quantity }}</td>
-                <td class="display-3 text-center">{{ $product->original_price * $product->quantity }}<i
-                        class="fas fa-shekel-sign ml-1"></i></td>
+                <td class="display-3 text-center">{{ $product->original_price * $product->quantity }}&nbsp;&#8362;</td>
                 <td class="text-center">
                     @if ($product->status)
                         <span class="badge badge-pill badge-success badge-lg">موجود</span>

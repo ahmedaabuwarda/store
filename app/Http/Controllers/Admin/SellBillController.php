@@ -37,7 +37,7 @@ class SellBillController extends Controller
     {
         $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
-        $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
+        $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
         // return view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'));
         $modal = view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'))->render();

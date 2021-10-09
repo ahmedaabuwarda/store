@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Discount;
-use App\Http\Requests\DiscountStoreRequest;
-use DB;
 use PDF;
+use App\Models\User;
+use App\Models\Discount;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\DiscountStoreRequest;
 
 class DiscountAndExpensesController extends Controller
 {
@@ -18,16 +20,16 @@ class DiscountAndExpensesController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
+        $discounts = Discount::select('date_created', 'balance', 'notes', 'done_by')->orderBy('date_created', 'DESC')->paginate($page);
+        $users = DB::select('SELECT name FROM users ORDER BY created_at DESC');
         // if the request is ajax
         if($request->ajax()){
-            $discounts = Discount::select('date_created', 'balance', 'notes')->orderBy('date_created', 'DESC')->paginate($page);
             $table = view('admin.discount.table', compact('discounts'))->render();
             return response()->json(['table' => $table]);
         // if the request is not ajax
         } else {
-            $discounts = Discount::select('date_created', 'balance', 'notes')->orderBy('date_created', 'DESC')->paginate($page);
             $pages = ceil(Discount::count()/$page);
-            return view('admin.discount.index', compact('discounts', 'pages'));
+            return view('admin.discount.index', compact('discounts', 'pages', 'users'));
         }
     }
     public function store(DiscountStoreRequest $request)
@@ -38,21 +40,22 @@ class DiscountAndExpensesController extends Controller
             $discount = new Discount;
             $discount->balance = $balance;
             $discount->date_created = $request->date_created;
-            if($request->notes == null){
+            $discount->done_by = $request->done_by;
+            if($request->notes == null) {
                 $discount->notes = 'لا يوجد';
             } else {
                 $discount->notes = $request->notes;
             }
             $discount->save();
 
-            DB::statement('UPDATE box SET box.remaining = CASE box.id 
+            DB::statement('UPDATE box SET box.remaining = CASE box.id
                 WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
                 WHEN 2 THEN (SELECT remaining FROM box WHERE box.id = 2)+?
                 ELSE box.remaining
                 END,
-            box.counter = CASE box.id 
+            box.counter = CASE box.id
                 WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 2 THEN (SELECT counter FROM box WHERE box.id = 2)+1 
+                WHEN 2 THEN (SELECT counter FROM box WHERE box.id = 2)+1
                 ELSE box.counter
                 END
             WHERE box.id IN(1, 2);', [$balance, $balance]);
@@ -73,8 +76,8 @@ class DiscountAndExpensesController extends Controller
         $to = $request->to;
         $discounts = DB::select('SELECT date_created, balance, notes from discounts where date_created >= :from AND date_created <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل المصاريف</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'<p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل المصاريف</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'<p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>

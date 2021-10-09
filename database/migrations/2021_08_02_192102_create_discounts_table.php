@@ -18,6 +18,7 @@ class CreateDiscountsTable extends Migration
             $table->double('balance', 15, 4);
             $table->date('date_created');
             $table->string('notes');
+            $table->string('done_by', 15);
             $table->timestamps();
         });
     }
