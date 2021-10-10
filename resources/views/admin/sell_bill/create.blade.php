@@ -51,6 +51,7 @@
                         <th class="text-center">الكمية</th>
                         <th class="text-center">سعر البيع</th>
                         <th class="text-center">الاجمالي</th>
+                        <th class="text-center">المربح</th>
                         <th class="text-center">حذف</th>
                     </tr>
                 </thead>
@@ -61,7 +62,10 @@
             <table class="table table-hover mb-2" id="productTableTotal">
                 <thead>
                     <th class="text-center">الاجمالي</th>
-                    <th class="text-center" id="total"><i class='fa fa-shekel-sign ml-1'></i>
+                    <th class="text-center" id="total"><span style="font-size: 16px; display: inline;">&#8362;</span>
+                    </th>
+                    <th class="text-center" id="profit"><span
+                            style="font-size: 16px; display: inline;">&#8362;</span>
                     </th>
                 </thead>
             </table>
@@ -82,9 +86,9 @@
                         id="productname">
                         @foreach ($products as $product)
                             @if ($product->quantity > 0)
-                                <option value="{{ $product->id }}"
-                                    title="{ {{ $product->original_price }} } { {{ $product->quantity }} } {{ $product->name }}">
-                                    { {{ $product->original_price }} } {
+                                <option value="{{ $product->id }}" data-original="{{ $product->original_price }}"
+                                    title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">
+                                    { {{ $product->original_price }} &#8362;} {
                                     {{ $product->quantity }} } {{ $product->name }}
                                 </option>
                             @endif

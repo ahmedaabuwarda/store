@@ -15,8 +15,8 @@ class SellBill extends Model
     public function customer(){
         return $this->belongsTo('App\Models\Customer');
     }
-    public function worker(){
-        return $this->belongsTo('App\Models\Worker');
+    public function user(){
+        return $this->belongsTo('App\Models\User');
     }
     public function product() {
         return $this->hasMany('App\Models\Product');

@@ -21,10 +21,10 @@ class SanadatSarfController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
+        $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+
         // if the request is ajax
         if($request->ajax()){
-            $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
-
             $table = view('admin.sanadat_sarf.table', compact('sanadat_sarfs'))->render();
 
             return response()->json(['table' => $table]);
@@ -33,8 +33,6 @@ class SanadatSarfController extends Controller
             $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
             $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
             $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
-
-            $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
             $pages = ceil(Sanadat_Sarf::count()/$page);
 
             return view('admin.sanadat_sarf.index', compact('sanadat_sarfs', 'customers', 'providers', 'workers', 'pages'));

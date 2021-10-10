@@ -146,6 +146,69 @@
         </div>
     </div>
 
+    <!-- Modal::Add to box-->
+    <div class="modal fade" id="add_box_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header align-items-center ">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">اضافة للصندوق</h5>
+                    <div class="col-xl-4 col-md-12 text-right">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <form id="add_box_form">
+                    @csrf
+                    <div class="modal-body">
+                        <!-- All salaries -->
+                        <div class="row">
+
+                            <div class="col-xl-12 col-md-12">
+
+                                <div class="form-group">
+                                    <label class="form-control-label">المبلغ</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"><i
+                                                    class="fa fa-box text-dark"></i></span>
+                                        </div>
+                                        <input type="number" class="form-control @error('balance') is-invalid @enderror"
+                                            id="balance" name="balance" placeholder="المبلغ" value="{{ old('balance') }}"
+                                            autocomplete="balance" required>
+                                    </div>
+                                    @error('balance')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="col-xl-12 col-md-12">
+
+                                <div class="form-group">
+                                    <label class="form-control-label">ملاحظات</label>
+                                    <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" rows="4"
+                                        name="notes" placeholder="ملاحظات"
+                                        autocomplete="notes">{{ old('notes') }}</textarea>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center mt--3">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+                                class="fa fa-door-open mr-1"></i>الغاء</button>
+                        <button type="submit" class="btn btn-primary"><i
+                                class="fa fa-plus mr-1"></i>حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal::Show box-->
     <div class="modal fade" id="show_box_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
         aria-hidden="true">
@@ -196,6 +259,45 @@
                 $(".tablee tbody tr").filter(function() {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
+            });
+        });
+        // create new product form
+        $('#add_box_form').submit(function(e) {
+            e.preventDefault();
+            let data = new FormData(this);
+            $.ajax({
+                url: "/box/store",
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(response) {
+                    if (response.status == "success") {
+                        Swal.fire(
+                            'تم!',
+                            'تم اضافة المبلغ بنجاح',
+                            'success'
+                        );
+                        // refresh the table
+                        get_products();
+                        $('#add_box_form')[0].reset();
+                        $('#add_box_modal').modal('hide');
+                    } else {
+                        Swal.fire(
+                            'عفواً',
+                            'حدث خطأ ما، اثناء عملية الاضافة',
+                            'error'
+                        );
+                    }
+                },
+                error: function(response) {
+                    Swal.fire(
+                        'عفواً',
+                        'حدث خطأ ما، اثناء عملية الاضافة',
+                        'error'
+                    );
+                }
             });
         });
         // create new product form

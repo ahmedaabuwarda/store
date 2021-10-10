@@ -4,7 +4,7 @@
 <div class="header pb-6" style="background-color:#2F2A34;">
   <div class="container-fluid">
     <div class="header-body">
-      <div class="row align-items-center py-5"> 
+      <div class="row align-items-center py-5">
 
       </div>
     </div>
@@ -19,14 +19,13 @@
       <div class="card">
         <div class="card-header border-0">
           <div class="row align-items-center">
-            <div class="col">
+            <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
               <h3 class="mb-0">فواتير الشراء</h3>
             </div>
-            <div class="col-xl-8 col-md-12 text-center">
-              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة">
+            <div class="col-xl-7 col-md-12 text-xl-left text-md-center">
+              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة شراء">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
-              <a href="{{ URL('/sanadat_qapd/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a href="{{ URL('/buy_bill/create') }}" class="btn btn-dark text-white"><i class="fa fa-plus"></i> فاتورة شراء</a>
             </div>

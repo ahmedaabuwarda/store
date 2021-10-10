@@ -25,8 +25,9 @@ class BuyBillController extends Controller
     public function index()
     {
         $page = config('app.page');
-        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
         $pages = ceil(BuyBill::count()/$page);
+
         return view('admin.buy_bill.index', compact('buy_bills', 'pages'));
     }
     public function create()

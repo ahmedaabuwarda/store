@@ -32,6 +32,7 @@
         $("#show_bill_modal").on('shown.bs.modal', function() {
             var i = 1;
             var total = 0;
+            var profit = 0;
             $('#remaining_balance').val(0);
             $('#paid_balance').val(0);
             $('#discount').val(0);
@@ -42,7 +43,10 @@
                     .val() != null && $("#price")
                     .val() != '') {
                     var tota = $("#quantity").val() * $("#price").val();
+                    var profi = $("#quantity").val() * parseInt($('#productname').find(":selected")
+                        .data('original'));
                     total += tota;
+                    profit += (tota - profi);
                     $("#productTable tbody").append("<tr>" +
                         "<td class='disblay-3 text-center'>" + i + "</td>" +
                         "<td class='disblay-3 text-center imp'>" + $(
@@ -56,11 +60,13 @@
                         .val() + "</td>" +
                         "<td class='disblay-3 text-center imp'>" + tota +
                         "</td>" +
-                        "<td class='disblay-3 text-center'><a data-data='" +
-                        tota +
-                        "' class='btn btn-danger btn-sm text-white' id='delete_product_button'><i class='fa fa-trash'></i></a></td>" +
+                        "<td class='disblay-3 text-center imp'>" + (tota - profi) +
+                        "</td>" +
+                        "<td class='disblay-3 text-center'><a data-data1='" + tota +
+                        "' data-data2='" + (tota - profi) + "' class='btn btn-danger btn-sm text-white' id='delete_product_button'><i class='fa fa-trash'></i></a></td>" +
                         "</tr>");
                     $("#total").text(total);
+                    $("#profit").text(profit);
                     $("#productname").val("");
                     $("#quantity").val("");
                     $("#price").val("");
@@ -86,9 +92,12 @@
                 $('#tbl').val(tbl);
             });
             $("#productTable").on("click", "#delete_product_button", function() {
-                let data = $(this).data('data');
-                total = total - data;
+                let data1 = $(this).data('data1');
+                let data2 = $(this).data('data2');
+                total = total - data1;
+                profit = profit - data2;
                 $("#total").text(total);
+                $("#profit").text(profit);
                 $(this).closest("tr").remove();
                 var tbl = $('#productTable tr').map(function() {
                     return $(this).find('.imp').map(function() {

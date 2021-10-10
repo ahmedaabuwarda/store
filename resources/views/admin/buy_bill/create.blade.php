@@ -112,7 +112,7 @@
                               </div>
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
-                                  <option value="{{ $product->id }}" title="{ {{ $product->original_price }} } { {{ $product->quantity }} } {{ $product->name }}" @if($product->quantity > 0) class="text-success" @endif>{ {{ $product->original_price }} } { {{ $product->quantity }} } {{ $product->name }}</option>
+                                  <option value="{{ $product->id }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}" @if($product->quantity > 0) class="text-success" @endif>{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}</option>
                                 @endforeach
                               </select>
                           </div>

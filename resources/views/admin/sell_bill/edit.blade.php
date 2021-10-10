@@ -124,7 +124,7 @@
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
                                   @if($product->quantity > 0)
-                                    <option value="{{ $product->id }}" title="{ {{ $product->original_price }} } { {{ $product->quantity }} } {{ $product->name }}">{{ $product->name }}</option>
+                                    <option value="{{ $product->id }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">{{ $product->name }}</option>
                                   @endif
                                 @endforeach
                               </select>

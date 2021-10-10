@@ -9,8 +9,8 @@ class Sanadat_Sarf extends Model
 {
     use HasFactory;
     protected $table = 'sanadat_sarfs';
-    public function worker() {
-        return $this->belongsTo('App\Models\Worker');
+    public function user() {
+        return $this->belongsTo('App\Models\User');
     }
     public function customer() {
         return $this->belongsTo('App\Models\Customer');

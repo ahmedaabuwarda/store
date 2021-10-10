@@ -5,7 +5,7 @@
         <th scope="col" class="text-center">ملاحظات</th>
         <th scope="col" class="text-center">الرصيد</th>
         <th scope="col" class="text-center">الاسم</th>
-        <th scope="col" class="text-center">الرقم</th>
+        <th scope="col" class="text-center">#</th>
     </tr>
 </thead>
 <tbody>
@@ -30,7 +30,7 @@
                 </td>
                 <td class="display-3 text-center">{{ $customer->notes }}</td>
                 <td class="display-3 text-center">
-                    {{ $customer->balance }}<i class="fas fa-shekel-sign ml-1"></i>
+                    {{ $customer->balance }} &#8362;
                     @if ($customer->balance > 0)
                         - دائن -
                     @elseif($customer->balance < 0) - مدين - @endif

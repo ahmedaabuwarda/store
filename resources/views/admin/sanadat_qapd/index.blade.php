@@ -19,14 +19,13 @@
       <div class="card">
         <div class="card-header border-0">
           <div class="row align-items-center">
-            <div class="col">
+            <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
               <h3 class="mb-0">سندات القبض</h3>
             </div>
-            <div class="col-xl-8 col-md-12 text-center">
+            <div class="col-xl-7 col-md-12 text-xl-left text-md-center">
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن سند قبض">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
-              <a href="{{ URL('/sanadat_qapd/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_qapd_modal"><i class="fa fa-plus mr-1"></i>سند قبض</a>
             </div>

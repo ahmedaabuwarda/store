@@ -156,6 +156,21 @@
                                 <!-- List group -->
                                 <div class="list-group list-group-flush">
                                     <a class="btn list-group-item list-group-item-action" data-toggle="modal"
+                                        data-target="#add_box_modal">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-wallet text-orange"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Add Box | اضافة للصندوق</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a class="btn list-group-item list-group-item-action" data-toggle="modal"
                                         data-target="#show_box_modal">
                                         <div class="row align-items-center">
                                             <div class="col-auto">

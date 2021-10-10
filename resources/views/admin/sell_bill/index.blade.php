@@ -19,20 +19,16 @@
                 <div class="card" id="sell_bill_table_card">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
-                            <div class="col">
+                            <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
                                 <h3 class="mb-0">فواتير البيع</h3>
                             </div>
-                            <div class="col-xl-8 col-md-12 text-center">
+                            <div class="col-xl-7 col-md-12 text-xl-left text-md-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
-                                    placeholder="...ابحث">
+                                    placeholder="...ابحث عن فاتورة بيع">
                             </div>
                             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
-                                <a href="{{ URL('/sanadat_qapd/to_excel') }}" class="btn btn-success disabled"
-                                    data-toggle="tooltip" data-placement="top" title="تصدير excel"><i
-                                        class="fas fa-file-excel fa-lg mr-1"></i></a>
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                {{-- <a href="{{ URL('/sell_bill/create') }}" class="btn btn-dark text-white"><i class="fa fa-plus"></i> فاتورة بيع</a> --}}
                                 <a class="btn btn-dark text-white multi_button" data-movement="create_sell_bill"><i
                                         class="fa fa-plus"></i> فاتورة بيع</a>
                             </div>
@@ -207,6 +203,7 @@
             $('#from_to_pdf_form')[0].reset();
             $('#from_to_pdf_modal').modal('hide');
         });
+
         function get_tables() {
             $.ajax({
                 url: 'sell_bills',

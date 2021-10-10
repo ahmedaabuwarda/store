@@ -26,7 +26,6 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن سند صرف">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
-              <a href="{{ URL('/sanadat_sarf/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><i class="fa fa-plus mr-1"></i>سند صرف</a>
             </div>

@@ -5,7 +5,7 @@
         <th scope="col" class="text-center">ملاحظات</th>
         <th scope="col" class="text-center">الرصيد</th>
         <th scope="col" class="text-center">الاسم</th>
-        <th scope="col" class="text-center">الرقم</th>
+        <th scope="col" class="text-center">#</th>
     </tr>
 </thead>
 <tbody>

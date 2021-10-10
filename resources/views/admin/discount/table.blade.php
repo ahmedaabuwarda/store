@@ -4,7 +4,7 @@
         <th scope="col" class="text-center">المبلغ</th>
         <th scope="col" class="text-center">بواسطة</th>
         <th scope="col" class="text-center">تاريخ الانشاء</th>
-        <th scope="col" class="text-center">الرقم</th>
+        <th scope="col" class="text-center">#</th>
     </tr>
 </thead>
 <tbody>

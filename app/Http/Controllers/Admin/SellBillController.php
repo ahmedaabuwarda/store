@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use PDF;
 use Exception;
-use App\Models\Worker;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
@@ -39,7 +39,6 @@ class SellBillController extends Controller
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
         $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
-        // return view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'));
         $modal = view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'))->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
     }
@@ -73,9 +72,9 @@ class SellBillController extends Controller
                     throw new Exception('Provider not found');
                 }
             } elseif ($request['target'] == 'workers') {
-                $worker = Worker::where('id', $worker_id)->select('balance')->first();
+                $worker = User::where('id', $worker_id)->select('balance')->first();
                 if ($worker != null) {
-                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
+                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $sell_bill->worker_id = $worker_id;
                 } else {
                     throw new Exception('Worker not found');

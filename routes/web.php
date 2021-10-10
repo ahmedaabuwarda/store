@@ -20,6 +20,7 @@ Route::get('/', function () { return redirect('/home'); });
 Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index']);
 Route::get('/search', [App\Http\Controllers\Admin\HomeController::class, 'search']);
 Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 'to_pdf']);
+Route::post('/box/store', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
 
 // products
 Route::post('/product/store', [App\Http\Controllers\Admin\ProductController::class, 'store']);
