@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\SellBill;
+use PDF;
+use App\Models\Worker;
 use App\Models\BuyBill;
+use App\Models\Product;
+use App\Models\Customer;
+use App\Models\Provider;
+use App\Models\SellBill;
 use App\Models\Sanadat_Qapd;
 use App\Models\Sanadat_Sarf;
-use App\Models\Product;
-use App\Models\Provider;
-use App\Models\Customer;
-use App\Models\Worker;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PDF;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -24,31 +25,31 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
-        if ($request->ajax()) {
-            $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('id', 'DESC')->paginate($page);
 
-            $box = DB::select('SELECT remaining, counter FROM box WHERE box.id IN (1,2,3,4,5,6,7)');
-            $productsCount = DB::select('SELECT sum(sold_products.quantity) as total_soledProducts_quantity, (SELECT count(products.quantity) FROM products) as products_count, (SELECT sum(products.quantity) FROM products) as total_products_count, (SELECT sum(products.quantity * products.original_price) FROM products WHERE products.original_price > 0) AS total_cost_price FROM sold_products;');
+        $date = date('Y-m-d H:i:s');
+
+        $productsCount = DB::select('SELECT sum( box.counter ) AS dump,
+        ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = :date ) AS daily_profit, ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
+        ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price FROM box, sell_bills;', ['date' => date('Y-m-d')]);
+
+        $box = DB::select('SELECT remaining, counter FROM box');
+
+        $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('id', 'DESC')->paginate($page);
+
+        if ($request->ajax()) {
 
             $table = view('website.table', compact('products'))->render();
             $statistics = view('includes.statistics', compact('box', 'productsCount'))->render();
-
             return response()->json(['table' => $table, 'statistics' => $statistics]);
+
         } else {
-            $box = DB::select('SELECT remaining FROM box WHERE id = 1');
             if ($box == null) {
-                $date = date('Y-m-d H:i:s');
+
                 DB::insert('INSERT INTO box (remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
             }
 
-            $productsCount = DB::select('SELECT sum(sold_products.quantity) as total_soledProducts_quantity, (SELECT count(products.quantity) FROM products) as products_count, (SELECT sum(products.quantity) FROM products) as total_products_count, (SELECT sum(products.quantity * products.original_price) FROM products WHERE products.original_price > 0) AS total_cost_price FROM sold_products;');
-
-            $box = DB::select('SELECT remaining, counter FROM box WHERE box.id IN (1,2,3,4,5,6,7)');
             $movements = DB::select('SELECT movements.balance, movements.type, movements.from, movements.date_created FROM movements ORDER BY movements.id DESC LIMIT 20');
-
-            $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('id', 'DESC')->paginate($page);
-
-            $pages = ceil($productsCount[0]->products_count / $page);
+            $pages = ceil($box[2]->counter / $page);
 
             return view('website.home', compact('products', 'productsCount', 'pages', 'box', 'movements'));
         }
@@ -86,7 +87,7 @@ class HomeController extends Controller
                 END
             WHERE box.id IN(1);', [$balance]);
 
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)',[$balance, 'دخل الصندوق', date('Y-m-d H:i:s')]);
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$balance, 'دخل الصندوق', date('Y-m-d H:i:s')]);
 
             return response(['status' => 'success']);
             DB::commit();
@@ -106,8 +107,8 @@ class HomeController extends Controller
         $total = 0;
         $time = date('H:i:s');
         $date = date('Y-m-d');
-        $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل حركات الصندوق</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل حركات الصندوق</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>

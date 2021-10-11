@@ -24,7 +24,7 @@ class SellBillController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
-        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
         $pages = ceil(SellBill::count() / $page);
         if ($request->ajax()) {
             $table = view('admin.sell_bill.table', compact('sell_bills'))->render();
@@ -61,6 +61,7 @@ class SellBillController extends Controller
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance + $remaining_balance]);
                     $sell_bill->customer_id = $customer_id;
                 } else {
+                    DB::rollBack();
                     throw new Exception('Customer not found');
                 }
             } elseif ($request['target'] == 'providers') {
@@ -69,6 +70,7 @@ class SellBillController extends Controller
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance + $remaining_balance]);
                     $sell_bill->provider_id = $provider_id;
                 } else {
+                    DB::rollBack();
                     throw new Exception('Provider not found');
                 }
             } elseif ($request['target'] == 'workers') {
@@ -77,9 +79,11 @@ class SellBillController extends Controller
                     User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $sell_bill->worker_id = $worker_id;
                 } else {
+                    DB::rollBack();
                     throw new Exception('Worker not found');
                 }
             }
+
             $sell_bill->paid_balance = $paid_balance;
             $sell_bill->remaining_balance = $remaining_balance;
             $sell_bill->discount = $request['discount'];
@@ -89,26 +93,34 @@ class SellBillController extends Controller
             } else {
                 $sell_bill->byan = $request['byan'];
             }
+            $sell_bill->total_profit = 0;
             $sell_bill->save();
 
+            $total_profit = 0;
+
             $tblArray = explode(',', $request['tbl']);
-            for ($i = 0; $i < count($tblArray) / 4; $i++) {
-                $product = Product::where('id', $tblArray[$i * 4 + 0])->first();
-                Product::where('id', $tblArray[$i * 4 + 0])->update([
-                    'quantity' => $product->quantity - $tblArray[$i * 4 + 1],
+            for ($i = 0; $i < count($tblArray) / 5; $i++) {
+                $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
+                Product::where('id', $tblArray[$i * 5 + 0])->update([
+                    'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                     'sell_bill_id' => $sell_bill->id
                 ]);
                 $sold_product = new SoldProduct;
-                $sold_product->product_id = $tblArray[$i * 4 + 0];
-                $sold_product->quantity = $tblArray[$i * 4 + 1];
-                $sold_product->sell_price = $tblArray[$i * 4 + 2];
-                $sold_product->total_price = $tblArray[$i * 4 + 3];
+                $sold_product->product_id = $tblArray[$i * 5 + 0];
+                $sold_product->quantity = $tblArray[$i * 5 + 1];
+                $sold_product->sell_price = $tblArray[$i * 5 + 2];
+                $sold_product->total_price = $tblArray[$i * 5 + 3];
                 $sold_product->sell_bill_id = $sell_bill->id;
+                $sold_product->profit = $tblArray[$i * 5 + 4];
+                $total_profit += $tblArray[$i * 5 + 4];
                 $sold_product->save();
             }
 
+            SellBill::where('id', $sell_bill->id)->update(['total_profit' => $total_profit]);
+
             DB::statement('UPDATE box SET box.remaining = CASE box.id
                 WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
+                WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)+?
                 WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)+?
                 ELSE box.remaining
                 END,
@@ -117,7 +129,7 @@ class SellBillController extends Controller
                 WHEN 7 THEN (SELECT counter FROM box WHERE box.id = 7)+1
                 ELSE box.counter
                 END
-            WHERE box.id IN(1, 7);', [$paid_balance, $sell_bill->total_balance]);
+            WHERE box.id IN(1, 3, 7);', [$paid_balance, $total_profit, $sell_bill->total_balance]);
 
             $date = date($request['date_created'] . ' H:i:s');
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة بيع', $date]);
@@ -132,7 +144,7 @@ class SellBillController extends Controller
     public function show(Request $request)
     {
         $id = $request['id'];
-        $bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,sell_bill_id')->with('sold_product.product:id,name')->where('id', $id)->first();
+        $bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan', 'total_profit')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->with('sold_product.product:id,name')->where('id', $id)->first();
         if ($bill != null) {
             $bill_data = view('includes.bill_data', compact('bill'))->render();
             return response()->json(['bill_data' => $bill_data]);
@@ -185,8 +197,8 @@ class SellBillController extends Controller
                     $customer = Customer::where('id', $request['customer_id'])->select('balance')->first();
                     Customer::where('id', $request['customer_id'])->update(['balance' => ($customer->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 } elseif ($request['worker_id'] > 0) {
-                    $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
-                    Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
+                    $worker = User::where('id', $request['worker_id'])->select('balance')->first();
+                    User::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 }
             }
 
@@ -226,24 +238,27 @@ class SellBillController extends Controller
     {
         $from = $request['from'];
         $to = $request['to'];
-        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
         $i = 1;
-        $total = 0;
+        $total_rem = 0;
+        $total_profit = 0;
+        $total_paid = 0;
         $time = date('H:i:s');
         $date = date('Y-m-d');
         $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل فواتير البيع</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل فواتير البيع</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="15%">تاريخ الانشاء</th>
-            <th width="20%">المستهلك</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="10%">المبلغ المتبقي</th>
-            <th width="15%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="10%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="10%" bgcolor="#eee">المربح</th>
+            <th width="15%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -266,22 +281,25 @@ class SellBillController extends Controller
             }
             $table_content .= '<tr>
               <td width="5%">' . $i . '</td>
-              <td width="20%">' . $sell_bill->number . '</td>
+              <td width="15%">' . $sell_bill->number . '</td>
               <td width="15%">' . $sell_bill->date_created . '</td>
               <td width="20%">' . $target . '</td>
-              <td width="15%">' . $sell_bill->paid_balance . '<span>&#8362;&#160;</span></td>
+              <td width="10%">' . $sell_bill->paid_balance . '<span>&#8362;&#160;</span></td>
               <td width="10%">' . $balance . '</td>
+              <td width="10%">' . $sell_bill->total_profit . '<span>&#8362;&#160;</span></td>
               <td width="15%">' . $sell_bill->byan . '</td>
             </tr>';
-            $total += $sell_bill->remaining_balance;
+            $total_rem += $sell_bill->remaining_balance;
+            $total_profit += $sell_bill->total_profit;
+            $total_paid += $sell_bill->paid_balance;
             $i++;
         }
-        if ($total < 0) {
-            $total = $total . '<span>&#8362;&#160;</span> - مدين -';
-        } elseif ($total > 0) {
-            $total = $total . '<span>&#8362;&#160;</span> - دائن -';
+        if ($total_rem < 0) {
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - مدين -';
+        } elseif ($total_rem > 0) {
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - دائن -';
         } else {
-            $total = $total . '<span>&#8362;&#160;</span>';
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span>';
         }
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل فواتير البيع');
@@ -306,7 +324,29 @@ class SellBillController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $total . '</td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
+        <tbody>
+        <tr>
+            <td width="10%">#</td>
+            <td width="60%">المجموع</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المتبقي</td>
+            <td width="30%" color="#fff" bgcolor="#003B36">' . $total_rem . '</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المدفوع</td>
+            <td width="30%" color="#fff" bgcolor="#DB2E39">' . $total_paid . '<span>&#8362;&#160;</span></td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المربح</td>
+            <td width="30%" color="#000" bgcolor="#FFCA2C">' . $total_profit . '<span>&#8362;&#160;</span></td>
+        </tr>
+        </tbody></table>');
+
         PDF::Output('all_sell_bills_' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }

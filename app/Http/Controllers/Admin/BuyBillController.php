@@ -25,10 +25,11 @@ class BuyBillController extends Controller
     public function index()
     {
         $page = config('app.page');
+        $box = DB::select('SELECT remaining FROM box WHERE id = 6');
         $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
         $pages = ceil(BuyBill::count()/$page);
 
-        return view('admin.buy_bill.index', compact('buy_bills', 'pages'));
+        return view('admin.buy_bill.index', compact('buy_bills', 'pages', 'box'));
     }
     public function create()
     {
@@ -239,20 +240,20 @@ class BuyBillController extends Controller
     {
         $from = $request['from'];
         $to = $request['to'];
-        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
+        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $i = 1; $total_rem = 0; $total_paid = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل فواتير الشراء</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="15%">تاريخ الانشاء</th>
-            <th width="20%">المستهلك</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="10%">المبلغ المتبقي</th>
-            <th width="15%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="15%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -281,14 +282,15 @@ class BuyBillController extends Controller
               <td width="10%">'.$balance.'</td>
               <td width="15%">'.$buy_bill->byan.'</td>
             </tr>';
-            $total += $buy_bill->remaining_balance; $i++;
+            $total_rem += $buy_bill->remaining_balance; $i++;
+            $total_paid += $buy_bill->paid_balance;
         }
-        if($total < 0) {
-            $total = $total.'<span>&#8362;&#160;</span> - مدين -';
-        } elseif($total > 0) {
-            $total = $total.'<span>&#8362;&#160;</span> - دائن -';
+        if($total_rem < 0) {
+            $total_rem = $total_rem.'<span>&#8362;&#160;</span> - مدين -';
+        } elseif($total_rem > 0) {
+            $total_rem = $total_rem.'<span>&#8362;&#160;</span> - دائن -';
         } else {
-            $total = $total.'<span>&#8362;&#160;</span>';
+            $total_rem = $total_rem.'<span>&#8362;&#160;</span>';
         }
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل فواتير الشراء');
@@ -313,7 +315,24 @@ class BuyBillController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$total.'</td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
+        <tbody>
+        <tr>
+            <td width="10%">#</td>
+            <td width="60%">المجموع</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المتبقي</td>
+            <td width="30%" color="#fff" bgcolor="#003B36">' . $total_rem . '</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المدفوع</td>
+            <td width="30%" color="#fff" bgcolor="#DB2E39">' . $total_paid . '<span>&#8362;&#160;</span></td>
+        </tr>
+        </tbody></table>');
+
         PDF::Output('all_buy_bills_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }

@@ -23,6 +23,7 @@ class CreateSellBillsTable extends Migration
             $table->double('total_balance', 15, 4);
             $table->double('paid_balance', 15, 4);
             $table->double('remaining_balance', 15, 4);
+            $table->double('total_profit', 15, 4);
             $table->double('discount', 15, 4);
             $table->string('byan');
             $table->timestamps();

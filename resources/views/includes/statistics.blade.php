@@ -1,7 +1,6 @@
 @php
 $total_cost_price = $productsCount[0]->total_cost_price;
 $total_products_count = $productsCount[0]->total_products_count;
-$total_soldProducts_quantity = $productsCount[0]->total_soledProducts_quantity;
 @endphp
 <!-- الصندوق -->
 <div class="col-xl-3 col-md-6">
@@ -184,10 +183,10 @@ $total_soldProducts_quantity = $productsCount[0]->total_soledProducts_quantity;
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <h5 class="card-title text-uppercase text-muted mb-0">المربح</h5>
+                    <h5 class="card-title text-uppercase text-muted mb-0">المربح الكلي</h5>
                     <span class="h2 font-weight-bold mb-0">
-                        {{ $box[6]->remaining + $total_cost_price - $box[3]->remaining }}&nbsp;&#8362;&nbsp;
-                        {{ $box[6]->remaining + $total_cost_price - $box[3]->remaining }}&nbsp;&#8362;</span>
+                        {{ $box[2]->remaining }}&nbsp;&#8362;&nbsp;
+                    </span>
                 </div>
                 <div class="col-auto">
                     <div class="icon icon-shape bg-gradient-gray text-white rounded-circle shadow">
@@ -196,8 +195,8 @@ $total_soldProducts_quantity = $productsCount[0]->total_soledProducts_quantity;
                 </div>
             </div>
             <p class="mt-3 mb-0 font-weight-bold">
-                <span class="text-primary mr-2">0 <i class="fa fa-chart-line ml-1"></i></span>
-                <span class="text-nowrap">ليس له اهمية</span>
+                <span class="text-primary mr-2">{{ $productsCount[0]->daily_profit }}<i class="fa fa-chart-line ml-1"></i></span>
+                <span class="text-nowrap">المربح اليومي</span>
             </p>
         </div>
     </div>

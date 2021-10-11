@@ -9,6 +9,7 @@ class SellBill extends Model
 {
     use HasFactory;
     protected $table = 'sell_bills';
+    protected $fillable = ['id', 'total_profit', 'discount', 'created_at', 'updated_at'];
     public function provider(){
         return $this->belongsTo('App\Models\Provider');
     }

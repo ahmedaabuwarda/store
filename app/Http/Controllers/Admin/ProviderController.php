@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Provider;
-use DB;
 use PDF;
+use App\Models\Provider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ProviderController extends Controller
 {
@@ -54,8 +55,8 @@ class ProviderController extends Controller
         $to = $request->to;
         $providers = DB::select('SELECT name, balance, notes, status FROM providers WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل الموردين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل الموردين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -97,7 +98,7 @@ class ProviderController extends Controller
         } else {
             $total = $total;
         }
-        
+
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل الموردين');
         PDF::SetAuthor('اياد الهسي');
@@ -130,18 +131,18 @@ class ProviderController extends Controller
         $from = $request->from;
         $to = $request->to;
         $id = $request->id;
-        
+
         $provider = DB::select('SELECT name, balance FROM providers WHERE id = :id', ['id' => $id]);
         $provider_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.byan FROM providers, sanadat_sarfs WHERE providers.id = sanadat_sarfs.provider_id AND providers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $provider_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM providers, sanadat_qapds WHERE providers.id = sanadat_qapds.provider_id AND providers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
-        
+
         $provider_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM providers, buy_bills WHERE providers.id = buy_bills.provider_id AND providers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $provider_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM providers, sell_bills WHERE providers.id = sell_bills.provider_id AND providers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - مورد</p></br>';
+        $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - مورد</p></br>';
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -163,7 +164,7 @@ class ProviderController extends Controller
             </tr>';
             $sarf_total += $sanadat_sarf->balance; $i++;
         }
-        
+
         $sarf_table .= '</tbody></table>';
 
         $i = 1; $qapd_total = 0;
@@ -188,7 +189,7 @@ class ProviderController extends Controller
             </tr>';
             $qapd_total += $sanadat_qapd->balance; $i++;
         }
-        
+
         $qapd_table .= '</tbody></table>';
 
         $i = 1; $buy_total = 0;
@@ -230,7 +231,7 @@ class ProviderController extends Controller
         } else {
             $buy_total = $buy_total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $buy_table .= '</tbody></table>';
 
         $i = 1; $sell_total = 0;
@@ -272,7 +273,7 @@ class ProviderController extends Controller
         } else {
             $sell_total = $sell_total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $sell_table .= '</tbody></table>';
 
         PDF::SetTitle('كشف حساب');
@@ -300,13 +301,13 @@ class ProviderController extends Controller
 
         PDF::writeHTML($qapd_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$qapd_total.'<span>&#8362;&#160;</span> - دائن -</td></tr></tbody></table>');
-        
+
         PDF::writeHTML($buy_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$buy_total.'</td></tr></tbody></table>');
 
         PDF::writeHTML($sell_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$sell_total.'</td></tr></tbody></table>');
-        
+
         $balance = '';
         if ($provider[0]->balance > 0) {
             $balance = $provider[0]->balance.'<span>&#8362;&#160;</span> - دائن -';

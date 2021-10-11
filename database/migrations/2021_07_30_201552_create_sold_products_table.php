@@ -19,6 +19,7 @@ class CreateSoldProductsTable extends Migration
             $table->integer('quantity');
             $table->double('sell_price', 15, 4);
             $table->double('total_price', 15, 4);
+            $table->double('profit', 15, 4);
             $table->integer('sell_bill_id');
             $table->timestamps();
         });
