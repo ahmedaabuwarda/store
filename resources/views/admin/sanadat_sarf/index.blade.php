@@ -27,7 +27,9 @@
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><i class="fa fa-plus mr-1"></i>سند صرف</a>
+              <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><span
+                class="badge text-white bg-success mr-1">{{ $box[0]->remaining }} &#8362;
+            </span> سند صرف</a>
             </div>
           </div>
         </div>

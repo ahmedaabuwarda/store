@@ -22,21 +22,23 @@ class SanadatQapdController extends Controller
     {
         $page = config('app.page');
         $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+        $box = DB::select('SELECT remaining from box where id = 4');
 
         // if the request is ajax
         if($request->ajax()){
-            $table = view('admin.sanadat_qapd.table', compact('sanadat_qapds'))->render();
 
+            $table = view('admin.sanadat_qapd.table', compact('sanadat_qapds'))->render();
             return response()->json(['table' => $table]);
+
         // if the request is not ajax
         } else {
+
             $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
             $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
             $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
-
             $pages = ceil(Sanadat_Qapd::count()/$page);
+            return view('admin.sanadat_qapd.index', compact('sanadat_qapds', 'customers', 'providers', 'workers', 'pages', 'box'));
 
-            return view('admin.sanadat_qapd.index', compact('sanadat_qapds', 'customers', 'providers', 'workers', 'pages'));
         }
     }
     public function store(Request $request)
@@ -111,7 +113,7 @@ class SanadatQapdController extends Controller
             return response()->json(['status' => 'success']);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['status' => 'error']);
+            return response()->json(['status' => 'error' . $e->getMessage()]);
         }
     }
     public function delete(Request $request)
@@ -180,19 +182,19 @@ class SanadatQapdController extends Controller
     {
         $from = $request['from'];
         $to = $request['to'];
-        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
+        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">الرقم</th>
-            <th width="20%">رقم السند</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">المستهلك</th>
-            <th width="10%">الرصيد</th>
-            <th width="20%">البيان</th>
+            <th width="10%" bgcolor="#eee">الرقم</th>
+            <th width="20%" bgcolor="#eee">رقم السند</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="10%" bgcolor="#eee">الرصيد</th>
+            <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -238,7 +240,7 @@ class SanadatQapdController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$total.'<span>&#8362;&#160;</span></td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">'.$total.'<span>&#8362;&#160;</span></td></tr></tbody></table>');
         PDF::Output('all_sanadat_qapd_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }

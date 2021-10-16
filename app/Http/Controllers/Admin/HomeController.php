@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
-use App\Models\Worker;
-use App\Models\BuyBill;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
-use App\Models\SellBill;
-use App\Models\Sanadat_Qapd;
-use App\Models\Sanadat_Sarf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -67,6 +62,8 @@ class HomeController extends Controller
             $result = Provider::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         } else if ($target == 'customers') {
             $result = Customer::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+        } else if ($target == 'products') {
+            $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         }
         $pages = ceil(Provider::count() / $page);
         return view('website.search', compact('result', 'pages', 'target'));
@@ -112,10 +109,10 @@ class HomeController extends Controller
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="25%">الرقم</th>
-            <th width="25%">تاريخ الانشاء</th>
-            <th width="25%">المبلغ</th>
-            <th width="25%">من</th>
+            <th width="25%" bgcolor="#eee">الرقم</th>
+            <th width="25%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="25%" bgcolor="#eee">المبلغ</th>
+            <th width="25%" bgcolor="#eee">من</th>
           </tr>
         </thead>
         <tbody>';
@@ -160,7 +157,7 @@ class HomeController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
         PDF::Output('all_box_movements_' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }

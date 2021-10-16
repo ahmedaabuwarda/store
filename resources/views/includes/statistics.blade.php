@@ -135,7 +135,6 @@ $total_products_count = $productsCount[0]->total_products_count;
                     <a href="{{ URL('/sell_bills') }}">
                         <h5 class="card-title text-uppercase text-muted mb-0">فاتورة بيع</h5>
                         <span class="h2 font-weight-bold mb-0">
-                            {{ $box[6]->remaining }}&nbsp;&#8362;&nbsp;
                             {{ $box[6]->remaining }}&nbsp;&#8362;
                         </span>
                     </a>
@@ -195,7 +194,7 @@ $total_products_count = $productsCount[0]->total_products_count;
                 </div>
             </div>
             <p class="mt-3 mb-0 font-weight-bold">
-                <span class="text-primary mr-2">{{ $productsCount[0]->daily_profit }}<i class="fa fa-chart-line ml-1"></i></span>
+                <span class="text-primary mr-2">@if($productsCount[0]->daily_profit == null) 0 @endif{{ $productsCount[0]->daily_profit }}&#8362;</span>
                 <span class="text-nowrap">المربح اليومي</span>
             </p>
         </div>

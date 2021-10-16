@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
 <!-- Header -->
-<div class="header pb-6" style="background-color:#420516;">
+<div class="header pb-6" style="background-color:#2F2A34;">
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-4">
@@ -27,7 +27,7 @@
             </div>
             <div class="col-xl-2 col-md-12 text-right">
               <a href="{{ URL('/product/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
-              <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></buttom>
+              <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
             </div>
           </div>
         </div>
@@ -41,9 +41,9 @@
             @elseif($target == 'customers')
               @php $customers = $result; @endphp
               @include('admin.customer.table')
-            @elseif($target == 'workers')
-              @php $workers = $result; @endphp
-              @include('admin.worker.table')
+            @elseif($target == 'products')
+              @php $products = $result; @endphp
+              @include('website.table')
             @endif
           </table>
         </div>
