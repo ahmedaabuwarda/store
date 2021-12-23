@@ -18,33 +18,36 @@ class SanadatQapdController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index(Request $request)
     {
         $page = config('app.page');
-        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
         $box = DB::select('SELECT remaining from box where id = 4');
 
         // if the request is ajax
-        if($request->ajax()){
+        if ($request->ajax()) {
 
             $table = view('admin.sanadat_qapd.table', compact('sanadat_qapds'))->render();
             return response()->json(['table' => $table]);
 
-        // if the request is not ajax
+            // if the request is not ajax
         } else {
 
             $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
             $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
             $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
-            $pages = ceil(Sanadat_Qapd::count()/$page);
+            $pages = ceil(Sanadat_Qapd::count() / $page);
             return view('admin.sanadat_qapd.index', compact('sanadat_qapds', 'customers', 'providers', 'workers', 'pages', 'box'));
-
         }
     }
+
     public function store(Request $request)
     {
+
         DB::beginTransaction();
         try {
+
             $balance = abs($request['balance']);
             $customer_id = $request['customer_id'];
             $provider_id = $request['provider_id'];
@@ -55,7 +58,8 @@ class SanadatQapdController extends Controller
             $sanadat_qapd->number = $request['number'];
             $sanadat_qapd->date_created = $request['date_created'];
             $sanadat_qapd->balance = $balance;
-            if($request['byan'] == null){
+
+            if ($request['byan'] == null) {
                 $sanadat_qapd->byan = 'لا يوجد';
             } else {
                 $sanadat_qapd->byan = $request['byan'];
@@ -63,30 +67,32 @@ class SanadatQapdController extends Controller
 
             if ($request['target'] == 'customers') {
                 $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
-                if($customer != null){
+                if ($customer != null) {
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance + $balance]);
                     $sanadat_qapd->customer_id = $customer_id;
-                    $target = $customer->name;
+                    $target = $customer->balance;
                 } else {
                     DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'providers') {
+
                 $provider = Provider::where('id', $provider_id)->select('name', 'balance')->first();
-                if($provider != null){
+                if ($provider != null) {
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance + $balance]);
                     $sanadat_qapd->provider_id = $provider_id;
-                    $target = $provider->name;
+                    $target = $provider->balance;
                 } else {
                     DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'workers') {
+
                 $worker = User::where('id', $worker_id)->select('name', 'balance')->first();
-                if($worker != null){
+                if ($worker != null) {
                     User::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
                     $sanadat_qapd->worker_id = $worker_id;
-                    $target = $worker->name;
+                    $target = $worker->balance;
                 } else {
                     DB::rollback();
                     return response()->json(['status' => 'error']);
@@ -106,8 +112,8 @@ class SanadatQapdController extends Controller
                 END
             WHERE box.id IN(1, 4);', [$balance, $balance]);
 
-            $date = date($request['date_created'].' H:i:s');
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)',[$balance, 'سند قبض', $date]);
+            $date = date($request['date_created'] . ' H:i:s');
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$balance, 'سند قبض', $date]);
 
             DB::commit();
             return response()->json(['status' => 'success']);
@@ -129,7 +135,7 @@ class SanadatQapdController extends Controller
 
             if ($sadat_qapd != null && $provider_id > 0) {
                 $provider = Provider::where('id', $provider_id)->select('balance')->first();
-                if($provider != null){
+                if ($provider != null) {
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance - $balance]);
                 } else {
                     DB::rollback();
@@ -137,7 +143,7 @@ class SanadatQapdController extends Controller
                 }
             } elseif ($sadat_qapd != null && $customer_id > 0) {
                 $customer = Customer::where('id', $customer_id)->select('balance')->first();
-                if($customer != null){
+                if ($customer != null) {
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance - $balance]);
                 } else {
                     DB::rollback();
@@ -145,7 +151,7 @@ class SanadatQapdController extends Controller
                 }
             } elseif ($sadat_qapd != null && $worker_id > 0) {
                 $worker = User::where('id', $worker_id)->select('balance')->first();
-                if($worker != null){
+                if ($worker != null) {
                     User::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
                 } else {
                     DB::rollback();
@@ -168,7 +174,7 @@ class SanadatQapdController extends Controller
             WHERE box.id IN(1, 4);', [$balance, $balance]);
 
             $date = date('Y-m-d H:i:s');
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)',[$balance, 'سند قبض', $date]);
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)', [$balance, 'سند قبض', $date]);
 
             $sadat_qapd->delete();
             DB::commit();
@@ -178,14 +184,19 @@ class SanadatQapdController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request['from'];
         $to = $request['to'];
-        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
+        $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $i = 1;
+        $total = 0;
+        $time = date('H:i:s');
+        $date = date('Y-m-d');
+        $by = Auth::user()->name;
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -198,30 +209,31 @@ class SanadatQapdController extends Controller
           </tr>
         </thead>
         <tbody>';
-        foreach($sanadat_qapds as $sanadat_qapd) {
+        foreach ($sanadat_qapds as $sanadat_qapd) {
             $target = '';
-            if($sanadat_qapd->provider_id > 0){
-                $target = $sanadat_qapd->provider->name.' - مورد';
-            } elseif($sanadat_qapd->customer_id > 0){
-                $target = $sanadat_qapd->customer->name.' - زبون';
-            } elseif($sanadat_qapd->worker_id > 0){
-                $target = $sanadat_qapd->worker->name.' - موظف';
+            if ($sanadat_qapd->provider_id > 0) {
+                $target = $sanadat_qapd->provider->name . ' - مورد';
+            } elseif ($sanadat_qapd->customer_id > 0) {
+                $target = $sanadat_qapd->customer->name . ' - زبون';
+            } elseif ($sanadat_qapd->worker_id > 0) {
+                $target = $sanadat_qapd->worker->name . ' - موظف';
             }
             $table_content .= '<tr>
-              <td width="10%">'.$i.'</td>
-              <td width="20%">'.$sanadat_qapd->number.'</td>
-              <td width="20%">'.$sanadat_qapd->date_created.'</td>
-              <td width="20%">'.$target.'</td>
-              <td width="10%">'.$sanadat_qapd->balance.'<span>&#8362;&#160;</span></td>
-              <td width="20%">'.$sanadat_qapd->byan.'</td>
+              <td width="10%">' . $i . '</td>
+              <td width="20%">' . $sanadat_qapd->number . '</td>
+              <td width="20%">' . $sanadat_qapd->date_created . '</td>
+              <td width="20%">' . $target . '</td>
+              <td width="10%">' . $sanadat_qapd->balance . '<span>&#8362;&#160;</span></td>
+              <td width="20%">' . $sanadat_qapd->byan . '</td>
             </tr>';
-            $total += $sanadat_qapd->balance; $i++;
+            $total += $sanadat_qapd->balance;
+            $i++;
         }
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل سندات القبض');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
-        $lg = Array();
+        $lg = array();
         $lg['a_meta_charset'] = 'UTF-8';
         $lg['a_meta_dir'] = 'rtl';
         $lg['a_meta_language'] = 'ar';
@@ -240,8 +252,8 @@ class SanadatQapdController extends Controller
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($table_content);
 
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">'.$total.'<span>&#8362;&#160;</span></td></tr></tbody></table>');
-        PDF::Output('all_sanadat_qapd_'.date('ymdhis').'.pdf','I');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+        PDF::Output('all_sanadat_qapd_' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }
 }

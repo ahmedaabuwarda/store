@@ -9,6 +9,7 @@ class Customer extends Model
 {
     use HasFactory;
     protected $table = 'customers';
+    protected $fillable = ['name', 'balance'];
     public function sanadat_sarf() {
         return $this->hasMany('App\Models\Sanadat_Sarf');
     }

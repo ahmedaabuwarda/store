@@ -1,6 +1,8 @@
 @php
 $total_cost_price = $productsCount[0]->total_cost_price;
 $total_products_count = $productsCount[0]->total_products_count;
+$needFromPeople = $productsCount[0]->needFromPeople1 + $productsCount[0]->needFromPeople2;
+$peopleNeedFromMe = $productsCount[0]->peopleNeedFromMe1 + $productsCount[0]->peopleNeedFromMe2;
 @endphp
 <!-- الصندوق -->
 <div class="col-xl-3 col-md-6">
@@ -171,6 +173,29 @@ $total_products_count = $productsCount[0]->total_products_count;
             <p class="mt-3 mb-0 font-weight-bold">
                 <span class="text-primary mr-2">@if ($total_products_count == null) 0 @else {{ $total_products_count }} @endif<i class="fa fa-chart-line ml-1"></i></span>
                 <span class="text-nowrap">الوحدات المتوفرة</span>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- سعر التكلفة الكلي للاصناف -->
+<div class="col-xl-3 col-md-6">
+    <div class="card card-stats">
+        <!-- Card body -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">بدي من الناس</h5>
+                    <span class="h2 font-weight-bold mb-0">{{ abs($needFromPeople) }}&nbsp;&#8362;</span>
+                </div>
+                <div class="col-auto">
+                    <div class="icon icon-shape bg-gradient-danger text-white rounded-circle shadow">
+                        <i class="fa fa-university"></i>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-3 mb-0 font-weight-bold">
+                <span class="text-primary mr-2">@if ($peopleNeedFromMe == null) 0 @else {{ abs($peopleNeedFromMe) }} @endif &#8362;</span>
+                <span class="text-nowrap">الناس بدها مني</span>
             </p>
         </div>
     </div>

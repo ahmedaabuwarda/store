@@ -30,7 +30,7 @@
                 </td>
                 <td class="display-3 text-center">
                     @if ($sanadat_qapd->worker_id > 0)
-                        {{ $sanadat_qapd->worker->name }} - موظف
+                        {{ $sanadat_qapd->user->name }} - موظف
                     @elseif($sanadat_qapd->customer_id > 0)
                         {{ $sanadat_qapd->customer->name }} - زبون
                     @elseif($sanadat_qapd->provider_id > 0)

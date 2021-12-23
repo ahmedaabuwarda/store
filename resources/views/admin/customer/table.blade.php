@@ -32,8 +32,8 @@
                 <td class="display-3 text-center">
                     {{ $customer->balance }} &#8362;
                     @if ($customer->balance > 0)
-                        - دائن -
-                    @elseif($customer->balance < 0) - مدين - @endif
+                        { دائن }
+                    @elseif($customer->balance < 0) { مدين } @endif
                 </td>
                 <td class="display-3 text-center">{{ $customer->name }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>

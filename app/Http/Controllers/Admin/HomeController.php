@@ -24,8 +24,14 @@ class HomeController extends Controller
         $date = date('Y-m-d H:i:s');
 
         $productsCount = DB::select('SELECT sum( box.counter ) AS dump,
-        ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = :date ) AS daily_profit, ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
-        ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price FROM box, sell_bills;', ['date' => date('Y-m-d')]);
+        ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = "2021-10-10" ) AS daily_profit,
+        ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
+        ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price,
+        ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance <= 0) AS needFromPeople1,
+        ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance >= 0) AS peopleNeedFromMe1,
+        ( SELECT sum( providers.balance ) FROM providers WHERE providers.balance <= 0) AS needFromPeople2,
+        ( SELECT sum( providers.balance ) FROM providers WHERE providers.balance >= 0) AS peopleNeedFromMe2
+        FROM box, sell_bills;', ['date' => date('Y-m-d')]);
 
         $box = DB::select('SELECT remaining, counter FROM box');
 
@@ -40,17 +46,19 @@ class HomeController extends Controller
         } else {
             if ($box == null) {
 
-                DB::insert('INSERT INTO box (remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
+                DB::insert('INSERT INTO box (remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
+
             }
 
             $movements = DB::select('SELECT movements.balance, movements.type, movements.from, movements.date_created FROM movements ORDER BY movements.id DESC LIMIT 20');
             $pages = ceil($box[2]->counter / $page);
-
             return view('website.home', compact('products', 'productsCount', 'pages', 'box', 'movements'));
+
         }
     }
     public function search(Request $request)
     {
+
         $page = config('app.page');
         $search_query = $request->search_field;
         $target = $request->target;
@@ -67,11 +75,12 @@ class HomeController extends Controller
         }
         $pages = ceil(Provider::count() / $page);
         return view('website.search', compact('result', 'pages', 'target'));
+
     }
     public function box_store(Request $request)
     {
-        $balance = abs($request->balance);
 
+        $balance = abs($request->balance);
         DB::beginTransaction();
         try {
             DB::statement('UPDATE box SET box.remaining = CASE box.id
@@ -92,6 +101,7 @@ class HomeController extends Controller
             DB::rollBack();
             return response(['status' => 'error']);
         }
+
     }
     public function to_pdf(Request $request)
     {

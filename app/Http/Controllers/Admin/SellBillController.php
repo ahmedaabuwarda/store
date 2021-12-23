@@ -106,6 +106,9 @@ class SellBillController extends Controller
                     'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                     'sell_bill_id' => $sell_bill->id
                 ]);
+                if ($product->quantity == 0) {
+                    Product::where('id', $tblArray[$i * 5 + 0])->update(['status' => false]);
+                }
                 $sold_product = new SoldProduct;
                 $sold_product->product_id = $tblArray[$i * 5 + 0];
                 $sold_product->quantity = $tblArray[$i * 5 + 1];
