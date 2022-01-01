@@ -138,8 +138,9 @@
                                                     class="fa fa-heart text-info"></i></span>
                                         </div>
                                         <select class="form-control selectpicker" name="done_by">
-                                            <option value="احمد شعبان">احمد شعبان</option>
-                                            <option value="محمد احمد">محمد احمد</option>
+                                            @foreach($users as $user)
+                                                <option value="{{ $user->name }}">{{ $user->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     @error('done_by')

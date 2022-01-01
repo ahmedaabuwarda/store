@@ -75,6 +75,17 @@ Route::post('/sell_bill/update/{id}', [App\Http\Controllers\Admin\SellBillContro
 Route::post('/sell_bill/delete_product/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'delete_product']);
 Route::post('/sell_bill/to_pdf', [App\Http\Controllers\Admin\SellBillController::class, 'to_pdf']);
 
+// workers
+Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);
+Route::post('/worker/store', [App\Http\Controllers\Admin\WorkerController::class, 'store']);
+Route::post('/worker/to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'to_pdf']);
+Route::post('/worker/kashf_to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'kashf_to_pdf']);
+
+// salaries
+Route::post('/salary/create', [App\Http\Controllers\Admin\SalaryController::class, 'create']);
+Route::post('/salary/store', [App\Http\Controllers\Admin\SalaryController::class, 'store']);
+Route::post('/salary/to_pdf', [App\Http\Controllers\Admin\SalaryController::class, 'to_pdf']);
+
 // discounts
 Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);
 Route::post('/discount/store', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'store']);

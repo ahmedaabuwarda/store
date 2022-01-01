@@ -7,15 +7,16 @@
                 <div class="row align-items-center py-4">
 
                 </div>
-                <!-- Card stats -->
-                <div class="row" id="statistics_table">
-                    @include('includes.statistics')
-                </div>
             </div>
         </div>
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
+
+        <!-- statistics -->
+        <div class="row" id="statistics_table">     
+            @include('includes.statistics')
+        </div>
 
         <!-- All products -->
         <div class="row">
@@ -26,7 +27,7 @@
                             <div class="col">
                                 <h3 class="mb-0">الاصناف</h3>
                             </div>
-                            <div class="col-xl-8 col-md-12 text-center">
+                            <div class="col-xl-8 col-md-9 text-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
                                     placeholder="...ابحث عن صنف">
                             </div>
@@ -97,7 +98,7 @@
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1"><i
-                                                    class="fa fa-box text-primary"></i></span>
+                                                    class="fa fa-box"></i></span>
                                         </div>
                                         <input type="text" class="form-control @error('name') is-invalid @enderror"
                                             name="name" placeholder="اسم المنتج" value="{{ old('name') }}"
@@ -117,7 +118,7 @@
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1"><i
-                                                    class="fa fa-heart text-info"></i></span>
+                                                    class="fa fa-heart"></i></span>
                                         </div>
                                         <select class="form-control selectpicker" name="type" required>
                                             <option value="وحدة">وحدة</option>

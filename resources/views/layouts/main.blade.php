@@ -35,7 +35,7 @@
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio4"
-                                                        type="radio" value="providers" checked>
+                                                        type="radio" value="providers">
                                                     <label class="custom-control-label"
                                                         for="customRadio4">الموردون</label>
                                                 </div>
@@ -51,7 +51,7 @@
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio6"
-                                                        type="radio" value="products">
+                                                        type="radio" value="products" checked>
                                                     <label class="custom-control-label"
                                                         for="customRadio6">الاصناف</label>
                                                 </div>

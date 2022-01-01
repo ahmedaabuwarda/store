@@ -26,18 +26,12 @@
                         data-toggle="tooltip" data-placement="top" title="تعديل"><i class="fa fa-pen"></i></a>
                 </td>
                 <td class="display-3 text-center">{{ $buy_bill->byan }}</td>
-                <td class="display-3 text-center">
-                    {{ $buy_bill->remaining_balance }}
-                    <span style="font-size: 16px; display: inline;">&#8362;</span>
+                <td class="display-3 text-center">&#8362;{{ $buy_bill->remaining_balance }}
                     @if ($buy_bill->remaining_balance > 0)
                         - دائن -
                     @elseif($buy_bill->remaining_balance < 0) - مدين - @endif
                 </td>
-                <td class="display-3 text-center">
-                    <span class="text-danger font-weight-bold" style="font-size: 20px; display: inline;">&#8722;</span>
-                    {{ $buy_bill->paid_balance }}
-                    <span style="font-size: 16px; display: inline;">&#8362;</span>
-                </td>
+                <td class="display-3 text-center">&#8362;{{ $buy_bill->paid_balance }}</td>
                 <td class="display-3 text-center">
                     @if ($buy_bill->provider_id > 0)
                         {{ $buy_bill->provider->name }} - مورد

@@ -18,18 +18,20 @@ use Spatie\Permission\Models\Permission;
 
 class HomeController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function index(Request $request)
     {
         $page = config('app.page');
-
         $date = date('Y-m-d H:i:s');
 
         $productsCount = DB::select('SELECT sum( box.counter ) AS dump,
-        ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = "2021-10-10" ) AS daily_profit,
+        ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = :date ) AS daily_profit,
+        ( SELECT sum( products.quantity ) FROM products WHERE products.name = "رصيد جوال") AS jawwal_balance,
         ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
         ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price,
         ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance <= 0) AS needFromPeople1,
@@ -62,6 +64,7 @@ class HomeController extends Controller
 
         }
     }
+
     public function search(Request $request)
     {
 
@@ -83,31 +86,27 @@ class HomeController extends Controller
         return view('website.search', compact('result', 'pages', 'target'));
 
     }
+
     public function box_store(Request $request)
     {
+        // dd($request->all());
         $balance = abs($request->balance);
         DB::beginTransaction();
         try {
-            DB::statement('UPDATE box SET box.remaining = CASE box.id
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
-                ELSE box.remaining
-                END,
-            box.counter = CASE box.id
-                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                ELSE box.counter
-                END
-            WHERE box.id IN(1);', [$balance]);
 
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$balance, 'دخل الصندوق', date('Y-m-d H:i:s')]);
+            DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
 
-            return response(['status' => 'success']);
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,?,?,?)', [$balance, true, 'دخل الصندوق', date('Y-m-d H:i:s')]);
+
             DB::commit();
+            return response(['status' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
             return response(['status' => 'error']);
         }
 
     }
+
     public function to_pdf(Request $request)
     {
         $from = date($request['from'] . ' H:i:s');
@@ -120,7 +119,9 @@ class HomeController extends Controller
         $time = date('H:i:s');
         $date = date('Y-m-d');
         $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل حركات الصندوق</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل حركات الصندوق</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -176,4 +177,5 @@ class HomeController extends Controller
         PDF::Output('all_box_movements_' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }
+
 }

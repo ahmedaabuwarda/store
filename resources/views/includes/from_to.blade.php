@@ -37,7 +37,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
                   </div>
-                  <input class="form-control datepicker @error('to') is-invalid @enderror" placeholder="الى" type="text" name="to" value="{{ date('Y-m-30') }}" required>
+                  <input class="form-control datepicker @error('to') is-invalid @enderror" placeholder="الى" type="text" name="to" value="{{ date('Y-m-d') }}" required>
                 </div>
                 @error('to')
                   <span class="text-danger">{{ $message }}</span>

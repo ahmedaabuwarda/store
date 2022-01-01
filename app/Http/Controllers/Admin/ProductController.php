@@ -47,9 +47,12 @@ class ProductController extends Controller
     public function jard_to_pdf(Request $request)
     {
         $id = $request->id;
-        $from = $request->from;
-        $to = $request->to;
+        $from = date($request->from.' H:i:s');
+        $to = date($request->to.' H:i:s');
+        dd($request->all());
+
         $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, products.name, products.type, products.status, products.original_price, products.original_quantity FROM sold_products INNER JOIN products ON sold_products.product_id = products.id WHERE sold_products.created_at >= :from AND sold_products.created_at <= :to AND products.id = :id ORDER BY sold_products.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
+        // dd($products);
 
         $i = 1;
         $total = 0;

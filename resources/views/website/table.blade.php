@@ -32,11 +32,10 @@
                         <span class="badge badge-pill badge-danger badge-lg">خلص</span>
                     @endif
                 </td>
-                <td class="display-3 text-center">{{ $product->original_price * $product->quantity }}&nbsp;&#8362;</td>
-                <td class="display-3 text-center">{{ $product->type }} - {{ $product->quantity }}</td>
-                <td class="display-3 text-center">{{ $product->type }} - {{ $product->original_quantity }}</td>
-                <td class="display-3 text-center">{{ $product->original_price }}&nbsp;&#8362;
-                </td>
+                <td class="display-3 text-center">&#8362;{{ $product->original_price * $product->quantity }}</td>
+                <td class="display-3 text-center">{{ $product->quantity }} - {{ $product->type }}</td>
+                <td class="display-3 text-center">{{ $product->original_quantity }} - {{ $product->type }}</td>
+                <td class="display-3 text-center">&#8362;{{ $product->original_price }}</td>
                 <td class="display-3 text-center">{{ $product->name }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>
