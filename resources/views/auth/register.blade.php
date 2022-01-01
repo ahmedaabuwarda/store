@@ -7,11 +7,11 @@
   @include('includes.css')
 </head>
 
-<body style="font-family: 'Cairo', sans-serif; background-color:#2F2A34;">
+<body style="font-family: 'Cairo', sans-serif; background-color:#222222;">
   <!-- Main content -->
   <div class="main-content">
     <!-- Header -->
-    <div class="header py-7 py-lg-8 pt-lg-9" style="background-color:#2F2A34;">
+    <div class="header py-7 py-lg-8 pt-lg-9" style="background-color:#222222;">
       <div class="container">
         <div class="header-body text-center mb-5">
           <div class="row justify-content-center">

@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\Controller;
+
+use Spatie\Permission\Models\Permission;
 
 class HomeController extends Controller
 {
@@ -47,6 +52,7 @@ class HomeController extends Controller
             if ($box == null) {
 
                 DB::insert('INSERT INTO box (remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
+                $box = DB::select('SELECT remaining, counter FROM box');
 
             }
 
@@ -79,7 +85,6 @@ class HomeController extends Controller
     }
     public function box_store(Request $request)
     {
-
         $balance = abs($request->balance);
         DB::beginTransaction();
         try {

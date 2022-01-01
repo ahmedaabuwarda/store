@@ -4,15 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Mohammed Store</title>
+    <title>Store | Home Page</title>
     @include('includes.css')
 </head>
 
-<body style="font-family: 'Cairo', sans-serif; background-color: #CCCBC3;">
+<body style="font-family: 'Cairo', sans-serif; background-color: #222222;">
     <!-- Main content -->
     <div class="main-content" id="panel">
         <!-- Topnav -->
-        <nav class="navbar navbar-top navbar-expand navbar-dark  border-bottom" style="background-color:#2F2A34;">
+        <nav class="navbar navbar-top navbar-expand navbar-dark  border-bottom" style="background-color:#222222;">
             <div class="container-fluid">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Search form -->
@@ -91,7 +91,7 @@
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-book text-danger"></i>
+                                                <i class="fa fa-book"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -106,7 +106,7 @@
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-book text-success"></i>
+                                                <i class="fa fa-book"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -121,7 +121,7 @@
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-shekel-sign text-danger"></i>
+                                                <i class="fa fa-shekel-sign"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -136,12 +136,27 @@
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-shekel-sign text-success"></i>
+                                                <i class="fa fa-shekel-sign"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <h4 class="mb-0 text-sm">Sell Bills | فواتير البيع</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="{{ URL('/sell_bills') }}"
+                                        class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-shekel-sign"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Daily Sells | مبيعات يومية</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -233,6 +248,21 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <h4 class="mb-0 text-sm">Customers | الزبائن</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <a href="{{ URL('/workers') }}"
+                                        class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-box text-dark"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Workers | الموظفون</h4>
                                                     </div>
                                                 </div>
                                             </div>

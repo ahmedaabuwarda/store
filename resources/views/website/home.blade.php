@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
     <!-- Header -->
-    <div class="header pb-6" style="background-color:#2F2A34;">
+    <div class="header pb-6" style="background-color:#222222;">
         <div class="container-fluid">
             <div class="header-body">
                 <div class="row align-items-center py-4">
@@ -123,6 +123,7 @@
                                             <option value="وحدة">وحدة</option>
                                             <option value="غرام">غرام</option>
                                             <option value="متر">متر</option>
+                                            <option value="شيكل">شيكل</option>
                                         </select>
                                     </div>
                                     @error('type')

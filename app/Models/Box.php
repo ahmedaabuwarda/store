@@ -9,4 +9,5 @@ class Box extends Model
 {
     use HasFactory;
     protected $table = 'box';
+    protected $fillable = ['remaining', 'counter'];
 }
