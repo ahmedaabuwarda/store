@@ -97,3 +97,7 @@ Route::post('/salary/to_pdf', [App\Http\Controllers\Admin\SalaryController::clas
 Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);
 Route::post('/discount/store', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'store']);
 Route::post('/discount/to_pdf', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'to_pdf']);
+
+// permission
+Route::get('/permission/create', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
+Route::get('/permission/update', [App\Http\Controllers\Admin\PermissionController::class, 'update']);

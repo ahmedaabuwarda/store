@@ -26,8 +26,10 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+
         $permissions = Permission::all();
-        if ($permissions == null) {
+        if ($permissions->isEmpty()) {
+            Permission::create(['name' => 'add_to_box']);
             Permission::create(['name' => 'add_buy_bills']);
             Permission::create(['name' => 'add_customers']);
             Permission::create(['name' => 'add_discounts']);
@@ -55,7 +57,7 @@ class HomeController extends Controller
 
         $box = DB::select('SELECT remaining, counter FROM box');
 
-        $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('id', 'DESC')->paginate($page);
+        $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('quantity', 'ASC')->paginate($page);
 
         if ($request->ajax()) {
 

@@ -9,7 +9,7 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
     <div class="card">
         <div class="table-responsive">
             <!-- statistics table -->
-            <table class="table tablee align-items-center table-flush table-hover">
+            <table class="table align-items-center table-flush table-hover">
                 <tbody>
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ $total_cost_price }}&nbsp;</td>
@@ -37,7 +37,7 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
     <div class="card">
         <div class="table-responsive">
             <!-- statistics table -->
-            <table class="table tablee align-items-center table-flush table-hover">
+            <table class="table align-items-center table-flush table-hover">
                 <tbody>
                     <tr>
                         <td class="display-3 text-center">({{ $box[3]->counter }}) - &#8362;{{ $box[3]->remaining }}</td>
@@ -47,18 +47,22 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
                         <td class="display-3 text-center">({{ $box[4]->counter }}) - &#8362;{{ $box[4]->remaining }}</td>
                         <td class="display-3 text-center">سند صرف</td>
                     </tr>
+                    @can('add_buy_bills')
                     <tr>
                         <td class="display-3 text-center">({{ $box[5]->counter }}) - &#8362;{{ $box[5]->remaining }}</td>
                         <td class="display-3 text-center"> فاتورة شراء</td>
                     </tr>
+                    @endcan
                     <tr>
                         <td class="display-3 text-center">({{ $box[6]->counter }}) - &#8362;{{ $box[6]->remaining }}</td>
                         <td class="display-3 text-center">فاتورة بيع</td>
                     </tr>
+                    @can('add_workers')
                     <tr>
                         <td class="display-3 text-center">({{ $box[7]->counter }}) - &#8362;{{ $box[7]->remaining }}</td>
                         <td class="display-3 text-center">اجمالي الرواتب</td>
                     </tr>
+                    @endcan
                 </tbody>
             </table>
         </div>
@@ -69,7 +73,7 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
     <div class="card">
         <div class="table-responsive">
             <!-- statistics table -->
-            <table class="table tablee align-items-center table-flush table-hover">
+            <table class="table align-items-center table-flush table-hover">
                 <tbody>
                     <tr>
                         <td class="display-3 text-center">({{ $box[0]->counter }}) - &#8362;{{ $box[0]->remaining }}</td>
@@ -79,10 +83,12 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
                         <td class="display-3 text-center">({{ $box[1]->counter }}) - &#8362;{{ $box[1]->remaining }}</td>
                         <td class="display-3 text-center">اجمالي المصاريف الكلي</td>
                     </tr>
+                    @can('add_products')
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ $box[2]->remaining }}</td>
                         <td class="display-3 text-center">المربح الكلي</td>
                     </tr>
+                    @endcan
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ $productsCount[0]->daily_profit }}</td>
                         <td class="display-3 text-center">المربح اليومي</td>

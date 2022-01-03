@@ -160,7 +160,7 @@
                   <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
-                      <label class="form-control-label">سعر التكلفة</label>
+                      <label class="form-control-label">سعر البيع</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-success"></i></span>
@@ -331,7 +331,7 @@
   <script>
   var i = 1;
   var total = {{ $sell_bill->total_balance }};
-  var profit = 0;
+  var profit = {{ $sell_bill->total_profit }};
   $(document).ready(function () {
     $('#updateButton').click(function () {
         if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {

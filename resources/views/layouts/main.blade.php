@@ -32,6 +32,7 @@
                                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false"></button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @can('add_providers')
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio4"
@@ -40,6 +41,7 @@
                                                         for="customRadio4">الموردون</label>
                                                 </div>
                                             </a>
+                                            @endcan
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio5"
@@ -87,6 +89,7 @@
                                 </div>
                                 <!-- List group -->
                                 <div class="list-group list-group-flush">
+                                    @can('add_sanadat_sarfs')
                                     <a href="{{ URL('/sanadat_sarfs') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -102,6 +105,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_sanadat_qapds')
                                     <a href="{{ URL('/sanadat_qapds') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -117,6 +122,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_buy_bills')
                                     <a href="{{ URL('/buy_bills') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -132,6 +139,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_sell_bills')
                                     <a href="{{ URL('/sell_bills') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -147,6 +156,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_sell_bills')
                                     <a href="{{ URL('/daily_sells') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -162,6 +173,7 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
                                 </div>
                             </div>
                         </li>
@@ -178,6 +190,7 @@
                                 </div>
                                 <!-- List group -->
                                 <div class="list-group list-group-flush">
+                                    @can('add_to_box')
                                     <a class="btn list-group-item list-group-item-action" data-toggle="modal"
                                         data-target="#add_box_modal">
                                         <div class="row align-items-center">
@@ -193,6 +206,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_customers')
                                     <a class="btn list-group-item list-group-item-action" data-toggle="modal"
                                         data-target="#show_box_modal">
                                         <div class="row align-items-center">
@@ -208,6 +223,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_discounts')
                                     <a href="{{ URL('/discounts') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -223,6 +240,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_providers')
                                     <a href="{{ URL('/providers') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -238,6 +257,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_customers')
                                     <a href="{{ URL('/customers') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -253,6 +274,8 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
+                                    @can('add_workers')
                                     <a href="{{ URL('/workers') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
@@ -268,6 +291,7 @@
                                             </div>
                                         </div>
                                     </a>
+                                    @endcan
                                 </div>
                             </div>
                         </li>

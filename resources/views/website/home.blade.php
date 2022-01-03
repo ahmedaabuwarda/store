@@ -34,9 +34,13 @@
                             <div class="col-xl-4 col-md-12 text-right">
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                <button class="btn btn-info from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="خيارات" data-fromto="0">خيارات</button>
+                                @if(Auth::user()->id == 1)
+                                <button class="btn btn-info multi_button" data-toggle="tooltip" data-placement="top" title="خيارات" data-movement="create_permission">خيارات</button>
+                                @endif
+                                @can('add_products')
                                 <a class="btn text-white btn-dark" data-toggle="modal"
                                     data-target="#create_product_modal"><i class="fa fa-plus"></i> صنف</a>
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -251,6 +255,8 @@
         </div>
     </div>
 
+    @include('includes.multi_modal')
+
     <!-- Modal::product to pdf -->
     @include('includes.from_to')
 
@@ -354,6 +360,12 @@
             $('#from_to_pdf_modal').modal('show');
             $('#from_to').val(from_to);
         });
+        @if(url()->current() == url('/home'))
+        $('.multi_button').click(function(e){
+            e.preventDefault();
+
+        });
+        @endif
         // create product to pdf form
         $('#from_to_pdf_form').submit(function(e) {
             e.preventDefault();

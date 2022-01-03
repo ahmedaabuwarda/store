@@ -18,7 +18,7 @@
     @else
         @php $i = 1; @endphp
         @foreach ($products as $product)
-            <tr>
+            <tr @if ($product->status == 0) class="table-danger" @endif>
                 <td class="disblay-3 text-center">
                     <button class="btn btn-sm btn-primary from_to_pdf_button" @if ($product->quantity == $product->original_quantity) disabled @endif
                         data-toggle="tooltip" data-placement="top" title="جرد" data-fromto="{{ $product->id }}"><i

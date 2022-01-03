@@ -168,9 +168,9 @@ class DailySellsController extends Controller
 
     public function edit($id)
     {
-        $sell_bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->where('id', $id)->first();
+        $sell_bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'total_profit', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->where('id', $id)->first();
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
-        return view('admin.sell_bill.edit', compact('sell_bill', 'products'));
+        return view('admin.daily_sells.edit', compact('sell_bill', 'products'));
     }
 
     public function update(Request $request, $id)
@@ -185,11 +185,19 @@ class DailySellsController extends Controller
                 $tblArray = explode(',', $request['tbl']);
                 for ($i = 0; $i < count($tblArray) / 5; $i++) {
                     $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-                    Product::where('id', $tblArray[$i * 5 + 0])->update([
-                        'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                        'sell_bill_id' => $id
-                    ]);
-                    
+                    if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
+                        Product::where('id', $tblArray[$i * 5 + 0])->update([
+                            'status' => false,
+                            'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                            'sell_bill_id' => $id
+                        ]);
+                    } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
+                        Product::where('id', $tblArray[$i * 5 + 0])->update([
+                            'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                            'sell_bill_id' => $id
+                        ]);
+                    }
+
                     $sold_product = new SoldProduct;
                     $sold_product->product_id = $tblArray[$i * 5 + 0];
                     $sold_product->quantity = $tblArray[$i * 5 + 1];
@@ -203,6 +211,19 @@ class DailySellsController extends Controller
                 }
             
                 $sell_bill = SellBill::where('id', $id)->first();
+
+                DB::statement('UPDATE box SET box.remaining = CASE box.id
+                    WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
+                    WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)+?
+                    WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)+?
+                    ELSE box.remaining
+                    END,
+                box.counter = CASE box.id
+                    WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                    ELSE box.counter
+                    END
+                WHERE box.id IN(1, 3, 7);', [$request['paid_balance'] - $sell_bill->paid_balance, $total_profit, (abs($request['remaining_balance']) + abs($request['paid_balance'])) - $sell_bill->total_balance]);
+
                 SellBill::where('id', $id)->update(
                     [
                         'paid_balance' => $request['paid_balance'],
