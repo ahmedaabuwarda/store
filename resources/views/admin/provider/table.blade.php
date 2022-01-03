@@ -29,9 +29,7 @@
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $provider->notes }}</td>
-                <td class="display-3 text-center">
-                    {{ $provider->balance }}
-                    <span style="font-size: 16px; display: inline;">&#8362;</span>
+                <td class="display-3 text-center">&#8362;{{ $provider->balance }}
                     @if ($provider->balance < 0)
                         - مدين -
                     @elseif($provider->balance > 0)

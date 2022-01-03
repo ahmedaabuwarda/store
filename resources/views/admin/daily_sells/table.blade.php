@@ -23,7 +23,7 @@
                 <td class="display-3 text-center">
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
                         title="عرض" data-dataid="{{ $sell_bill->id }}" data-movement="show_sell_bill"><i class="fa fa-eye"></i></button>
-                    <a href="{{ URL('/sell_bill/edit/' . $sell_bill->id) }}" class="btn btn-sm btn-info"
+                    <a href="{{ URL('/daily_sell/edit/' . $sell_bill->id) }}" class="btn btn-sm btn-info"
                         data-toggle="tooltip" data-placement="top" title="تعديل"><i class="fa fa-pen"></i></a>
                 </td>
                 <td class="display-3 text-center">{{ $sell_bill->byan }}</td>

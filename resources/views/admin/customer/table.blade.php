@@ -18,8 +18,7 @@
         @foreach ($customers as $customer)
             <tr>
                 <td class="display-3 text-center">
-                    <button class="btn btn-sm btn-primary from_to_pdf_button" data-toggle="tooltip" data-placement="top"
-                        title="كشف حساب" data-fromto="{{ $customer->id }}"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="كشف حساب" data-fromto="{{ $customer->id }}"><i class="fa fa-eye"></i></button>
                 </td>
                 <td class="text-center">
                     @if ($customer->status)
@@ -29,8 +28,7 @@
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $customer->notes }}</td>
-                <td class="display-3 text-center">
-                    {{ $customer->balance }} &#8362;
+                <td class="display-3 text-center">&#8362;{{ $customer->balance }}
                     @if ($customer->balance > 0)
                         { دائن }
                     @elseif($customer->balance < 0) { مدين } @endif

@@ -27,15 +27,16 @@
                             <div class="col">
                                 <h3 class="mb-0">الاصناف</h3>
                             </div>
-                            <div class="col-xl-8 col-md-9 text-center">
+                            <div class="col-xl-7 col-md-9 text-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
                                     placeholder="...ابحث عن صنف">
                             </div>
-                            <div class="col-xl-3 col-md-12 text-right">
+                            <div class="col-xl-4 col-md-12 text-right">
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
+                                <button class="btn btn-info from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="خيارات" data-fromto="0">خيارات</button>
                                 <a class="btn text-white btn-dark" data-toggle="modal"
-                                    data-target="#create_product_modal"><i class="fa fa-plus"></i> اضافة صنف</a>
+                                    data-target="#create_product_modal"><i class="fa fa-plus"></i> صنف</a>
                             </div>
                         </div>
                     </div>

@@ -136,6 +136,7 @@ class CustomerController extends Controller
         $from = $request->from;
         $to = $request->to;
         $id = $request->id;
+        $company = config('app.company');
 
         $customer = DB::select('SELECT name, balance FROM customers WHERE id = :id', ['id' => $id]);
         $customer_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.byan FROM customers, sanadat_sarfs WHERE customers.id = sanadat_sarfs.customer_id AND customers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);

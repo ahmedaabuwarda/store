@@ -9,6 +9,7 @@ class SoldProduct extends Model
 {
     use HasFactory;
     protected $table = 'sold_products';
+    
     public function sell_bill() {
         return $this->belongsTo('App\Models\SellBill', 'sell_bill_id', 'id');
     }

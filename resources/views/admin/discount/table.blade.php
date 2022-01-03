@@ -17,11 +17,7 @@
         @foreach ($discounts as $discount)
             <tr>
                 <td class="display-3 text-center">{{ $discount->notes }}</td>
-                <td class="display-3 text-center">
-                    <span class="text-danger font-weight-bold" style="font-size: 20px; display: inline;">&#8722;</span>
-                    {{ $discount->balance }}
-                    <span style="font-size: 16px; display: inline;">&#8362;</span>
-                </td>
+                <td class="display-3 text-center">&#8362;{{ $discount->balance }}</td>
                 <td class="display-3 text-center">{{ $discount->done_by }}</td>
                 <td class="display-3 text-center">{{ $discount->date_created }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>

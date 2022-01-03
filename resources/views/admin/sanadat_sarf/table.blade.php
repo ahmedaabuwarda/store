@@ -24,10 +24,7 @@
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->byan }}</td>
-                <td class="display-3 text-center">
-                    {{ $sanadat_sarf->balance }}
-                    <span style="font-size: 16px; display: inline;">&#8362;</span>
-                </td>
+                <td class="display-3 text-center">&#8362;{{ $sanadat_sarf->balance }}</td>
                 <td class="display-3 text-center">
                     @if ($sanadat_sarf->worker_id > 0)
                         {{ $sanadat_sarf->user->name }} - موظف

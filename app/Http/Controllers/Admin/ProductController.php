@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -44,15 +46,14 @@ class ProductController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+
     public function jard_to_pdf(Request $request)
     {
         $id = $request->id;
-        $from = date($request->from.' H:i:s');
-        $to = date($request->to.' H:i:s');
-        dd($request->all());
+        $from = date($request->from.' 00:00:00');
+        $to = date($request->to.' 23:59:59');
 
-        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, products.name, products.type, products.status, products.original_price, products.original_quantity FROM sold_products INNER JOIN products ON sold_products.product_id = products.id WHERE sold_products.created_at >= :from AND sold_products.created_at <= :to AND products.id = :id ORDER BY sold_products.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
-        // dd($products);
+        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, products.name, products.type, products.status, products.original_price, products.original_quantity FROM sold_products INNER JOIN products ON sold_products.product_id = products.id WHERE sold_products.created_at >= ? AND sold_products.created_at <= ? AND products.id = ? ORDER BY sold_products.id DESC', [$from, $to, $id]);
 
         $i = 1;
         $total = 0;
@@ -156,6 +157,7 @@ class ProductController extends Controller
         PDF::Output('all_products-' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request->from;

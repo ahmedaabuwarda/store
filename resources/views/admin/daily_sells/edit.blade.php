@@ -36,7 +36,7 @@
             <!-- Card body -->
             <div class="card-body bg-secondary">
 
-              <form action="{{ URL('/sell_bill/update/' . $sell_bill->id) }}" method="POST">
+              <form action="{{ URL('/daily_sell/update/' . $sell_bill->id) }}" method="POST">
                 @csrf
                 <div class="row">
                   <div class="col-xl-6 col-md-12">

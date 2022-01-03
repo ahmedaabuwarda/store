@@ -24,9 +24,7 @@
       @endif
     </td>
 	<td class="display-3 text-center">{{ $worker->notes }}</td>
-	<td class="display-3 text-center">
-    	{{ $worker->balance }}
-    	<i class="fa fa-shekel-sign ml-1"></i>
+	<td class="display-3 text-center">&#8362;{{ $worker->balance }}
 		@if($worker->balance < 0)
 			- مدين - 
 		@elseif($worker->balance > 0)

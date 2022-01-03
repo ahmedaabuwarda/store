@@ -14,17 +14,15 @@
 	@foreach($salaries as $salary)
 	<tr>	
 		<td class="display-3 text-center">{{ $salary->notes }}</td>
-		<td class="display-3 text-center">
-			{{ $salary->net_balance }}<i class="fas fa-shekel-sign ml-1"></i>
+		<td class="display-3 text-center">&#8362;{{ $salary->net_balance }}
 			@if($salary->net_balance < 0)
 			- مدين -
 			@elseif($salary->net_balance > 0)
 			- دائن -
 			@endif
 		</td>
-		<td class="display-3 text-center">{{ $salary->balance }}<i class="fas fa-shekel-sign ml-1"></i></td>
-		<td class="display-3 text-center">
-			{{ $salary->remaining_balance }}<i class="fas fa-shekel-sign ml-1"></i>
+		<td class="display-3 text-center">&#8362;{{ $salary->balance }}</td>
+		<td class="display-3 text-center">&#8362;{{ $salary->remaining_balance }}
 			@if($salary->remaining_balance < 0)
 			- مدين -
 			@elseif($salary->remaining_balance > 0)

@@ -22,11 +22,11 @@
                             <div class="col">
                                 <h3 class="mb-0">المصاريف</h3>
                             </div>
-                            <div class="col-xl-7 col-md-12 text-center">
+                            <div class="col-xl-8 col-md-12 text-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
                                     placeholder="...ابحث عن خصم او مصروف">
                             </div>
-                            <div class="col-xl-4 col-md-12 text-right">
+                            <div class="col-xl-3 col-md-12 text-right">
                                 <button class="btn btn-danger" data-toggle="modal" data-target="#from_to_pdf_modal"><i
                                         class="fas fa-file-pdf fa-lg mr-1"></i></button>
                                 <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_discount_modal">

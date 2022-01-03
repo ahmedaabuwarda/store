@@ -22,14 +22,13 @@
             <div class="col">
               <h3 class="mb-0">الموظفون</h3>
             </div>
-            <div class="col-xl-6 col-md-12 text-right">
+            <div class="col-xl-7 text-right">
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن موظف">
             </div>
-            <div class="col-xl-5 col-md-12 text-right">
-              <a href="{{ URL('/worker/to_excel') }}" class="btn btn-success disabled" data-toggle="tooltip" data-placement="top" title="تصدير excel"><i class="fas fa-file-excel fa-lg mr-1"></i></a>
+            <div class="col-xl-3 text-right">
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="-1"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn text-white" data-toggle="modal" data-target="#show_salaries_modal" style="background-color: #297F87;"><i class="fa fa-chart-bar"></i> كشوفات الرواتب</a>
-              <a class="btn btn-dark  text-white" data-toggle="modal" data-target="#create_worker_modal"><i class="fa fa-plus"></i> اضافة موظف</a>
+              <a class="btn text-white" data-toggle="modal" data-target="#show_salaries_modal" style="background-color: #297F87;"><i class="fa fa-chart-bar"></i> الرواتب</a>
+              <a class="btn btn-dark  text-white" data-toggle="modal" data-target="#create_worker_modal"><i class="fa fa-plus"></i> موظف</a>
             </div>
           </div>
         </div>

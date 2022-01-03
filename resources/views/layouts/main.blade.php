@@ -8,7 +8,7 @@
     @include('includes.css')
 </head>
 
-<body style="font-family: 'Cairo', sans-serif; background-color: #222222;">
+<body style="font-family: 'Cairo', sans-serif; background-color: #303030;">
     <!-- Main content -->
     <div class="main-content" id="panel">
         <!-- Topnav -->
@@ -147,7 +147,7 @@
                                             </div>
                                         </div>
                                     </a>
-                                    <a href="{{ URL('/sell_bills') }}"
+                                    <a href="{{ URL('/daily_sells') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">

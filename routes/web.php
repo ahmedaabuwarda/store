@@ -75,6 +75,13 @@ Route::post('/sell_bill/update/{id}', [App\Http\Controllers\Admin\SellBillContro
 Route::post('/sell_bill/delete_product/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'delete_product']);
 Route::post('/sell_bill/to_pdf', [App\Http\Controllers\Admin\SellBillController::class, 'to_pdf']);
 
+Route::get('/daily_sells', [App\Http\Controllers\Admin\DailySellsController::class, 'index']);
+Route::get('/daily_sell/create', [App\Http\Controllers\Admin\DailySellsController::class, 'create']);
+Route::post('/daily_sell/store', [App\Http\Controllers\Admin\DailySellsController::class, 'store']);
+Route::get('/daily_sell/show', [App\Http\Controllers\Admin\DailySellsController::class, 'show']);
+Route::get('/daily_sell/edit/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'edit']);
+Route::post('/daily_sell/update/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'update']);
+
 // workers
 Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);
 Route::post('/worker/store', [App\Http\Controllers\Admin\WorkerController::class, 'store']);

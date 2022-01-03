@@ -26,6 +26,19 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        $permissions = Permission::all();
+        if ($permissions == null) {
+            Permission::create(['name' => 'add_buy_bills']);
+            Permission::create(['name' => 'add_customers']);
+            Permission::create(['name' => 'add_discounts']);
+            Permission::create(['name' => 'add_products']);
+            Permission::create(['name' => 'add_providers']);
+            Permission::create(['name' => 'add_salaries']);
+            Permission::create(['name' => 'add_sanadat_qapds']);
+            Permission::create(['name' => 'add_sanadat_sarfs']);
+            Permission::create(['name' => 'add_sell_bills']);
+            Permission::create(['name' => 'add_workers']);
+        }
         $page = config('app.page');
         $date = date('Y-m-d H:i:s');
 

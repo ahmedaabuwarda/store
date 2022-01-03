@@ -12,14 +12,13 @@ use App\Models\Provider;
 use App\Models\SellBill;
 use App\Models\SoldProduct;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
-class SellBillController extends Controller
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class DailySellsController extends Controller
 {
 
     public function __construct()
@@ -31,11 +30,7 @@ class SellBillController extends Controller
     {
 
         $page = config('app.page');
-        if (URL::current() == url('/daily_sells')) {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->where('customer_id', 1)->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
-        } else {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
-        }
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->where('customer_id', 1)->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
 
         $pages = ceil(SellBill::count() / $page);
         $box = DB::select('SELECT remaining from box where id IN (3,7);');
@@ -43,17 +38,16 @@ class SellBillController extends Controller
             $table = view('admin.sell_bill.table', compact('sell_bills'))->render();
             return response()->json(['status' => 'success' ,'table' => $table]);
         } else {
-            return view('admin.sell_bill.index', compact('sell_bills', 'pages', 'box'));
+            return view('admin.daily_sells.index', compact('sell_bills', 'pages', 'box'));
         }
+
     }
 
     public function create()
     {
-        $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
-        $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
-        $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
+        $customers = DB::select('SELECT id, name FROM customers WHERE id = 1 ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
-        $modal = view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'))->render();
+        $modal = view('admin.daily_sells.create', compact('customers', 'products'))->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
     }
 
@@ -100,8 +94,8 @@ class SellBillController extends Controller
             }
 
             $sell_bill->paid_balance = $paid_balance;
-            $sell_bill->remaining_balance = $remaining_balance;
-            $sell_bill->discount = $request['discount'];
+            $sell_bill->remaining_balance = 0;
+            $sell_bill->discount = 0;
             $sell_bill->total_balance = abs($remaining_balance) + $paid_balance;
             if ($request['byan'] == null) {
                 $sell_bill->byan = 'لا يوجد';
@@ -184,7 +178,7 @@ class SellBillController extends Controller
         DB::beginTransaction();
         try {
             if ($request['tbl'] == null) {
-                return redirect('/sell_bills');
+                return redirect('/daily_sells');
             } else {
 
                 $total_profit = 0;
@@ -232,154 +226,11 @@ class SellBillController extends Controller
             }
 
             DB::commit();
-            return redirect('/sell_bills');
+            return redirect('/daily_sells');
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());
+            return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
-    }
-
-    public function delete_product($id)
-    {
-        DB::beginTransaction();
-        try {
-            $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
-
-            SellBill::where('id', $sold_product->sell_bill_id)->update([
-                'total_balance' => $sold_product->sell_bill->total_balance - $sold_product->total_price
-            ]);
-
-            $product = Product::where('id', $sold_product->product_id)->first();
-
-            Product::where('id', $sold_product->product_id)->update([
-                'quantity' => $product->quantity + $sold_product->quantity
-            ]);
-
-            $sold_product->delete();
-
-            DB::commit();
-            return redirect('/sell_bill/edit/' . $sold_product->sell_bill_id);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());
-        }
-    }
-
-    public function to_pdf(Request $request)
-    {
-        $from = $request['from'];
-        $to = $request['to'];
-        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
-
-        $i = 1;
-        $total_rem = 0;
-        $total_profit = 0;
-        $total_paid = 0;
-        $time = date('H:i:s');
-        $date = date('Y-m-d');
-        $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل فواتير البيع</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
-        $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
-        <thead>
-          <tr>
-            <th width="5%" bgcolor="#eee">#</th>
-            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
-            <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="20%" bgcolor="#eee">المستهلك</th>
-            <th width="10%" bgcolor="#eee">المبلغ المدفوع</th>
-            <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="10%" bgcolor="#eee">المربح</th>
-            <th width="15%" bgcolor="#eee">البيان</th>
-          </tr>
-        </thead>
-        <tbody>';
-        foreach ($sell_bills as $sell_bill) {
-            $target = '';
-            $balance = '';
-            if ($sell_bill->provider_id > 0) {
-                $target = $sell_bill->provider->name . ' - مورد';
-            } elseif ($sell_bill->customer_id > 0) {
-                $target = $sell_bill->customer->name . ' - زبون';
-            } elseif ($sell_bill->worker_id > 0) {
-                $target = $sell_bill->worker->name . ' - موظف';
-            }
-            if ($sell_bill->remaining_balance > 0) {
-                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
-            } elseif ($sell_bill->remaining_balance < 0) {
-                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
-            } else {
-                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span>';
-            }
-            $table_content .= '<tr>
-              <td width="5%">' . $i . '</td>
-              <td width="15%">' . $sell_bill->number . '</td>
-              <td width="15%">' . $sell_bill->date_created . '</td>
-              <td width="20%">' . $target . '</td>
-              <td width="10%">' . $sell_bill->paid_balance . '<span>&#8362;&#160;</span></td>
-              <td width="10%">' . $balance . '</td>
-              <td width="10%">' . $sell_bill->total_profit . '<span>&#8362;&#160;</span></td>
-              <td width="15%">' . $sell_bill->byan . '</td>
-            </tr>';
-            $total_rem += $sell_bill->remaining_balance;
-            $total_profit += $sell_bill->total_profit;
-            $total_paid += $sell_bill->paid_balance;
-            $i++;
-        }
-        if ($total_rem < 0) {
-            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - مدين -';
-        } elseif ($total_rem > 0) {
-            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - دائن -';
-        } else {
-            $total_rem = $total_rem . '<span>&#8362;&#160;</span>';
-        }
-        $table_content .= '</tbody></table>';
-        PDF::SetTitle('كل فواتير البيع');
-        PDF::SetAuthor('اياد الهسي');
-        // set some language dependent data:
-        $lg = array();
-        $lg['a_meta_charset'] = 'UTF-8';
-        $lg['a_meta_dir'] = 'rtl';
-        $lg['a_meta_language'] = 'ar';
-        $lg['w_page'] = 'page';
-        // set some language-dependent strings (optional)
-        PDF::setLanguageArray($lg);
-        // set font
-        PDF::SetFont('aealarabiya', '', 11);
-        // set margins
-        PDF::SetMargins(PDF_MARGIN_LEFT, /*PDF_MARGIN_TOP,*/ PDF_MARGIN_RIGHT);
-        PDF::SetHeaderMargin(PDF_MARGIN_HEADER);
-        PDF::SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        PDF::AddPage();
-        PDF::writeHTML($content);
-        PDF::SetFont('freeserif', '', 11);
-        PDF::writeHTML($table_content);
-
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
-        <tbody>
-        <tr>
-            <td width="10%">#</td>
-            <td width="60%">المجموع</td>
-        </tr>
-        <tr>
-            <td width="10%">#</td>
-            <td width="30%">المبلغ المتبقي</td>
-            <td width="30%" color="#fff" bgcolor="#003B36">' . $total_rem . '</td>
-        </tr>
-        <tr>
-            <td width="10%">#</td>
-            <td width="30%">المبلغ المدفوع</td>
-            <td width="30%" color="#fff" bgcolor="#DB2E39">' . $total_paid . '<span>&#8362;&#160;</span></td>
-        </tr>
-        <tr>
-            <td width="10%">#</td>
-            <td width="30%">المربح</td>
-            <td width="30%" color="#000" bgcolor="#FFCA2C">' . $total_profit . '<span>&#8362;&#160;</span></td>
-        </tr>
-        </tbody></table>');
-
-        PDF::Output('all_sell_bills_' . date('ymdhis') . '.pdf', 'I');
-        return response()->json(['status' => 'success']);
     }
 
 }
