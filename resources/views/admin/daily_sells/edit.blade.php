@@ -36,7 +36,7 @@
             <!-- Card body -->
             <div class="card-body bg-secondary">
 
-              <form action="{{ URL('/daily_sell/update/' . $sell_bill->id) }}" method="POST">
+              <form action="{{ URL('/daily_sell/update/' . $sell_bill->id) }}" method="POST" id="daily_sell_update_form">
                 @csrf
                 <div class="row">
                   <div class="col-xl-6 col-md-12">
@@ -108,9 +108,8 @@
                   <table class="table table-hover mb-2" id="productTableTotal">
                     <thead>
                       <th class="text-center">الاجمالي</th>
-                      <th class="text-center" id="total">{{ $sell_bill->total_balance }}<i class='fa fa-shekel-sign ml-1'></i></th>
-                      <th class="text-center" id="profit"><span style="font-size: 16px; display: inline;">&#8362;</span>
-                      </th>
+                      <th class="text-center" id="total">{{ $sell_bill->total_balance }}</th>
+                      <th class="text-center" id="profit">{{ $sell_bill->total_profit }}</th>
                     </thead>
                   </table>
 
@@ -306,8 +305,7 @@
                   </div>
 
                   <div class="m-auto">
-                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>تحديث</button>
-                    <a href="{{ URL('/sell_bills') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+                    <a href="{{ URL('/daily_sells') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
                   </div>
 
                 </div>
@@ -357,6 +355,9 @@
           $("#price").val("");
           i = i + 1;
         }
+        setTimeout(function() { 
+          $( "#daily_sell_update_form" ).submit();
+        }, 1000);
     });
     $('#paid_balance').keyup(function () {
       $('#remaining_balance').val($('#paid_balance').val() - total);

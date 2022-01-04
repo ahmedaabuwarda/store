@@ -128,6 +128,7 @@
                                         <select class="form-control selectpicker" name="type" required>
                                             <option value="وحدة">وحدة</option>
                                             <option value="غرام">غرام</option>
+                                            <option value="ملم">ملم</option>
                                             <option value="متر">متر</option>
                                             <option value="شيكل">شيكل</option>
                                         </select>

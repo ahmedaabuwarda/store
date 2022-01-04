@@ -23,8 +23,10 @@
                 <td class="display-3 text-center">
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
                         title="عرض" data-dataid="{{ $sell_bill->id }}" data-movement="show_sell_bill"><i class="fa fa-eye"></i></button>
+                    @if(date('Y-m-d') == $sell_bill->date_created)
                     <a href="{{ URL('/daily_sell/edit/' . $sell_bill->id) }}" class="btn btn-sm btn-info"
                         data-toggle="tooltip" data-placement="top" title="تعديل"><i class="fa fa-pen"></i></a>
+                    @endif
                 </td>
                 <td class="display-3 text-center">{{ $sell_bill->byan }}</td>
                 <td class="display-3 text-center">&#8362;{{ $sell_bill->total_profit }}</td>

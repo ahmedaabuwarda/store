@@ -35,7 +35,7 @@ class DailySellsController extends Controller
         $pages = ceil(SellBill::count() / $page);
         $box = DB::select('SELECT remaining from box where id IN (3,7);');
         if ($request->ajax()) {
-            $table = view('admin.sell_bill.table', compact('sell_bills'))->render();
+            $table = view('admin.daily_sells.table', compact('sell_bills'))->render();
             return response()->json(['status' => 'success' ,'table' => $table]);
         } else {
             return view('admin.daily_sells.index', compact('sell_bills', 'pages', 'box'));
@@ -209,6 +209,8 @@ class DailySellsController extends Controller
                     $sold_product->save();
 
                 }
+                // DB::rollBack();
+                // dd($total_profit);
             
                 $sell_bill = SellBill::where('id', $id)->first();
 
@@ -247,7 +249,7 @@ class DailySellsController extends Controller
             }
 
             DB::commit();
-            return redirect('/daily_sells');
+            return redirect('/daily_sell/edit/'.$id);
         } catch (Exception $e) {
             DB::rollBack();
             return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
