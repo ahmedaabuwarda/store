@@ -10,6 +10,9 @@ git commit -m "d"
 // add new remote for git
 git remote add origin https://github.com/user/repo.git
 
+// delete remote origin
+git remote remove origin
+
 // push changes to main github
 git push -u origin main
 
