@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Box extends Model
 {
+    
     use HasFactory;
+
     protected $table = 'box';
     protected $fillable = ['remaining', 'counter', 'created_at', 'updated_at'];
+    
 }

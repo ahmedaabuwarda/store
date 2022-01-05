@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use PDF;
 use Exception;
+
 // use App\Models\Worker;
 use App\Models\User;
 use App\Models\BuyBill;
@@ -13,16 +14,19 @@ use App\Models\Provider;
 use App\Models\BuyedProduct;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class BuyBillController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
         $page = config('app.page');
@@ -32,6 +36,7 @@ class BuyBillController extends Controller
 
         return view('admin.buy_bill.index', compact('buy_bills', 'pages', 'box'));
     }
+
     public function create()
     {
         $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
@@ -40,6 +45,7 @@ class BuyBillController extends Controller
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
         return view('admin.buy_bill.create', compact('providers', 'customers', 'workers', 'products'));
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -131,6 +137,7 @@ class BuyBillController extends Controller
             return redirect('/buy_bills')->with('error', 'Error: ' . $e->getMessage());
         }
     }
+
     public function show(Request $request)
     {
         $id = $request['id'];
@@ -142,12 +149,14 @@ class BuyBillController extends Controller
             return response(['status' => 'error']);
         }
     }
+
     public function edit($id)
     {
         $buy_bill = BuyBill::select('id','number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'original_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('buyed_product:id,product_id,quantity,buy_price,total_price,buy_bill_id')->where('id', $id)->first();
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
         return view('admin.buy_bill.edit', compact('buy_bill', 'products'));
     }
+
     public function update(Request $request, $id)
     {
         if($request['tbl'] == null) {
@@ -211,6 +220,7 @@ class BuyBillController extends Controller
             }
         }
     }
+    
     public function delete_product($id)
     {
         DB::beginTransaction();
@@ -237,6 +247,7 @@ class BuyBillController extends Controller
             return redirect('/buy_bills')->with('error', 'Error: ' . $e->getMessage());
         }
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request['from'];
@@ -339,4 +350,5 @@ class BuyBillController extends Controller
         PDF::Output('all_buy_bills_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
+
 }

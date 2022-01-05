@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuyBill extends Model
 {
+
     use HasFactory;
 
     protected $table = 'buy_bills';
@@ -28,4 +29,5 @@ class BuyBill extends Model
     {
         return $this->hasMany('App\Models\BuyedProduct');
     }
+
 }

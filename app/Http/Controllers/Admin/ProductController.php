@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use PDF;
 use Exception;
+
 use App\Models\Product;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -62,7 +65,9 @@ class ProductController extends Controller
         $time = date('H:i:s');
         $date = date('Y-m-d');
         $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$compamy.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -170,7 +175,9 @@ class ProductController extends Controller
         $time = date('H:i:s');
         $date = date('Y-m-d');
         $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>

@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Worker;
-use DB;
 use PDF;
+use Exception;
+
+use App\Models\Worker;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class WorkerController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function index(Request $request)
     {
         $page = config('app.page');
@@ -35,6 +43,7 @@ class WorkerController extends Controller
             return view('admin.worker.index', compact('workers', 'salaries', 'pages'));
         }
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -56,14 +65,17 @@ class WorkerController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request['from'];
         $to = $request['to'];
         $workers = DB::select('SELECT name, balance, notes, status FROM workers WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
-        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف كل الموظفين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل الموظفين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -133,6 +145,7 @@ class WorkerController extends Controller
         PDF::Output('all_workers_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
+    
     public function kashf_to_pdf(Request $request)
     {
         $from = $request->from;
@@ -148,8 +161,10 @@ class WorkerController extends Controller
 
         $worker_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM workers, sell_bills WHERE workers.id = sell_bills.worker_id AND workers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = \Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">شركة اياد الهسي للتجارة العامة</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$worker[0]->name.' - موظف</p></br>';
+        $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$worker[0]->name.' - موظف</p></br>';
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -326,7 +341,7 @@ class WorkerController extends Controller
 
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">الرصيد</td><td width="20%">'.$balance.'</td></tr></tbody></table>');
 
-        PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','I');
+        PDF::Output('worker_kashf_hisab_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
 }

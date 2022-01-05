@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+
 use App\Models\User;
 use App\Models\Discount;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DiscountStoreRequest;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-
-use App\Http\Requests\DiscountStoreRequest;
 
 class DiscountAndExpensesController extends Controller
 {
+    
     public function __construct()
     {
         $this->middleware('auth');

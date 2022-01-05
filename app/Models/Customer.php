@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasFactory;
+
     protected $table = 'customers';
-    protected $fillable = ['name', 'balance'];
+    protected $fillable = ['name', 'balance', 'status', 'notes', 'created_at', 'updated_at'];
+
     public function sanadat_sarf() {
         return $this->hasMany('App\Models\Sanadat_Sarf');
     }
@@ -22,4 +24,5 @@ class Customer extends Model
     public function sell_bill() {
         return $this->hasMany('App\Models\SellBill');
     }
+
 }

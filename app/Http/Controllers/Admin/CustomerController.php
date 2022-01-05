@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+
 use App\Models\Customer;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
@@ -51,6 +54,7 @@ class CustomerController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+    
     public function to_pdf(Request $request)
     {
         $from = $request->from;

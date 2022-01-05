@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+use Exception;
+
 use App\Models\Provider;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ProviderController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function index(Request $request)
     {
         $page = config('app.page');
@@ -28,6 +34,7 @@ class ProviderController extends Controller
             return view('admin.provider.index', compact('providers', 'pages'));
         }
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -49,6 +56,7 @@ class ProviderController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request->from;
@@ -56,7 +64,9 @@ class ProviderController extends Controller
         $providers = DB::select('SELECT name, balance, notes, status FROM providers WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل الموردين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل الموردين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -126,6 +136,7 @@ class ProviderController extends Controller
         PDF::Output('all_providers_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
+
     public function kashf_to_pdf(Request $request)
     {
         $from = $request->from;
@@ -142,7 +153,9 @@ class ProviderController extends Controller
         $provider_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM providers, sell_bills WHERE providers.id = sell_bills.provider_id AND providers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - مورد</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - مورد</p></br>';
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -322,4 +335,5 @@ class ProviderController extends Controller
         PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
+
 }

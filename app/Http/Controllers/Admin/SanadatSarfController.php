@@ -3,22 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+use Exception;
+
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\Sanadat_Sarf;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SanadatSarfController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     public function index(Request $request)
     {
         $page = config('app.page');
@@ -42,6 +48,7 @@ class SanadatSarfController extends Controller
 
         }
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
@@ -109,11 +116,12 @@ class SanadatSarfController extends Controller
 
             DB::commit();
             return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error']);
         }
     }
+
     public function delete(Request $request)
     {
         DB::beginTransaction();
@@ -173,6 +181,7 @@ class SanadatSarfController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
+
     public function to_pdf(Request $request)
     {
         $from = $request['from'];
@@ -180,7 +189,9 @@ class SanadatSarfController extends Controller
         $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل سندات الصرف</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل سندات الصرف</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -239,4 +250,5 @@ class SanadatSarfController extends Controller
         PDF::Output('all_sanadat_sarfs_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
+
 }

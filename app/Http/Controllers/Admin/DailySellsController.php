@@ -12,11 +12,11 @@ use App\Models\Provider;
 use App\Models\SellBill;
 use App\Models\SoldProduct;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class DailySellsController extends Controller
 {

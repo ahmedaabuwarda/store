@@ -9,10 +9,10 @@ use App\Models\Customer;
 use App\Models\Provider;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
-use App\Http\Controllers\Controller;
 
 use Spatie\Permission\Models\Permission;
 
@@ -104,7 +104,7 @@ class HomeController extends Controller
 
     public function box_store(Request $request)
     {
-        // dd($request->all());
+
         $balance = abs($request->balance);
         DB::beginTransaction();
         try {

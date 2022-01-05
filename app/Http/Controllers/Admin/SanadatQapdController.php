@@ -3,17 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use PDF;
+use Exception;
+
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\Sanadat_Qapd;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class SanadatQapdController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -117,11 +122,12 @@ class SanadatQapdController extends Controller
 
             DB::commit();
             return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error' . $e->getMessage()]);
         }
     }
+
     public function delete(Request $request)
     {
         DB::beginTransaction();
@@ -179,7 +185,7 @@ class SanadatQapdController extends Controller
             $sadat_qapd->delete();
             DB::commit();
             return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error']);
         }
@@ -196,7 +202,9 @@ class SanadatQapdController extends Controller
         $time = date('H:i:s');
         $date = date('Y-m-d');
         $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">محلات النور - ابووردة لقطع غيار الدراجات النارية</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -256,4 +264,5 @@ class SanadatQapdController extends Controller
         PDF::Output('all_sanadat_qapd_' . date('ymdhis') . '.pdf', 'I');
         return response()->json(['status' => 'success']);
     }
+
 }
