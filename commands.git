@@ -1,0 +1,23 @@
+// initialize git
+git init
+
+// add all the files
+git add .
+
+// add commit
+git commit -m "d"
+
+// add new remote for git
+git remote add origin https://github.com/user/repo.git
+
+// push changes to main github
+git push -u origin main
+
+// show remote for heroku
+git remote show heroku
+
+// change heroku remote repo
+heroku git:remote -a <name>
+
+// push changes to heroku git
+git push heroku main
