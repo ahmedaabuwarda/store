@@ -16,6 +16,9 @@ git remote remove origin
 // push changes to main github
 git push -u origin main
 
+// get changes from main githup
+git pull origin main
+
 // show remote for heroku
 git remote show heroku
 
