@@ -4,6 +4,7 @@ $total_products_count = $productsCount[0]->total_products_count;
 $needFromPeople = $productsCount[0]->needFromPeople1 + $productsCount[0]->needFromPeople2;
 $peopleNeedFromMe = $productsCount[0]->peopleNeedFromMe1 + $productsCount[0]->peopleNeedFromMe2;
 $jawwal_balance = $productsCount[0]->jawwal_balance;
+$ooredoo_balance = $productsCount[0]->ooredoo_balance;
 @endphp
 <div class="col-xl-4">
     <div class="card">
@@ -21,11 +22,11 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
                     </tr>
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ abs($needFromPeople) }}</td>
-                        <td class="display-3 text-center">بدي من الناس</td>
+                        <td class="display-3 text-center">دائن</td>
                     </tr>
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ abs($peopleNeedFromMe) }}</td>
-                        <td class="display-3 text-center">الناس بدها مني</td>
+                        <td class="display-3 text-center">مدين</td>
                     </tr>
                 </tbody>
             </table>
@@ -85,7 +86,7 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
                     </tr>
                     @can('add_products')
                     <tr>
-                        <td class="display-3 text-center">&#8362;{{ $box[2]->remaining }}</td>
+                        <td class="display-3 text-center">&#8362;{{ $box[2]->remaining - ($box[1]->remaining + $box[7]->remaining) }}</td>
                         <td class="display-3 text-center">المربح الكلي</td>
                     </tr>
                     @endcan
@@ -96,6 +97,10 @@ $jawwal_balance = $productsCount[0]->jawwal_balance;
                     <tr>
                         <td class="display-3 text-center">&#8362;{{ $jawwal_balance }}</td>
                         <td class="display-3 text-center">رصيد جوال</td>
+                    </tr>
+                    <tr>
+                        <td class="display-3 text-center">&#8362;{{ $ooredoo_balance }}</td>
+                        <td class="display-3 text-center">رصيد وطنية</td>
                     </tr>
                 </tbody>
             </table>

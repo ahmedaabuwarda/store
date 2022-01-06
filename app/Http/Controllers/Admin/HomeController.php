@@ -47,6 +47,7 @@ class HomeController extends Controller
         $productsCount = DB::select('SELECT sum( box.counter ) AS dump,
         ( SELECT sum( sell_bills.total_profit ) FROM sell_bills WHERE date_created = :date ) AS daily_profit,
         ( SELECT sum( products.quantity ) FROM products WHERE products.name = "رصيد جوال") AS jawwal_balance,
+        ( SELECT sum( products.quantity ) FROM products WHERE products.name = "رصيد وطنية") AS ooredoo_balance,
         ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
         ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price,
         ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance <= 0) AS needFromPeople1,

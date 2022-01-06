@@ -35,7 +35,7 @@
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
                                 @if(Auth::user()->id == 1)
-                                <button class="btn btn-info multi_button" data-toggle="tooltip" data-placement="top" title="خيارات" data-movement="create_permission">خيارات</button>
+                                <a href="{{ url('/permission/update') }}" class="btn btn-info text-dark">خيارات</a>
                                 @endif
                                 @can('add_products')
                                 <a class="btn text-white btn-dark" data-toggle="modal"
