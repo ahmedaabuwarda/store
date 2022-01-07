@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes([
-    'register' => true,
+    'register' => false,
     'reset' => false,
     'verify' => false,
 ]);
@@ -28,6 +28,8 @@ Route::post('/box/store', [App\Http\Controllers\Admin\HomeController::class, 'bo
 
 // products
 Route::post('/product/store', [App\Http\Controllers\Admin\ProductController::class, 'store']);
+Route::get('/product/edit', [App\Http\Controllers\Admin\ProductController::class, 'edit']);
+Route::post('/product/update', [App\Http\Controllers\Admin\ProductController::class, 'update']);
 Route::post('/product/jard_to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'jard_to_pdf']);
 Route::post('/product/to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'to_pdf']);
 

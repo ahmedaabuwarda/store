@@ -20,9 +20,8 @@
         @foreach ($products as $product)
             <tr @if ($product->status == 0) class="table-danger" @endif>
                 <td class="disblay-3 text-center">
-                    <button class="btn btn-sm btn-primary from_to_pdf_button" @if ($product->quantity == $product->original_quantity) disabled @endif
-                        data-toggle="tooltip" data-placement="top" title="جرد" data-fromto="{{ $product->id }}"><i
-                            class="fa fa-eye"></i></button>
+                    <button class="btn btn-sm btn-primary from_to_pdf_button" @if ($product->quantity == $product->original_quantity) disabled @endif data-toggle="tooltip" data-placement="top" title="جرد" data-fromto="{{ $product->id }}"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-sm btn-info edit_product_button" data-toggle="tooltip" data-placement="top" title="تعديل" data-id="{{ $product->id }}"><i class="fa fa-pen"></i></button>
                 </td>
 
                 <td class="text-center">

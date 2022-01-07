@@ -16,12 +16,12 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
 
-    public function __construct()
+    public function __construct ()
     {
         $this->middleware('auth');
     }
 
-    public function store(Request $request)
+    public function store (Request $request)
     {
         DB::beginTransaction();
         try {
@@ -50,7 +50,31 @@ class ProductController extends Controller
         }
     }
 
-    public function jard_to_pdf(Request $request)
+    public function edit (Request $request)
+    {
+        $product = Product::where('id', $request->id)->select('id', 'name')->first();
+        $modal = view('admin.product.edit', compact('product'))->render();
+        return response()->json(['status' => 'success', 'modal' => $modal]);
+    }
+
+    public function update (Request $request)
+    {
+        
+        DB::beginTransaction();
+        try {
+
+            $product = Product::where('id', $request->product_id)->update(['name' => $request->name]);
+
+            DB::commit();
+            return response()->json(['status' => 'success']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error']);
+        }
+
+    }
+
+    public function jard_to_pdf (Request $request)
     {
         $id = $request->id;
         $from = date($request->from.' 00:00:00');
@@ -163,7 +187,7 @@ class ProductController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function to_pdf(Request $request)
+    public function to_pdf (Request $request)
     {
         $from = $request->from;
         $to = $request->to;

@@ -263,6 +263,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
         $(document).ready(function() {
             $("#search_input").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
@@ -271,7 +272,8 @@
                 });
             });
         });
-        // create new product form
+
+        // create box form
         $('#add_box_form').submit(function(e) {
             e.preventDefault();
             let data = new FormData(this);
@@ -310,32 +312,108 @@
                 }
             });
         });
+
         // create new product form
         $('#create_product_form').submit(function(e) {
             e.preventDefault();
             let data = new FormData(this);
-            $.ajax({
-                url: "/product/store",
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(response) {
-                    if (response.status == "success") {
+            if (data.get('movement') == 'update_product') {
+                $.ajax({
+                    url: "/product/update",
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function(response) {
+                        if (response.status == "success") {
+                            Swal.fire(
+                                'تم!',
+                                'تمت العملية بنجاح',
+                                'success'
+                            );
+                            // refresh the table
+                            get_products();
+                            $('#create_product_form')[0].reset();
+                            $('#create_product_modal').modal('hide');
+                        } else {
+                            Swal.fire(
+                                'عفواً',
+                                'حدث خطأ مااثناء تنفيذ العملية',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(response) {
                         Swal.fire(
-                            'تم!',
-                            'تم اضافة المنتج بنجاح',
-                            'success'
+                            'عفواً',
+                            'حدث خطأ مااثناء تنفيذ العملية',
+                            'error'
                         );
-                        // refresh the table
-                        get_products();
-                        $('#create_product_form')[0].reset();
-                        $('#create_product_modal').modal('hide');
-                    } else {
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "/product/store",
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function(response) {
+                        if (response.status == "success") {
+                            Swal.fire(
+                                'تم!',
+                                'تم اضافة المنتج بنجاح',
+                                'success'
+                            );
+                            // refresh the table
+                            get_products();
+                            $('#create_product_form')[0].reset();
+                            $('#create_product_modal').modal('hide');
+                        } else {
+                            Swal.fire(
+                                'عفواً',
+                                'حدث خطأ ما، قد يكون المنتج موجوداً بالفعل',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(response) {
                         Swal.fire(
                             'عفواً',
                             'حدث خطأ ما، قد يكون المنتج موجوداً بالفعل',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+
+        // show product to pdf modal
+        $('#product_table').on('click', '.from_to_pdf_button', function(e) {
+            let from_to = $(this).data('fromto');
+            $('#from_to_pdf_modal').modal('show');
+            $('#from_to').val(from_to);
+        });
+
+        // edit product modal
+        $('#product_table').on('click', '.edit_product_button', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            $.ajax({
+                url: "/product/edit",
+                type: "GET",
+                data: {id:id},
+                success: function(response) {
+                    if (response.status == "success") {
+                        $('#create_product_modal').modal('show');
+                        $('#exampleModalLabel').text('تعديل منتج');
+                        $('#create_product_modal .row').html(response.modal);
+                    } else {
+                        Swal.fire(
+                            'عفواً',
+                            'حدث خطأ ما',
                             'error'
                         );
                     }
@@ -343,30 +421,27 @@
                 error: function(response) {
                     Swal.fire(
                         'عفواً',
-                        'حدث خطأ ما، قد يكون المنتج موجوداً بالفعل',
+                        'حدث خطأ ما',
                         'error'
                     );
                 }
             });
         });
-        // show product to pdf modal
-        $('#product_table').on('click', '.from_to_pdf_button', function(e) {
-            let from_to = $(this).data('fromto');
-            $('#from_to_pdf_modal').modal('show');
-            $('#from_to').val(from_to);
-        });
+
         // show product to pdf modal
         $('.from_to_pdf_button').click(function(e) {
             let from_to = $(this).data('fromto');
             $('#from_to_pdf_modal').modal('show');
             $('#from_to').val(from_to);
         });
+
         @if(url()->current() == url('/home'))
         $('.multi_button').click(function(e){
             e.preventDefault();
 
         });
         @endif
+
         // create product to pdf form
         $('#from_to_pdf_form').submit(function(e) {
             e.preventDefault();
@@ -440,5 +515,6 @@
                 }
             });
         }
+        
     </script>
 @endsection

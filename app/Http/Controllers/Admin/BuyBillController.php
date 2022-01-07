@@ -171,7 +171,8 @@ class BuyBillController extends Controller
                         'quantity' => $product->quantity + $tblArray[$i*4 + 1],
                         'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
                         'original_price' => $tblArray[$i*4 + 2],
-                        'buy_bill_id' => $id
+                        'buy_bill_id' => $id,
+                        'status' => true
                     ]);
                     $buyed_product = new BuyedProduct;
                     $buyed_product->product_id = $tblArray[$i*4 + 0];
