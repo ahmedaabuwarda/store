@@ -140,6 +140,7 @@
                 <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" checked>
                 <label class="custom-control-label" for="customRadio1">الموردون</label>
               </div>
+              @if(Auth::user()->id == 1)
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers">
                 <label class="custom-control-label" for="customRadio2">الزبائن</label>
@@ -148,6 +149,7 @@
                 <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers">
                 <label class="custom-control-label" for="customRadio3">الموظفون</label>
               </div>
+              @endif
 
             </div>
 
@@ -181,9 +183,11 @@
                         <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                     </div>
                     <select class="form-control selectpicker" name="customer_id" data-live-search="true">
+                      @if(Auth::user()->id == 1)
                       @foreach($customers as $customer)
                         <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                       @endforeach
+                      @endif
                     </select>
                 </div>
                 @error('customer_id')
@@ -202,9 +206,11 @@
                         <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                     </div>
                     <select class="form-control selectpicker" name="worker_id" data-live-search="true">
+                      @if(Auth::user()->id == 1)
                       @foreach($workers as $worker)
                         <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                       @endforeach
+                      @endif
                     </select>
                 </div>
                 @error('worker_id')
@@ -279,7 +285,7 @@
         } else {
           Swal.fire(
             'عفواً !',
-            'حدث خطأ ما، قد يكون السند موجود بالفعل',
+            'حدث خطأ ما، قد يكون السند موجود بالفعل او تم الوصول للحد الاقصى للسحب',
             'error'
           );
         }

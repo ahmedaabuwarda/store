@@ -38,8 +38,8 @@
                                 <a href="{{ url('/permission/update') }}" class="btn btn-info text-dark">خيارات</a>
                                 @endif
                                 @can('add_products')
-                                <a class="btn text-white btn-dark" data-toggle="modal"
-                                    data-target="#create_product_modal"><i class="fa fa-plus"></i> صنف</a>
+                                <a class="btn text-white btn-dark create_product_button" data-toggle="modal"
+                                    data-movement="create_product"><i class="fa fa-plus"></i> صنف</a>
                                 @endcan
                             </div>
                         </div>
@@ -395,6 +395,36 @@
             let from_to = $(this).data('fromto');
             $('#from_to_pdf_modal').modal('show');
             $('#from_to').val(from_to);
+        });
+
+         // add product modal
+         $('.create_product_button').on('click', function(e) {
+            e.preventDefault();
+            let movement = $(this).data('movement');
+            $.ajax({
+                url: "/product/create",
+                type: "GET",
+                success: function(response) {
+                    if (response.status == "success") {
+                        $('#create_product_modal').modal('show');
+                        $('#exampleModalLabel').text('اضافة منتج');
+                        $('#create_product_modal .row').html(response.modal);
+                    } else {
+                        Swal.fire(
+                            'عفواً',
+                            'حدث خطأ ما',
+                            'error'
+                        );
+                    }
+                },
+                error: function(response) {
+                    Swal.fire(
+                        'عفواً',
+                        'حدث خطأ ما',
+                        'error'
+                    );
+                }
+            });
         });
 
         // edit product modal

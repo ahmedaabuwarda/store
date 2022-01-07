@@ -27,7 +27,7 @@
                 <td class="display-3 text-center">&#8362;{{ $sanadat_sarf->balance }}</td>
                 <td class="display-3 text-center">
                     @if ($sanadat_sarf->worker_id > 0)
-                        {{ $sanadat_sarf->user->name }} - موظف
+                        {{ $sanadat_sarf->worker->name }} - موظف
                     @elseif($sanadat_sarf->customer_id > 0)
                         {{ $sanadat_sarf->customer->name }} - زبون
                     @elseif($sanadat_sarf->provider_id > 0)

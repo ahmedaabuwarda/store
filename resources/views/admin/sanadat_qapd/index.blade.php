@@ -292,7 +292,7 @@
                 contentType: false,
                 cache: false,
                 success: function(response) {
-                    if (response.success == 'success') {
+                    if (response.status == 'success') {
                         Swal.fire(
                             'تم !',
                             'تم اضافة سند الصرف بنجاح',

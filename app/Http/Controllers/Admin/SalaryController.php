@@ -38,11 +38,12 @@ class SalaryController extends Controller
         DB::beginTransaction();
         try {
             $balance = abs($request->balance);
+            $net_balance = abs($request->net_balance);
             $worker = new Salary;
             $worker->worker_id = $request['worker_id'];
             $worker->remaining_balance = $request['net_balance'] - $balance;
             $worker->balance = $request['balance'];
-            $worker->net_balance = $request['net_balance'];
+            $worker->net_balance = $net_balance;
             $worker->date_created = $request['date_created'];
             if($request['notes'] == null){
                 $worker->notes = 'لا يوجد';
@@ -66,7 +67,7 @@ class SalaryController extends Controller
                 WHEN 8 THEN (SELECT counter FROM box WHERE box.id = 8)+1 
                 ELSE box.counter
                 END
-            WHERE box.id IN(1, 8);', [$balance, $balance]);
+            WHERE box.id IN(1, 8);', [$net_balance, $balance]);
 
             $date = date($request['date_created'].' H:i:s');
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)',[$balance,'راتب', $date]);

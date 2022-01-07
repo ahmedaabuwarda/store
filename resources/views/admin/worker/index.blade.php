@@ -230,7 +230,7 @@
                       <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                       </div>
-                      <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="300" autocomplete="balance" required>
+                      <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="500" autocomplete="balance" required>
                   </div>
                   @error('balance')
                     <span class="text-danger">{{ $message }}</span>

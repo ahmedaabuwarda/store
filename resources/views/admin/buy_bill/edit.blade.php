@@ -233,7 +233,7 @@
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="Customers | الزبائن" value="{{ $buy_bill->worker->name }}" disabled>
+                              <input type="text" class="form-control" placeholder="Customers | الموظفون" value="{{ $buy_bill->worker->name }}" disabled>
                               <input type="hidden" name="worker_id" value="{{ $buy_bill->worker_id }}">
                           </div>
                           @error('customer_id')

@@ -72,29 +72,32 @@ class SanadatSarfController extends Controller
 
             if ($request['target'] == 'customers') {
                 $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
-                if ($customer != null) {
+                if ($customer != null && ($customer->balance - $balance) >= -500 && ($customer->balance - $balance) <= 500) {
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance - $balance]);
                     $sanadat_sarf->customer_id = $customer_id;
                     $target = $customer->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'providers') {
                 $provider = Provider::where('id', $provider_id)->select('name', 'balance')->first();
-                if ($provider != null) {
+                if ($provider != null && ($provider->balance - $balance) >= -500 && ($provider->balance - $balance) <= 500) {
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance - $balance]);
                     $sanadat_sarf->provider_id = $provider_id;
                     $target = $provider->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'workers') {
                 $worker = Worker::where('id', $worker_id)->select('name', 'balance')->first();
-                if ($worker != null) {
+                if ($worker != null && ($worker->balance - $balance) >= -500 && ($worker->balance - $balance) <= 500) {
                     Worker::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
                     $sanadat_sarf->worker_id = $worker_id;
                     $target = $worker->name;
                 } else {
+                    DB::rollback();
                     return response()->json(['status' => 'error']);
                 }
             }

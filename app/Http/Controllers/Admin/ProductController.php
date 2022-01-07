@@ -21,6 +21,12 @@ class ProductController extends Controller
         $this->middleware('auth');
     }
 
+    public function create () 
+    {
+        $modal = view('admin.product.create')->render();
+        return response()->json(['status' => 'success', 'modal' => $modal]);
+    }
+
     public function store (Request $request)
     {
         DB::beginTransaction();

@@ -27,6 +27,7 @@ Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 't
 Route::post('/box/store', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
 
 // products
+Route::get('/product/create', [App\Http\Controllers\Admin\ProductController::class, 'create']);
 Route::post('/product/store', [App\Http\Controllers\Admin\ProductController::class, 'store']);
 Route::get('/product/edit', [App\Http\Controllers\Admin\ProductController::class, 'edit']);
 Route::post('/product/update', [App\Http\Controllers\Admin\ProductController::class, 'update']);
