@@ -10,14 +10,21 @@ class Product extends Model
     use HasFactory;
     protected $table = 'products';
     protected $fillable = ['name', 'quantity', 'original_quantity', 'original_price', 'sell_bill_id', 'buy_bill_id', 'status', 'type', 'created_at', 'updated_at'];
-
-    public function sell_bill() {
+    
+    public function buy_bill()
+    {
+        return $this->belongsTo('App\Models\BuyBill');
+    }
+    public function sell_bill()
+    {
         return $this->belongsTo('App\Models\SellBill');
     }
-    public function sold_product() {
+    public function sold_product()
+    {
         return $this->hasMany('App\Models\SoldProduct');
     }
-    public function buyed_product() {
+    public function buyed_product()
+    {
         return $this->hasMany('App\Models\BuyedProduct');
     }
 }

@@ -6,6 +6,7 @@ use PDF;
 use Exception;
 
 use App\Models\User;
+use App\Models\Worker;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
@@ -83,9 +84,9 @@ class DailySellsController extends Controller
                     throw new Exception('Provider not found');
                 }
             } elseif ($request['target'] == 'workers') {
-                $worker = User::where('id', $worker_id)->select('balance')->first();
+                $worker = Worker::where('id', $worker_id)->select('balance')->first();
                 if ($worker != null) {
-                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
+                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $sell_bill->worker_id = $worker_id;
                 } else {
                     DB::rollBack();
@@ -148,7 +149,7 @@ class DailySellsController extends Controller
 
             DB::commit();
             return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
@@ -209,8 +210,6 @@ class DailySellsController extends Controller
                     $sold_product->save();
 
                 }
-                // DB::rollBack();
-                // dd($total_profit);
             
                 $sell_bill = SellBill::where('id', $id)->first();
 
@@ -243,8 +242,8 @@ class DailySellsController extends Controller
                     $customer = Customer::where('id', $request['customer_id'])->select('balance')->first();
                     Customer::where('id', $request['customer_id'])->update(['balance' => ($customer->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 } elseif ($request['worker_id'] > 0) {
-                    $worker = User::where('id', $request['worker_id'])->select('balance')->first();
-                    User::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
+                    $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
+                    Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 }
             }
 

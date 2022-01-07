@@ -339,6 +339,7 @@
           $("#total").text(total);
           $("#productname").val("");
           $("#quantity").val("");
+          $("#paid_balance").val(total);
           $("#price").val("");
           i = i + 1;
         }

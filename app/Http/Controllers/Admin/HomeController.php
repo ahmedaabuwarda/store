@@ -98,7 +98,7 @@ class HomeController extends Controller
         } else if ($target == 'products') {
             $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         }
-        $pages = ceil(Provider::count() / $page);
+        $pages = ceil(count($result) / $page);
         return view('website.search', compact('result', 'pages', 'target'));
 
     }

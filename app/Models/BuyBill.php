@@ -21,6 +21,10 @@ class BuyBill extends Model
     {
         return $this->belongsTo('App\Models\Customer');
     }
+    public function worker()
+    {
+        return $this->belongsTo('App\Models\Worker');
+    }
     public function user()
     {
         return $this->belongsTo('App\Models\User');

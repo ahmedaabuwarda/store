@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use PDF;
 use Exception;
 
-// use App\Models\Worker;
+use App\Models\Worker;
 use App\Models\User;
 use App\Models\BuyBill;
 use App\Models\Product;
@@ -41,7 +41,7 @@ class BuyBillController extends Controller
     {
         $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
-        $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
+        $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
         return view('admin.buy_bill.create', compact('providers', 'customers', 'workers', 'products'));
     }
@@ -77,9 +77,9 @@ class BuyBillController extends Controller
                     throw new Exception('Provider not found');
                 }
             } elseif($request['target'] == 'workers') {
-                $worker = User::where('id', $worker_id)->select('balance')->first();
+                $worker = Worker::where('id', $worker_id)->select('balance')->first();
                 if($worker != null){
-                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
+                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $buy_bill->worker_id = $worker_id;
                 } else {
                     throw new Exception('Worker not found');
@@ -205,9 +205,9 @@ class BuyBillController extends Controller
                         throw new \Exception('Customer not found');
                     }
                 } elseif($request['worker_id'] > 0){
-                    $worker = User::where('id', $request['worker_id'])->select('balance')->first();
+                    $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
                     if($worker != null) {
-                        User::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
+                        Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
                     } else {
                         throw new \Exception('Worker not found');
                     }
@@ -215,7 +215,7 @@ class BuyBillController extends Controller
 
                 DB::commit();
                 return redirect('/buy_bills');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollBack();
                 return redirect('/buy_bills')->with('error', 'Error: ' . $e->getMessage());
             }
@@ -243,7 +243,7 @@ class BuyBillController extends Controller
 
             DB::commit();
             return redirect('/buy_bill/edit/' . $buyed_product->buy_bill_id);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect('/buy_bills')->with('error', 'Error: ' . $e->getMessage());
         }
@@ -253,7 +253,7 @@ class BuyBillController extends Controller
     {
         $from = $request['from'];
         $to = $request['to'];
-        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
+        $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan','provider_id', 'customer_id', 'worker_id', 'remaining_balance','paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?',[$from, $to])->orderBy('id', 'DESC')->get();
 
         $i = 1; $total_rem = 0; $total_paid = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $company = config('app.company');

@@ -32,9 +32,9 @@ class SellBillController extends Controller
 
         $page = config('app.page');
         if (URL::current() == url('/daily_sells')) {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->where('customer_id', 1)->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->where('customer_id', 1)->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
         } else {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
         }
 
         $pages = ceil(SellBill::count() / $page);
@@ -51,7 +51,7 @@ class SellBillController extends Controller
     {
         $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
-        $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
+        $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
         $modal = view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'))->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
@@ -89,9 +89,9 @@ class SellBillController extends Controller
                     throw new Exception('Provider not found');
                 }
             } elseif ($request['target'] == 'workers') {
-                $worker = User::where('id', $worker_id)->select('balance')->first();
+                $worker = Worker::where('id', $worker_id)->select('balance')->first();
                 if ($worker != null) {
-                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
+                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $remaining_balance]);
                     $sell_bill->worker_id = $worker_id;
                 } else {
                     DB::rollBack();
@@ -226,8 +226,8 @@ class SellBillController extends Controller
                     $customer = Customer::where('id', $request['customer_id'])->select('balance')->first();
                     Customer::where('id', $request['customer_id'])->update(['balance' => ($customer->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 } elseif ($request['worker_id'] > 0) {
-                    $worker = User::where('id', $request['worker_id'])->select('balance')->first();
-                    User::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
+                    $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
+                    Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $sell_bill->remaining_balance) +  $request['remaining_balance']]);
                 }
             }
 
@@ -269,7 +269,7 @@ class SellBillController extends Controller
     {
         $from = $request['from'];
         $to = $request['to'];
-        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
         $i = 1;
         $total_rem = 0;

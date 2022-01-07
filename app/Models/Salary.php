@@ -11,7 +11,8 @@ class Salary extends Model
 
     protected $table = 'salaries';
 
-    public function worker() {
+    public function worker()
+    {
         return $this->belongsTo('App\Models\Worker');
     }
     

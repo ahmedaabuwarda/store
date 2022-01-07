@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use PDF;
 use Exception;
 
+use App\Models\Worker;
 use App\Models\Box;
 use App\Models\User;
 use App\Models\Customer;
@@ -28,7 +29,7 @@ class SanadatSarfController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
-        $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+        $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan','provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('date_created', 'DESC')->paginate($page);
         $box = DB::select('SELECT remaining from box where id = 5');
 
         // if the request is ajax
@@ -42,7 +43,7 @@ class SanadatSarfController extends Controller
 
             $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
             $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
-            $workers = DB::select('SELECT id, name FROM users ORDER BY id DESC');
+            $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
             $pages = ceil(Sanadat_Sarf::count()/$page);
             return view('admin.sanadat_sarf.index', compact('sanadat_sarfs', 'customers', 'providers', 'workers', 'pages', 'box'));
 
@@ -88,9 +89,9 @@ class SanadatSarfController extends Controller
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($request['target'] == 'workers') {
-                $worker = User::where('id', $worker_id)->select('name', 'balance')->first();
+                $worker = Worker::where('id', $worker_id)->select('name', 'balance')->first();
                 if ($worker != null) {
-                    User::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
+                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance - $balance]);
                     $sanadat_sarf->worker_id = $worker_id;
                     $target = $worker->name;
                 } else {
@@ -148,9 +149,9 @@ class SanadatSarfController extends Controller
                     return response()->json(['status' => 'error']);
                 }
             } elseif ($sanadat_sarf != null && $worker_id > 0) {
-                $worker = User::where('id', $worker_id)->select('balance')->first();
+                $worker = Worker::where('id', $worker_id)->select('balance')->first();
                 if($worker != null){
-                    User::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
+                    Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
                 } else {
                     return response()->json(['status' => 'error']);
                 }
