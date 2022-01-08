@@ -68,11 +68,12 @@ class CustomerController extends Controller
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">الرقم</th>
-            <th width="30%">الاسم</th>
-            <th width="20%">الرصيد</th>
-            <th width="20%">ملاحظات</th>
-            <th width="20%">الحالة</th>
+            <th width="10%" bgcolor="#eee">الرقم</th>
+            <th width="30%" bgcolor="#eee">الاسم</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="20%" bgcolor="#eee">ملاحظات</th>
+            <th width="20%" bgcolor="#eee"الحالة</th>
+            <th width="20%" >الحالة</th>
           </tr>
         </thead>
         <tbody>';
@@ -156,11 +157,11 @@ class CustomerController extends Controller
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">#</th>
-            <th width="25%">رقم السند</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">الرصيد</th>
-            <th width="25%">البيان</th>
+            <th width="10%" bgcolor="#eee">#</th>
+            <th width="25%" bgcolor="#eee">رقم السند</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="25%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -181,11 +182,11 @@ class CustomerController extends Controller
         $qapd_table = '<h2>سندات القبض</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">#</th>
-            <th width="25%">رقم السند</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">الرصيد</th>
-            <th width="25%">البيان</th>
+            <th width="10%" bgcolor="#eee">#</th>
+            <th width="25%" bgcolor="#eee">رقم السند</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="25%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -206,12 +207,12 @@ class CustomerController extends Controller
         $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="20%">المبلغ المتبقي</th>
-            <th width="20%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -248,12 +249,12 @@ class CustomerController extends Controller
         $sell_table = '<h2>فواتير البيع</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="20%">المبلغ المتبقي</th>
-            <th width="20%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';

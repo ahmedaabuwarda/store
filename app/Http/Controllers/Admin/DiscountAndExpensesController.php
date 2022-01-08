@@ -101,11 +101,11 @@ class DiscountAndExpensesController extends Controller
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">الرقم</th>
-            <th width="30%">تاريخ الانشاء</th>
-            <th width="20%">بواسطة</th>
-            <th width="10%">المبلغ</th>
-            <th width="30%">ملاحظات</th>
+            <th width="10%" bgcolor="#eee">الرقم</th>
+            <th width="30%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">بواسطة</th>
+            <th width="10%" bgcolor="#eee">المبلغ</th>
+            <th width="30%" bgcolor="#eee">ملاحظات</th>
           </tr>
         </thead>
         <tbody>';

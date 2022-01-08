@@ -94,13 +94,13 @@ class SalaryController extends Controller
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">الرقم</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">المستهلك</th>
-            <th width="10%">رصيد متبقي</th>
-            <th width="10%">راتب اساسي</th>
-            <th width="10%">صافي الراتب</th>
-            <th width="20%">ملاحظات</th>
+            <th width="10%" bgcolor="#eee">الرقم</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="10%" bgcolor="#eee">رصيد متبقي</th>
+            <th width="10%" bgcolor="#eee">راتب اساسي</th>
+            <th width="10%" bgcolor="#eee">صافي الراتب</th>
+            <th width="20%" bgcolor="#eee">ملاحظات</th>
           </tr>
         </thead>
         <tbody>';

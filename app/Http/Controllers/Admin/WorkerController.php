@@ -79,11 +79,11 @@ class WorkerController extends Controller
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">الرقم</th>
-            <th width="30%">الاسم</th>
-            <th width="20%">الرصيد</th>
-            <th width="20%">ملاحظات</th>
-            <th width="20%">الحالة</th>
+            <th width="10%" bgcolor="#eee">الرقم</th>
+            <th width="30%" bgcolor="#eee">الاسم</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="20%" bgcolor="#eee">ملاحظات</th>
+            <th width="20%" bgcolor="#eee">الحالة</th>
           </tr>
         </thead>
         <tbody>';
@@ -161,6 +161,8 @@ class WorkerController extends Controller
 
         $worker_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM workers, sell_bills WHERE workers.id = sell_bills.worker_id AND workers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
+        $worker_salary = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = ? AND workers.id = ? AND salaries.date_created >= ? AND salaries.date_created <= ? ORDER BY salaries.date_created DESC', [$id, $id, $from, $to]);
+
         $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $company = config('app.company');
 
@@ -168,11 +170,11 @@ class WorkerController extends Controller
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">#</th>
-            <th width="25%">رقم السند</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">الرصيد</th>
-            <th width="25%">البيان</th>
+            <th width="10%" bgcolor="#eee">#</th>
+            <th width="25%" bgcolor="#eee">رقم السند</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="25%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -193,11 +195,11 @@ class WorkerController extends Controller
         $qapd_table = '<h2>سندات القبض</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%">#</th>
-            <th width="25%">رقم السند</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="20%">الرصيد</th>
-            <th width="25%">البيان</th>
+            <th width="10%" bgcolor="#eee">#</th>
+            <th width="25%" bgcolor="#eee">رقم السند</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
+            <th width="25%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -218,12 +220,12 @@ class WorkerController extends Controller
         $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="20%">المبلغ المتبقي</th>
-            <th width="20%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -260,12 +262,12 @@ class WorkerController extends Controller
         $sell_table = '<h2>فواتير البيع</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%">#</th>
-            <th width="20%">رقم الفاتورة</th>
-            <th width="20%">تاريخ الانشاء</th>
-            <th width="15%">المبلغ المدفوع</th>
-            <th width="20%">المبلغ المتبقي</th>
-            <th width="20%">البيان</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
         <tbody>';
@@ -298,6 +300,50 @@ class WorkerController extends Controller
         
         $sell_table .= '</tbody></table>';
 
+        $i = 1; $salary_total = 0;
+        $salary_table = '<h2>الرواتب</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        <thead class="thead-light">
+            <tr>
+                <th width="5%" bgcolor="#eee">#</th>
+                <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
+                <th width="20%" bgcolor="#eee">المستهلك</th>
+                <th width="20%" bgcolor="#eee">رصيد متبقي</th>
+                <th width="15%" bgcolor="#eee">راتب اساسي</th>
+                <th width="10%" bgcolor="#eee">صافي الراتب</th>
+                <th width="10%" bgcolor="#eee">ملاحظات</th> 
+            </tr>
+        </thead>
+        <tbody>';
+        foreach($worker_salary as $salary) {
+            $remaining = '';
+            if($salary->remaining_balance > 0) {
+                $remaining = $salary->remaining_balance.'<span>&#8362;&#160;</span> - دائن -';
+            } else if ($salary->remaining_balance < 0) {
+                $remaining = $salary->remaining_balance.'<span>&#8362;&#160;</span> - مدين -';
+            } else {
+                $remaining = $remaining = $salary->remaining_balance.'<span>&#8362;&#160;</span>';
+            }
+            $salary_table .= '<tr>
+              <td width="5%">'.$i.'</td>
+              <td width="20%">'.$salary->date_created.'</td>
+              <td width="20%">'.$salary->name.'</td>
+              <td width="20%">'.$remaining.'</td>
+              <td width="15%">'.$salary->balance.'<span>&#8362;&#160;</span></td>
+              <td width="10%">'.$salary->net_balance.'<span>&#8362;&#160;</span></td>
+              <td width="10%">'.$salary->notes.'</td>
+            </tr>';
+            $salary_total += $salary->net_balance; $i++;
+        }
+        if ($salary_total > 0) {
+            $salary_total = $salary_total.'<span>&#8362;&#160;</span> - دائن -';
+        } else if ($salary_total < 0) {
+            $salary_total = $salary_total.'<span>&#8362;&#160;</span> - مدين -';
+        } else {
+            $salary_total = $salary_total.'<span>&#8362;&#160;</span>';
+        }
+        
+        $salary_table .= '</tbody></table>';
+
         PDF::SetTitle('كشف حساب');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
@@ -318,6 +364,7 @@ class WorkerController extends Controller
         PDF::AddPage();
         PDF::writeHTML($content);
         PDF::SetFont('freeserif', '', 11);
+
         PDF::writeHTML($sarf_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$sarf_total.'<span>&#8362;&#160;</span> - مدين -</td></tr></tbody></table>');
 
@@ -329,6 +376,9 @@ class WorkerController extends Controller
 
         PDF::writeHTML($sell_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$sell_total.'</td></tr></tbody></table>');
+
+        PDF::writeHTML($salary_table);
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$salary_total.'</td></tr></tbody></table>');
         
         $balance = '';
         if ($worker[0]->balance > 0) {
