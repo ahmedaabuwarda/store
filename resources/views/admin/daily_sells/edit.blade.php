@@ -305,6 +305,7 @@
                   </div>
 
                   <div class="m-auto">
+                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>تحديث</button>
                     <a href="{{ URL('/daily_sells') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
                   </div>
 

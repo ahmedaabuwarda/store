@@ -195,7 +195,8 @@ class DailySellsController extends Controller
                     } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
                         Product::where('id', $tblArray[$i * 5 + 0])->update([
                             'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                            'sell_bill_id' => $id
+                            'sell_bill_id' => $id,
+                            'status' => true
                         ]);
                     }
 

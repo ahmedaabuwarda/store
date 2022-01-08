@@ -183,7 +183,7 @@
                                                     class="fa fa-box text-dark"></i></span>
                                         </div>
                                         <input type="number" class="form-control @error('balance') is-invalid @enderror"
-                                            id="balance" name="balance" placeholder="المبلغ" value="{{ old('balance') }}"
+                                            id="balance" name="balance" placeholder="المبلغ" step="0.0001" value="{{ old('balance') }}"
                                             autocomplete="balance" required>
                                     </div>
                                     @error('balance')
