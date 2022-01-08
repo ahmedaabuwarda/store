@@ -465,13 +465,6 @@
             $('#from_to').val(from_to);
         });
 
-        @if(url()->current() == url('/home'))
-        $('.multi_button').click(function(e){
-            e.preventDefault();
-
-        });
-        @endif
-
         // create product to pdf form
         $('#from_to_pdf_form').submit(function(e) {
             e.preventDefault();

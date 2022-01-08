@@ -25,7 +25,7 @@
                                 </div>
                                 @csrf
                                 <input class="form-control" name="search_field"
-                                    placeholder="...ابحث عن اسم مورد او زبون او صنف" type="text">
+                                    placeholder="...ابحث عن اسم مورد او زبون او صنف" type="text" value="{{ old('search_field') }}">
                                 <div class="input-group-append align-items-center">
                                     <div class="dropdown">
                                         <button class="btn btn-gray btn-sm btn-round dropdown-toggle" type="button"

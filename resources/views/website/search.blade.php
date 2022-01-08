@@ -77,6 +77,36 @@
 
 </div>
 
+<!-- Modal::create new product -->
+<div class="modal fade" id="create_product_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">اضافة صنف جديد</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="create_product_form">
+                <div class="modal-body">
+                    @csrf
+                    <div class="row">
+
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-center mt--3">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i
+                            class="fa fa-door-open mr-1"></i>الغاء</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-plus mr-1"></i>اضافة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal::product to pdf -->
 @include('includes.from_to')
 
@@ -194,18 +224,94 @@
       $('#from_to_pdf_modal').modal('hide');
     });
   @elseif($target == 'products')
+
     // show product to pdf modal
     $('#product_table').on('click', '.from_to_pdf_button', function(e) {
         let from_to = $(this).data('fromto');
         $('#from_to_pdf_modal').modal('show');
         $('#from_to').val(from_to);
     });
+
+    // edit product modal
+    $('#product_table').on('click', '.edit_product_button', function(e) {
+        e.preventDefault();
+        let id = $(this).data('id');
+        $.ajax({
+            url: "/product/edit",
+            type: "GET",
+            data: {id:id},
+            success: function(response) {
+                if (response.status == "success") {
+                    $('#create_product_modal').modal('show');
+                    $('#exampleModalLabel').text('تعديل منتج');
+                    $('#create_product_modal .row').html(response.modal);
+                } else {
+                    Swal.fire(
+                        'عفواً',
+                        'حدث خطأ ما',
+                        'error'
+                    );
+                }
+            },
+            error: function(response) {
+                Swal.fire(
+                    'عفواً',
+                    'حدث خطأ ما',
+                    'error'
+                );
+            }
+        });
+    });
+
+    // create new product form
+    $('#create_product_form').submit(function(e) {
+        e.preventDefault();
+        let data = new FormData(this);
+        $.ajax({
+            url: "/product/update",
+            type: "POST",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(response) {
+                if (response.status == "success") {
+                    Swal.fire(
+                        'تم!',
+                        'تمت العملية بنجاح',
+                        'success'
+                    );
+                    // refresh the page
+                    @if(url()->current() == url('/search'))
+                      window.location.reload();
+                    @endif
+                    $('#create_product_form')[0].reset();
+                    $('#create_product_modal').modal('hide');
+                } else {
+                    Swal.fire(
+                        'عفواً',
+                        'حدث خطأ مااثناء تنفيذ العملية',
+                        'error'
+                    );
+                }
+            },
+            error: function(response) {
+                Swal.fire(
+                    'عفواً',
+                    'حدث خطأ مااثناء تنفيذ العملية',
+                    'error'
+                );
+            }
+        });
+    });
+
     // show product to pdf modal
     $('.from_to_pdf_button').click(function(e) {
         let from_to = $(this).data('fromto');
         $('#from_to_pdf_modal').modal('show');
         $('#from_to').val(from_to);
     });
+
     // create product to pdf form
     $('#from_to_pdf_form').submit(function(e) {
         e.preventDefault();
