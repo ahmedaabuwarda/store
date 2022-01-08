@@ -49,7 +49,7 @@ class HomeController extends Controller
         ( SELECT sum( products.quantity ) FROM products WHERE products.name = "رصيد جوال") AS jawwal_balance,
         ( SELECT sum( products.quantity ) FROM products WHERE products.name = "رصيد وطنية") AS ooredoo_balance,
         ( SELECT sum( products.quantity ) FROM products ) AS total_products_count,
-        ( SELECT sum( products.quantity * products.original_price ) FROM products WHERE products.original_price > 0 ) AS total_cost_price,
+        ( SELECT sum( products.quantity * products.original_price ) FROM products) AS total_cost_price,
         ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance <= 0) AS needFromPeople1,
         ( SELECT sum( customers.balance ) FROM customers WHERE customers.balance >= 0) AS peopleNeedFromMe1,
         ( SELECT sum( providers.balance ) FROM providers WHERE providers.balance <= 0) AS needFromPeople2,

@@ -273,7 +273,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-primary"></i></span>
                             </div>
-                            <input type="number" id="paid_balance" class="form-control @error('paid_balance') is-invalid @enderror" name="paid_balance" placeholder="المبلغ المدفوع" value="{{ $buy_bill->paid_balance }}" autocomplete="paid_balance" required>
+                            <input type="number" id="paid_balance" class="form-control @error('paid_balance') is-invalid @enderror" name="paid_balance" step="0.00001" placeholder="المبلغ المدفوع" value="{{ $buy_bill->paid_balance }}" autocomplete="paid_balance" required>
                         </div>
                         @error('paid_balance')
                           <span class="text-danger">{{ $message }}</span>
