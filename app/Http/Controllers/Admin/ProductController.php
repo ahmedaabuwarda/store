@@ -80,6 +80,22 @@ class ProductController extends Controller
 
     }
 
+    // delete product
+    public function delete (Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            
+            Product::where('id', $request->id)->delete();
+
+            DB::commit();
+            return response()->json(['status' => 'success']);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error']);
+        }
+    }
+
     public function jard_to_pdf (Request $request)
     {
         $id = $request->id;

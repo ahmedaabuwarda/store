@@ -31,6 +31,7 @@ Route::get('/product/create', [App\Http\Controllers\Admin\ProductController::cla
 Route::post('/product/store', [App\Http\Controllers\Admin\ProductController::class, 'store']);
 Route::get('/product/edit', [App\Http\Controllers\Admin\ProductController::class, 'edit']);
 Route::post('/product/update', [App\Http\Controllers\Admin\ProductController::class, 'update']);
+Route::post('/product/delete', [App\Http\Controllers\Admin\ProductController::class, 'delete']);
 Route::post('/product/jard_to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'jard_to_pdf']);
 Route::post('/product/to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'to_pdf']);
 

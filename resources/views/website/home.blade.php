@@ -458,6 +458,57 @@
             });
         });
 
+        $("#product_table").on("click", ".delete_product_button", function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            Swal.fire({
+                title: 'هل انت متاكد من الحذف ؟',
+                text: "!لا يمكنك التراجع بعد هذه الخطوة",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'نعم ، احذف!',
+                cancelButtonText: 'الغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let _token = $('input[name=_token]').val();
+                    $.ajax({
+                        url: "/product/delete",
+                        type: "POST",
+                        data: {
+                            id: id,
+                            _token: _token
+                        },
+                        success: function(response) {
+                            if (response.status == 'success') {
+                                Swal.fire(
+                                    'تم الحذف!',
+                                    'تم الحذف بنجاح',
+                                    'success'
+                                );
+                                // refresh table
+                                get_products();
+                            } else {
+                                Swal.fire(
+                                    'خطأ',
+                                    'حدث خطأ أثناء الحذف',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(response) {
+                            Swal.fire(
+                                'خطأ',
+                                'حدث خطأ أثناء الحذف',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+
         // show product to pdf modal
         $('.from_to_pdf_button').click(function(e) {
             let from_to = $(this).data('fromto');
