@@ -43,8 +43,7 @@
                     .val() != null && $("#price")
                     .val() != '') {
                     var tota = $("#quantity").val() * $("#price").val();
-                    var profi = $("#quantity").val() * parseInt($('#productname').find(":selected")
-                        .data('original'));
+                    var profi = $("#quantity").val() * parseFloat($('#productname').find(":selected").data('original'));
                     total += tota;
                     profit += (tota - profi);
                     $("#productTable tbody").append("<tr>" +

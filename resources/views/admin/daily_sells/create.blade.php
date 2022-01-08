@@ -112,7 +112,7 @@
                                 class="fa fa-database text-orange"></i></span>
                     </div>
                     <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror"
-                        name="quantity" placeholder="الكمية" value="{{ old('quantity') }}" autocomplete="quantity">
+                        name="quantity" placeholder="الكمية" value="{{ old('quantity') }}" step="0.0001" autocomplete="quantity">
                 </div>
                 @error('quantity')
                     <span class="text-danger">{{ $message }}</span>
@@ -131,7 +131,7 @@
                                 class="fa fa-shekel-sign text-success"></i></span>
                     </div>
                     <input type="number" id="price" class="form-control @error('original_price') is-invalid @enderror"
-                        name="original_price" placeholder="سعر البيع" value="{{ old('original_price') }}"
+                        name="original_price" placeholder="سعر البيع" step="0.0001" value="{{ old('original_price') }}"
                         autocomplete="original_price">
                 </div>
                 @error('original_price')

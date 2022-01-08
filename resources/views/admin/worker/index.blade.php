@@ -216,7 +216,7 @@
                       <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                       </div>
-                      <input type="number" id="remaining_balance" class="form-control" placeholder="المبلغ المتبقي" value="" disabled>
+                      <input type="number" id="remaining_balance" step="0.0001" class="form-control" placeholder="المبلغ المتبقي" value="" disabled>
                   </div>
               </div>
 
@@ -230,7 +230,7 @@
                       <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                       </div>
-                      <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="500" autocomplete="balance" required>
+                      <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="500" step="0.0001" autocomplete="balance" required>
                   </div>
                   @error('balance')
                     <span class="text-danger">{{ $message }}</span>
@@ -247,7 +247,7 @@
                       <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                       </div>
-                      <input type="number" id="net_balance" class="form-control @error('net_balance') is-invalid @enderror" name="net_balance" placeholder="صافي الراتب" autocomplete="net_balance" required>
+                      <input type="number" id="net_balance" class="form-control @error('net_balance') is-invalid @enderror" name="net_balance" step="0.0001" placeholder="صافي الراتب" autocomplete="net_balance" required>
                   </div>
                   @error('net_balance')
                     <span class="text-danger">{{ $message }}</span>

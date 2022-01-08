@@ -139,7 +139,7 @@
                                                     class="fa fa-shekel-sign text-primary"></i></span>
                                         </div>
                                         <input type="number" class="form-control @error('balance') is-invalid @enderror"
-                                            name="balance" placeholder="المبلغ" value="{{ old('balance') }}"
+                                            name="balance" placeholder="المبلغ" step="0.0001" value="{{ old('balance') }}"
                                             autocomplete="balance" required>
                                     </div>
                                     @error('balance')

@@ -31,11 +31,7 @@ class SellBillController extends Controller
     {
 
         $page = config('app.page');
-        if (URL::current() == url('/daily_sells')) {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->where('customer_id', 1)->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
-        } else {
-            $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
-        }
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
 
         $pages = ceil(SellBill::count() / $page);
         $box = DB::select('SELECT remaining from box where id IN (3,7);');
@@ -45,6 +41,7 @@ class SellBillController extends Controller
         } else {
             return view('admin.sell_bill.index', compact('sell_bills', 'pages', 'box'));
         }
+        
     }
 
     public function create()
@@ -123,15 +120,18 @@ class SellBillController extends Controller
                 if ($product->quantity == 0) {
                     Product::where('id', $tblArray[$i * 5 + 0])->update(['status' => false]);
                 }
+
                 $sold_product = new SoldProduct;
                 $sold_product->product_id = $tblArray[$i * 5 + 0];
                 $sold_product->quantity = $tblArray[$i * 5 + 1];
                 $sold_product->sell_price = $tblArray[$i * 5 + 2];
                 $sold_product->total_price = $tblArray[$i * 5 + 3];
+                $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                $sold_product->profit = $profit;
                 $sold_product->sell_bill_id = $sell_bill->id;
-                $sold_product->profit = $tblArray[$i * 5 + 4];
-                $total_profit += $tblArray[$i * 5 + 4];
+                $total_profit += $profit;
                 $sold_product->save();
+                
             }
 
             SellBill::where('id', $sell_bill->id)->update(['total_profit' => $total_profit]);
@@ -181,43 +181,71 @@ class SellBillController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        $paid_balance = abs($request->paid_balance);
+        $remaining_balance = $request->remaining_balance;
+
+        $sell_bill = SellBill::where('id', $id)->first();
+
         DB::beginTransaction();
         try {
-            if ($request['tbl'] == null) {
+            if ($request['tbl'] == null && $sell_bill->paid_balance != $paid_balance) {
                 return redirect('/sell_bills');
             } else {
 
                 $total_profit = 0;
                 $tblArray = explode(',', $request['tbl']);
-                for ($i = 0; $i < count($tblArray) / 5; $i++) {
-                    $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-                    Product::where('id', $tblArray[$i * 5 + 0])->update([
-                        'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                        'sell_bill_id' => $id
-                    ]);
-                    
-                    $sold_product = new SoldProduct;
-                    $sold_product->product_id = $tblArray[$i * 5 + 0];
-                    $sold_product->quantity = $tblArray[$i * 5 + 1];
-                    $sold_product->sell_price = $tblArray[$i * 5 + 2];
-                    $sold_product->total_price = $tblArray[$i * 5 + 3];
-                    $sold_product->profit = $tblArray[$i * 5 + 4];
-                    $sold_product->sell_bill_id = $id;
-                    $total_profit += $tblArray[$i * 5 + 4];
-                    $sold_product->save();
 
+                if ($request->tbl != null) {
+                    for ($i = 0; $i < count($tblArray) / 5; $i++) {
+                        $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
+                        if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
+                            Product::where('id', $tblArray[$i * 5 + 0])->update([
+                                'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                                'sell_bill_id' => $id,
+                                'status' => false
+                            ]);
+                        } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
+                            Product::where('id', $tblArray[$i * 5 + 0])->update([
+                                'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                                'sell_bill_id' => $id,
+                                'status' => true
+                            ]);
+                        }
+
+                        $sold_product = new SoldProduct;
+                        $sold_product->product_id = $tblArray[$i * 5 + 0];
+                        $sold_product->quantity = $tblArray[$i * 5 + 1];
+                        $sold_product->sell_price = $tblArray[$i * 5 + 2];
+                        $sold_product->total_price = $tblArray[$i * 5 + 3];
+                        $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                        $sold_product->profit = $profit;
+                        $sold_product->sell_bill_id = $id;
+                        $total_profit += $profit;
+                        $sold_product->save();
+
+                    }
                 }
             
-                $sell_bill = SellBill::where('id', $id)->first();
-                SellBill::where('id', $id)->update(
-                    [
-                        'paid_balance' => $request['paid_balance'],
-                        'remaining_balance' => $request['remaining_balance'],
-                        'total_balance' => abs($request['remaining_balance']) + abs($request['paid_balance']),
+                DB::statement('UPDATE box SET box.remaining = CASE box.id
+                    WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
+                    WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)+?
+                    WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)+?
+                    ELSE box.remaining
+                    END,
+                box.counter = CASE box.id
+                    WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                    ELSE box.counter
+                    END
+                WHERE box.id IN(1, 3, 7);', [($paid_balance - $sell_bill->paid_balance), $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
+                
+                SellBill::where('id', $id)->update([
+                        'paid_balance' => $paid_balance,
+                        'remaining_balance' => $remaining_balance,
+                        'total_balance' => abs($remaining_balance) + $paid_balance,
                         'total_profit' => $sell_bill->total_profit + $total_profit,
                         'byan' => $request['byan']
-                    ]
-                );
+                    ]);
 
                 if ($request['provider_id'] > 0) {
                     $provider = Provider::where('id', $request['provider_id'])->select('balance')->first();
@@ -244,24 +272,40 @@ class SellBillController extends Controller
         DB::beginTransaction();
         try {
             $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
-
-            SellBill::where('id', $sold_product->sell_bill_id)->update([
-                'total_balance' => $sold_product->sell_bill->total_balance - $sold_product->total_price
-            ]);
-
             $product = Product::where('id', $sold_product->product_id)->first();
 
+            $profit = ($sold_product->sell_price * $sold_product->quantity) - ($product->original_price * $sold_product->quantity);
+
+            DB::statement('UPDATE box SET box.remaining = CASE box.id
+                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
+                WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)-?
+                WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)-?
+                ELSE box.remaining
+                END,
+            box.counter = CASE box.id
+                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                ELSE box.counter
+                END
+            WHERE box.id IN(1, 3, 7);', [$sold_product->total_price, $profit, $sold_product->total_price]);
+
+            $sell_bill = SellBill::where('id', $sold_product->sell_bill_id)->update([
+                'total_balance' => $sold_product->sell_bill->total_balance - $sold_product->total_price,
+                'paid_balance' => $sold_product->sell_bill->paid_balance - $sold_product->total_price,
+                'total_profit' => $sold_product->sell_bill->total_profit - $profit
+            ]);
+  
             Product::where('id', $sold_product->product_id)->update([
-                'quantity' => $product->quantity + $sold_product->quantity
+                'quantity' => $product->quantity + $sold_product->quantity,
+                'status' => true
             ]);
 
             $sold_product->delete();
 
             DB::commit();
-            return redirect('/sell_bill/edit/' . $sold_product->sell_bill_id);
+            return redirect('/daily_sell/edit/' . $sold_product->sell_bill_id);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());
+            return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
     }
 

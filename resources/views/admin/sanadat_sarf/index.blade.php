@@ -125,7 +125,7 @@
                       <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                       </div>
-                      <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" autocomplete="balance" required>
+                      <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" step="0.0001" autocomplete="balance" required>
                   </div>
                   @error('balance')
                     <span class="text-danger">{{ $message }}</span>

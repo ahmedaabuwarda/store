@@ -147,7 +147,7 @@
                     <span class="input-group-text" id="basic-addon1"><i
                             class="fa fa-shekel-sign text-yellow"></i></span>
                 </div>
-                <input type="number" class="form-control" placeholder="خصم" value="{{ $bill->discount }}" disabled>
+                <input type="number" class="form-control" step="0.0001" placeholder="خصم" value="{{ $bill->discount }}" disabled>
             </div>
         </div>
 
@@ -158,8 +158,7 @@
                     <span class="input-group-text" id="basic-addon1"><i
                             class="fa fa-shekel-sign text-success"></i></span>
                 </div>
-                <input type="number" class="form-control" placeholder="المبلغ المدفوع"
-                    value="{{ $bill->paid_balance }}" disabled>
+                <input type="number" class="form-control" placeholder="المبلغ المدفوع" step="0.0001" value="{{ $bill->paid_balance }}" disabled>
             </div>
         </div>
 
@@ -170,8 +169,7 @@
                     <span class="input-group-text" id="basic-addon1"><i
                             class="fa fa-shekel-sign text-danger"></i></span>
                 </div>
-                <input type="number" class="form-control" placeholder="المبلغ المتبقي"
-                    value="{{ $bill->remaining_balance }}" disabled>
+                <input type="number" class="form-control" placeholder="المبلغ المتبقي" value="{{ $bill->remaining_balance }}" step="0.0001" disabled>
             </div>
         </div>
 

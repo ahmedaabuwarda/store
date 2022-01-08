@@ -80,7 +80,7 @@
                             <th class="text-center">رقم المنتج</th>
                             <th class="text-center">اسم المنتج</th>
                             <th class="text-center">الكمية</th>
-                            <th class="text-center">سعر التكلفة</th>
+                            <th class="text-center">سعر البيع</th>
                             <th class="text-center">الاجمالي</th>
                             <th class="text-center">المربح</th>
                             <th class="text-center">حذف</th>
@@ -128,7 +128,8 @@
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
                                   @if($product->quantity > 0)
-                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">{{ $product->name }}</option>
+                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">{ {{ $product->original_price }} &#8362;} {
+                                    {{ $product->quantity }} } {{ $product->name }}</option>
                                   @endif
                                 @endforeach
                               </select>
@@ -148,7 +149,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-database text-orange"></i></span>
                             </div>
-                            <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror" name="quantity" placeholder="الكمية" value="{{ old('quantity') }}" autocomplete="quantity">
+                            <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror" name="quantity" placeholder="الكمية" step="0.0001" value="{{ old('quantity') }}" autocomplete="quantity">
                         </div>
                         @error('quantity')
                           <span class="text-danger">{{ $message }}</span>
@@ -337,7 +338,7 @@
         if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {
           var tota = $("#quantity").val() * $("#price").val();
           total += tota;
-          var profi = $("#quantity").val() * parseInt($('#productname').find(":selected").data('original'));
+          var profi = $("#quantity").val() * parseFloat($('#productname').find(":selected").data('original'));
           profit += (tota - profi);
           $("#productTable tbody").append("<tr>" +
           "<td class='text-center'>" + i + "</td>" +

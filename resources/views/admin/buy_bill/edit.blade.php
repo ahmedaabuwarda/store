@@ -142,7 +142,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-primary"></i></span>
                             </div>
-                            <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror" name="quantity" placeholder="الكمية" value="{{ old('quantity') }}" autocomplete="quantity">
+                            <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror" name="quantity" placeholder="الكمية"step="0.0001" value="{{ old('quantity') }}" autocomplete="quantity">
                         </div>
                         @error('quantity')
                           <span class="text-danger">{{ $message }}</span>
@@ -159,7 +159,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-success"></i></span>
                             </div>
-                            <input type="number" id="price" class="form-control @error('original_price') is-invalid @enderror" name="original_price" placeholder="سعر التكلفة" value="{{ old('original_price') }}" autocomplete="original_price">
+                            <input type="number" id="price" class="form-control @error('original_price') is-invalid @enderror" name="original_price" placeholder="سعر التكلفة" step="0.0001" value="{{ old('original_price') }}" autocomplete="original_price">
                         </div>
                         @error('original_price')
                           <span class="text-danger">{{ $message }}</span>
@@ -263,7 +263,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-yellow"></i></span>
                             </div>
-                            <input type="number" id="discount" class="form-control" placeholder="خصم" value="{{ $buy_bill->discount }}" disabled>
+                            <input type="number" id="discount" step="0.0001" class="form-control" placeholder="خصم" value="{{ $buy_bill->discount }}" disabled>
                         </div>
                     </div>
 
@@ -286,7 +286,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                             </div>
-                            <input type="number" id="remaining_balance" class="form-control @error('remaining_balance') is-invalid @enderror" name="remaining_balance" placeholder="المبلغ المتبقي" value="{{ $buy_bill->remaining_balance }}" autocomplete="remaining_balance" required>
+                            <input type="number" id="remaining_balance" class="form-control @error('remaining_balance') is-invalid @enderror" name="remaining_balance" step="0.0001" placeholder="المبلغ المتبقي" value="{{ $buy_bill->remaining_balance }}" autocomplete="remaining_balance" required>
                         </div>
                         @error('remaining_balance')
                           <span class="text-danger">{{ $message }}</span>

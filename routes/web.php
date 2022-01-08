@@ -85,6 +85,8 @@ Route::post('/daily_sell/store', [App\Http\Controllers\Admin\DailySellsControlle
 Route::get('/daily_sell/show', [App\Http\Controllers\Admin\DailySellsController::class, 'show']);
 Route::get('/daily_sell/edit/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'edit']);
 Route::post('/daily_sell/update/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'update']);
+Route::post('/daily_sell/delete_product/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'delete_product']);
+Route::post('/daily_sell/to_pdf', [App\Http\Controllers\Admin\DailySellsController::class, 'to_pdf']);
 
 // workers
 Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);

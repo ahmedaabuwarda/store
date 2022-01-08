@@ -118,15 +118,18 @@ class DailySellsController extends Controller
                 if ($product->quantity == 0) {
                     Product::where('id', $tblArray[$i * 5 + 0])->update(['status' => false]);
                 }
+
                 $sold_product = new SoldProduct;
                 $sold_product->product_id = $tblArray[$i * 5 + 0];
                 $sold_product->quantity = $tblArray[$i * 5 + 1];
                 $sold_product->sell_price = $tblArray[$i * 5 + 2];
                 $sold_product->total_price = $tblArray[$i * 5 + 3];
+                $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                $sold_product->profit = $profit;
                 $sold_product->sell_bill_id = $sell_bill->id;
-                $sold_product->profit = $tblArray[$i * 5 + 4];
-                $total_profit += $tblArray[$i * 5 + 4];
+                $total_profit += $profit;
                 $sold_product->save();
+
             }
 
             SellBill::where('id', $sell_bill->id)->update(['total_profit' => $total_profit]);
@@ -176,43 +179,51 @@ class DailySellsController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        $paid_balance = abs($request->paid_balance);
+        $remaining_balance = $request->remaining_balance;
+
+        $sell_bill = SellBill::where('id', $id)->first();
+
         DB::beginTransaction();
         try {
-            if ($request['tbl'] == null) {
+            if ($request['tbl'] == null && $sell_bill->paid_balance != $paid_balance) {
                 return redirect('/daily_sells');
             } else {
 
                 $total_profit = 0;
                 $tblArray = explode(',', $request['tbl']);
-                for ($i = 0; $i < count($tblArray) / 5; $i++) {
-                    $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-                    if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
-                        Product::where('id', $tblArray[$i * 5 + 0])->update([
-                            'status' => false,
-                            'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                            'sell_bill_id' => $id
-                        ]);
-                    } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
-                        Product::where('id', $tblArray[$i * 5 + 0])->update([
-                            'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                            'sell_bill_id' => $id,
-                            'status' => true
-                        ]);
+
+                if ($request->tbl != null) {
+                    for ($i = 0; $i < count($tblArray) / 5; $i++) {
+                        $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
+                        if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
+                            Product::where('id', $tblArray[$i * 5 + 0])->update([
+                                'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                                'sell_bill_id' => $id,
+                                'status' => false
+                            ]);
+                        } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
+                            Product::where('id', $tblArray[$i * 5 + 0])->update([
+                                'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                                'sell_bill_id' => $id,
+                                'status' => true
+                            ]);
+                        }
+
+                        $sold_product = new SoldProduct;
+                        $sold_product->product_id = $tblArray[$i * 5 + 0];
+                        $sold_product->quantity = $tblArray[$i * 5 + 1];
+                        $sold_product->sell_price = $tblArray[$i * 5 + 2];
+                        $sold_product->total_price = $tblArray[$i * 5 + 3];
+                        $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                        $sold_product->profit = $profit;
+                        $sold_product->sell_bill_id = $id;
+                        $total_profit += $profit;
+                        $sold_product->save();
+
                     }
-
-                    $sold_product = new SoldProduct;
-                    $sold_product->product_id = $tblArray[$i * 5 + 0];
-                    $sold_product->quantity = $tblArray[$i * 5 + 1];
-                    $sold_product->sell_price = $tblArray[$i * 5 + 2];
-                    $sold_product->total_price = $tblArray[$i * 5 + 3];
-                    $sold_product->profit = $tblArray[$i * 5 + 4];
-                    $sold_product->sell_bill_id = $id;
-                    $total_profit += $tblArray[$i * 5 + 4];
-                    $sold_product->save();
-
                 }
-            
-                $sell_bill = SellBill::where('id', $id)->first();
 
                 DB::statement('UPDATE box SET box.remaining = CASE box.id
                     WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
@@ -224,17 +235,15 @@ class DailySellsController extends Controller
                     WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
                     ELSE box.counter
                     END
-                WHERE box.id IN(1, 3, 7);', [$request['paid_balance'] - $sell_bill->paid_balance, $total_profit, (abs($request['remaining_balance']) + abs($request['paid_balance'])) - $sell_bill->total_balance]);
+                WHERE box.id IN(1, 3, 7);', [($paid_balance - $sell_bill->paid_balance), $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
 
-                SellBill::where('id', $id)->update(
-                    [
-                        'paid_balance' => $request['paid_balance'],
-                        'remaining_balance' => $request['remaining_balance'],
-                        'total_balance' => abs($request['remaining_balance']) + abs($request['paid_balance']),
+                SellBill::where('id', $id)->update([
+                        'paid_balance' => $paid_balance,
+                        'remaining_balance' => $remaining_balance,
+                        'total_balance' => abs($remaining_balance) + $paid_balance,
                         'total_profit' => $sell_bill->total_profit + $total_profit,
                         'byan' => $request['byan']
-                    ]
-                );
+                    ]);
 
                 if ($request['provider_id'] > 0) {
                     $provider = Provider::where('id', $request['provider_id'])->select('balance')->first();
@@ -254,6 +263,167 @@ class DailySellsController extends Controller
             DB::rollBack();
             return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
+    }
+
+    public function delete_product($id)
+    {
+        DB::beginTransaction();
+        try {
+            $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
+            $product = Product::where('id', $sold_product->product_id)->first();
+
+            $profit = ($sold_product->sell_price * $sold_product->quantity) - ($product->original_price * $sold_product->quantity);
+
+            DB::statement('UPDATE box SET box.remaining = CASE box.id
+                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
+                WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)-?
+                WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)-?
+                ELSE box.remaining
+                END,
+            box.counter = CASE box.id
+                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                ELSE box.counter
+                END
+            WHERE box.id IN(1, 3, 7);', [$sold_product->total_price, $profit, $sold_product->total_price]);
+
+            $sell_bill = SellBill::where('id', $sold_product->sell_bill_id)->update([
+                'total_balance' => $sold_product->sell_bill->total_balance - $sold_product->total_price,
+                'paid_balance' => $sold_product->sell_bill->paid_balance - $sold_product->total_price,
+                'total_profit' => $sold_product->sell_bill->total_profit - $profit
+            ]);
+  
+            Product::where('id', $sold_product->product_id)->update([
+                'quantity' => $product->quantity + $sold_product->quantity,
+                'status' => true
+            ]);
+
+            $sold_product->delete();
+
+            DB::commit();
+            return redirect('/daily_sell/edit/' . $sold_product->sell_bill_id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    public function to_pdf(Request $request)
+    {
+        $from = $request['from'];
+        $to = $request['to'];
+        $sell_bills = SellBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ? AND customer_id = 1', [$from, $to])->orderBy('id', 'DESC')->get();
+
+        $i = 1;
+        $total_rem = 0;
+        $total_profit = 0;
+        $total_paid = 0;
+        $time = date('H:i:s');
+        $date = date('Y-m-d');
+        $by = Auth::user()->name;
+        $company = config('app.company');
+
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل فواتير البيع</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
+        <thead>
+          <tr>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="10%" bgcolor="#eee">المبلغ المدفوع</th>
+            <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="10%" bgcolor="#eee">المربح</th>
+            <th width="15%" bgcolor="#eee">البيان</th>
+          </tr>
+        </thead>
+        <tbody>';
+        foreach ($sell_bills as $sell_bill) {
+            $target = '';
+            $balance = '';
+            if ($sell_bill->provider_id > 0) {
+                $target = $sell_bill->provider->name . ' - مورد';
+            } elseif ($sell_bill->customer_id > 0) {
+                $target = $sell_bill->customer->name . ' - زبون';
+            } elseif ($sell_bill->worker_id > 0) {
+                $target = $sell_bill->worker->name . ' - موظف';
+            }
+            if ($sell_bill->remaining_balance > 0) {
+                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
+            } elseif ($sell_bill->remaining_balance < 0) {
+                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
+            } else {
+                $balance = $sell_bill->remaining_balance . '<span>&#8362;&#160;</span>';
+            }
+            $table_content .= '<tr>
+              <td width="5%">' . $i . '</td>
+              <td width="15%">' . $sell_bill->number . '</td>
+              <td width="15%">' . $sell_bill->date_created . '</td>
+              <td width="20%">' . $target . '</td>
+              <td width="10%">' . $sell_bill->paid_balance . '<span>&#8362;&#160;</span></td>
+              <td width="10%">' . $balance . '</td>
+              <td width="10%">' . $sell_bill->total_profit . '<span>&#8362;&#160;</span></td>
+              <td width="15%">' . $sell_bill->byan . '</td>
+            </tr>';
+            $total_rem += $sell_bill->remaining_balance;
+            $total_profit += $sell_bill->total_profit;
+            $total_paid += $sell_bill->paid_balance;
+            $i++;
+        }
+        if ($total_rem < 0) {
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - مدين -';
+        } elseif ($total_rem > 0) {
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span> - دائن -';
+        } else {
+            $total_rem = $total_rem . '<span>&#8362;&#160;</span>';
+        }
+        $table_content .= '</tbody></table>';
+        PDF::SetTitle('كل فواتير البيع');
+        PDF::SetAuthor('اياد الهسي');
+        // set some language dependent data:
+        $lg = array();
+        $lg['a_meta_charset'] = 'UTF-8';
+        $lg['a_meta_dir'] = 'rtl';
+        $lg['a_meta_language'] = 'ar';
+        $lg['w_page'] = 'page';
+        // set some language-dependent strings (optional)
+        PDF::setLanguageArray($lg);
+        // set font
+        PDF::SetFont('aealarabiya', '', 11);
+        // set margins
+        PDF::SetMargins(PDF_MARGIN_LEFT, /*PDF_MARGIN_TOP,*/ PDF_MARGIN_RIGHT);
+        PDF::SetHeaderMargin(PDF_MARGIN_HEADER);
+        PDF::SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        PDF::AddPage();
+        PDF::writeHTML($content);
+        PDF::SetFont('freeserif', '', 11);
+        PDF::writeHTML($table_content);
+
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
+        <tbody>
+        <tr>
+            <td width="10%">#</td>
+            <td width="60%">المجموع</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المتبقي</td>
+            <td width="30%" color="#fff" bgcolor="#003B36">' . $total_rem . '</td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المبلغ المدفوع</td>
+            <td width="30%" color="#fff" bgcolor="#DB2E39">' . $total_paid . '<span>&#8362;&#160;</span></td>
+        </tr>
+        <tr>
+            <td width="10%">#</td>
+            <td width="30%">المربح</td>
+            <td width="30%" color="#000" bgcolor="#FFCA2C">' . $total_profit . '<span>&#8362;&#160;</span></td>
+        </tr>
+        </tbody></table>');
+
+        PDF::Output('all_sell_bills_' . date('ymdhis') . '.pdf', 'I');
+        return response()->json(['status' => 'success']);
     }
 
 }
