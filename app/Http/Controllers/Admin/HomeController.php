@@ -7,6 +7,7 @@ use PDF;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
+use App\Models\SellBill;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -97,6 +98,8 @@ class HomeController extends Controller
             $result = Customer::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         } else if ($target == 'products') {
             $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+        } else if ($target == 'sell_bills') {
+            $result = SellBill::where('date_created', date($search_query))->orderBy('id', 'DESC')->get();
         }
         $pages = ceil(count($result) / $page);
         return view('website.search', compact('result', 'pages', 'target'));

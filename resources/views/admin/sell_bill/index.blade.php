@@ -84,6 +84,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+
         $(document).ready(function() {
             $("#search_input").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
@@ -92,6 +93,7 @@
                 });
             });
         });
+
         // create sell bill
         $('#sell_bill_table_card').on('click', '.multi_button', function() {
             var movement = $(this).data('movement');
@@ -118,6 +120,7 @@
                 });
             }
         });
+
         $('#show_bill_modal #show_bill_form').submit(function(e) {
             e.preventDefault();
             var data = new FormData(this);
@@ -152,6 +155,7 @@
                 }
             });
         });
+        
         // show sell bill
         $('#sell_bill_table').on('click', '.show_button', function() {
             let id = $(this).data('dataid');
@@ -174,16 +178,19 @@
                 });
             }
         });
+
         $('#show_bill_modal #show_bill_form').submit(function(e) {
             e.preventDefault();
             var data = new FormData(this);
             var movement = $('#show_bill_modal #movement').val();
 
         });
+
         // show bill to pdf modal
         $('.from_to_pdf_button').click(function(e) {
             $('#from_to_pdf_modal').modal('show');
         });
+
         // sanadat qapd to pdf form
         $('#from_to_pdf_form').submit(function(e) {
             e.preventDefault();

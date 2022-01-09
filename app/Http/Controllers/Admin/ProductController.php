@@ -102,7 +102,7 @@ class ProductController extends Controller
         $from = date($request->from.' 00:00:00');
         $to = date($request->to.' 23:59:59');
 
-        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, products.name, products.type, products.status, products.original_price, products.original_quantity FROM sold_products INNER JOIN products ON sold_products.product_id = products.id WHERE sold_products.created_at >= ? AND sold_products.created_at <= ? AND products.id = ? ORDER BY sold_products.id DESC', [$from, $to, $id]);
+        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, sold_products.created_at, products.id, products.name, products.type, products.status, products.original_price, products.original_quantity, sell_bills.number FROM sold_products INNER JOIN products ON sold_products.product_id = products.id INNER JOIN sell_bills ON sold_products.sell_bill_id = sell_bills.id WHERE products.id = ? AND sold_products.created_at >= ? AND sold_products.created_at <= ? ORDER BY sold_products.id DESC', [$id, $from, $to]);
 
         $i = 1;
         $total = 0;
@@ -113,16 +113,17 @@ class ProductController extends Controller
         $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$compamy.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%" bgcolor="#eee">#</th>
-            <th width="20%" bgcolor="#eee">سعر الشراء</th>
+            <th width="5%" bgcolor="#eee">#</th>
+            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="15%" bgcolor="#eee">سعر الشراء</th>
             <th width="20%" bgcolor="#eee">سعر البيع</th>
             <th width="10%" bgcolor="#eee">الكمية</th>
             <th width="20%" bgcolor="#eee">السعر الكلي</th>
-            <th width="20%" bgcolor="#eee">المربح</th>
+            <th width="15%" bgcolor="#eee">المربح</th>
           </tr>
         </thead>
         <tbody>';
@@ -134,12 +135,13 @@ class ProductController extends Controller
                 $status = 'غير موجود';
             }
             $table_content .= '<tr>
-              <td width="10%">' . $i . '</td>
-              <td width="20%">' . ($product->total_price - $product->profit) / ($product->quantity) . '<span>&#8362;&#160;</span></td>
+              <td width="5%">' . $i . '</td>
+              <td width="15%">' . $product->number . '</td>
+              <td width="15%">' . ($product->total_price - $product->profit) / ($product->quantity) . '<span>&#8362;&#160;</span></td>
               <td width="20%">' . $product->sell_price . '<span>&#8362;&#160;</span></td>
               <td width="10%">' . $product->quantity . '</td>
               <td width="20%">' . $product->total_price . '<span>&#8362;&#160;</span></td>
-              <td width="20%">' . $product->profit . '<span>&#8362;&#160;</span></td>
+              <td width="15%">' . $product->profit . '<span>&#8362;&#160;</span></td>
             </tr>';
             $total += $product->quantity;
             $i++;

@@ -44,6 +44,9 @@
             @elseif($target == 'products')
               @php $products = $result; @endphp
               @include('website.table')
+            @elseif($target == 'sell_bills')
+              @php $sell_bills = $result; @endphp
+              @include('admin.sell_bill.table')
             @endif
           </table>
         </div>
@@ -110,8 +113,14 @@
 <!-- Modal::product to pdf -->
 @include('includes.from_to')
 
+@if($target == 'sell_bills')
+<!-- Modal::show bill -->
+@include('includes.show_bill')
+@endif
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
   $(document).ready(function(){
     $("#search_input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
@@ -122,18 +131,21 @@
   });
 
   @if($target == 'providers')
+
     // show provider kashf to pdf modal
     $('#provider_table').on('click', '.from_to_pdf_button', function(e){
       let from_to = $(this).data('fromto');
       $('#from_to_pdf_modal').modal('show');
       $('#from_to').val(from_to);
     });
+    
     // show provider to pdf modal
     $('.from_to_pdf_button').click(function(e){
       let from_to = $(this).data('fromto');
       $('#from_to_pdf_modal').modal('show');
       $('#from_to').val(from_to);
     });
+
     // create provider to pdf form
     $('#from_to_pdf_form').submit(function(e){
       e.preventDefault();
@@ -172,19 +184,23 @@
       $('#from_to_pdf_form')[0].reset();
       $('#from_to_pdf_modal').modal('hide');
     });
+
   @elseif($target == 'customers')
+
     // show customer kashf to pdf modal
     $('#customer_table').on('click', '.from_to_pdf_button', function(e){
       let from_to = $(this).data('fromto');
       $('#from_to_pdf_modal').modal('show');
       $('#from_to').val(from_to);
     });
+
     // show customer to pdf modal
     $('.from_to_pdf_button').click(function(e){
       let from_to = $(this).data('fromto');
       $('#from_to_pdf_modal').modal('show');
       $('#from_to').val(from_to);
     });
+
     // create provider to pdf form
     $('#from_to_pdf_form').submit(function(e){
       e.preventDefault();
@@ -223,6 +239,7 @@
       $('#from_to_pdf_form')[0].reset();
       $('#from_to_pdf_modal').modal('hide');
     });
+
   @elseif($target == 'products')
 
     // show product to pdf modal
@@ -419,6 +436,32 @@
         $('#from_to_pdf_form')[0].reset();
         $('#from_to_pdf_modal').modal('hide');
     });
+
+  @elseif($target == 'sell_bills')
+  
+    // show sell bill
+    $('#product_table').on('click', '.show_button', function() {
+        let id = $(this).data('dataid');
+        let movement = $(this).data('movement');
+        let _token = $('input[name="_token"]').val();
+        if (movement == 'show_sell_bill') {
+            $.ajax({
+                url: 'sell_bill/show',
+                type: 'GET',
+                data: {
+                    id: id,
+                    _token: _token
+                },
+                success: function(response) {
+                    $('#show_bill_form .modal-body').html('');
+                    $('#show_bill_form .modal-body').html(response.bill_data);
+                    $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة بيع');
+                    $('#show_bill_modal').modal('show');
+                }
+            });
+        }
+    });
+
   @endif
 
 </script>

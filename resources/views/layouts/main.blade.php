@@ -32,6 +32,14 @@
                                             id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                                             aria-expanded="false"></button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="#">
+                                                <div class="custom-control custom-radio">
+                                                    <input name="target" class="custom-control-input" id="customRadio5"
+                                                        type="radio" value="sell_bills">
+                                                    <label class="custom-control-label"
+                                                        for="customRadio5">فواتير بيع</label>
+                                                </div>
+                                            </a>
                                             @can('add_providers')
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
