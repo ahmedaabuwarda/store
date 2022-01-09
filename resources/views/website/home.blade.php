@@ -192,6 +192,25 @@
                                 </div>
 
                             </div>
+
+                            <div class="col-xl-12 col-md-12">
+
+                                <div class="form-group">
+                                    <label class="form-control-label">نوع العملية</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"><i
+                                                    class="fa fa-heart"></i></span>
+                                        </div>
+                                        <select class="form-control selectpicker" name="movement" required>
+                                            <option value="1">اضافة</option>
+                                            <option value="0">سحب</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <div class="col-xl-12 col-md-12">
 
                                 <div class="form-group">
