@@ -18,7 +18,7 @@
     @else
         @php $i = 1; @endphp
         @foreach ($products as $product)
-            <tr @if ($product->status == 0) class="table-danger" @endif>
+            <tr @if ($product->status == 0 || $product->quantity == 0) class="table-danger" @endif>
                 <td class="disblay-3 text-center">
                     @if ($product->status == 0 && $product->original_quantity == 0 && Auth::user()->id == 1)
                         <button class="btn btn-sm btn-danger delete_product_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $product->id }}"><i class="fa fa-trash"></i></button>

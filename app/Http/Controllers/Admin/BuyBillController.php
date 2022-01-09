@@ -159,57 +159,79 @@ class BuyBillController extends Controller
 
     public function update(Request $request, $id)
     {
-        if($request['tbl'] == null) {
+
+        $paid_balance = abs($request->paid_balance);
+        $remaining_balance = $request->remaining_balance;
+
+        $buy_bill = BuyBill::where('id', $id)->first();
+
+        if($request['tbl'] == null && $buy_bill->paid_balance != $paid_balance) {
             return redirect('/buy_bills');
         } else {
+
             DB::beginTransaction();
             try {
                 $tblArray = explode(',', $request['tbl']);
-                for($i = 0; $i < count($tblArray)/4; $i++) {
-                    $product = Product::where('id', $tblArray[$i*4 + 0])->first();
-                    Product::where('id', $tblArray[$i*4 + 0])->update([
-                        'quantity' => $product->quantity + $tblArray[$i*4 + 1],
-                        'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
-                        'original_price' => $tblArray[$i*4 + 2],
-                        'buy_bill_id' => $id,
-                        'status' => true
-                    ]);
-                    $buyed_product = new BuyedProduct;
-                    $buyed_product->product_id = $tblArray[$i*4 + 0];
-                    $buyed_product->quantity = $tblArray[$i*4 + 1];
-                    $buyed_product->buy_price = $tblArray[$i*4 + 2];
-                    $buyed_product->total_price = $tblArray[$i*4 + 3];
-                    $buyed_product->buy_bill_id = $id;
-                    $buyed_product->save();
+                if ($request->tbl != null) {
+                    for($i = 0; $i < count($tblArray)/4; $i++) {
+                        $product = Product::where('id', $tblArray[$i*4 + 0])->first();
+                        Product::where('id', $tblArray[$i*4 + 0])->update([
+                            'quantity' => $product->quantity + $tblArray[$i*4 + 1],
+                            'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
+                            'original_price' => $tblArray[$i*4 + 2],
+                            'buy_bill_id' => $id,
+                            'status' => true
+                        ]);
+
+                        $buyed_product = new BuyedProduct;
+                        $buyed_product->product_id = $tblArray[$i*4 + 0];
+                        $buyed_product->quantity = $tblArray[$i*4 + 1];
+                        $buyed_product->buy_price = $tblArray[$i*4 + 2];
+                        $buyed_product->total_price = $tblArray[$i*4 + 3];
+                        $buyed_product->buy_bill_id = $id;
+                        $buyed_product->save();
+                    }
                 }
-                $buy_bill = BuyBill::where('id', $id)->first();
+
+                DB::statement('UPDATE box SET box.remaining = CASE box.id
+                    WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
+                    WHEN 6 THEN (SELECT remaining FROM box WHERE box.id = 6)+?
+                    ELSE box.remaining
+                    END,
+                box.counter = CASE box.id
+                    WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                    ELSE box.counter
+                    END
+                WHERE box.id IN(1, 6);', [$paid_balance, $paid_balance + abs($remaining_balance)]);
+
+                
                 BuyBill::where('id', $id)->update([
-                    'paid_balance' => $request['paid_balance'],
-                    'remaining_balance' => $request['remaining_balance'],
-                    'original_balance' => $request['remaining_balance'] + $request['paid_balance'],
+                    'paid_balance' => $paid_balance,
+                    'remaining_balance' => $remaining_balance,
+                    'original_balance' => $remaining_balance + $paid_balance,
                     'byan' => $request['byan']]
                 );
 
                 if($request['provider_id'] > 0){
                     $provider = Provider::where('id', $request['provider_id'])->select('balance')->first();
                     if($provider != null){
-                        Provider::where('id', $request['provider_id'])->update(['balance' => ($provider->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
+                        Provider::where('id', $request['provider_id'])->update(['balance' => ($provider->balance - $buy_bill->remaining_balance) +  $remaining_balance]);
                     } else {
-                        throw new \Exception('Provider not found');
+                        throw new Exception('Provider not found');
                     }
                 } elseif($request['customer_id'] > 0){
                     $customer = Customer::where('id', $request['customer_id'])->select('balance')->first();
                     if($customer != null) {
                         Customer::where('id', $request['customer_id'])->update(['balance' => ($customer->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
                     } else {
-                        throw new \Exception('Customer not found');
+                        throw new Exception('Customer not found');
                     }
                 } elseif($request['worker_id'] > 0){
                     $worker = Worker::where('id', $request['worker_id'])->select('balance')->first();
                     if($worker != null) {
                         Worker::where('id', $request['worker_id'])->update(['balance' => ($worker->balance - $buy_bill->remaining_balance) +  $request['remaining_balance']]);
                     } else {
-                        throw new \Exception('Worker not found');
+                        throw new Exception('Worker not found');
                     }
                 }
 
@@ -224,20 +246,46 @@ class BuyBillController extends Controller
     
     public function delete_product($id)
     {
+
         DB::beginTransaction();
         try {
+
             $buyed_product = BuyedProduct::where('id', $id)->with('buy_bill')->first();
-
-            BuyBill::where('id', $buyed_product->buy_bill_id)->update([
-                'original_balance' => $buyed_product->buy_bill->original_balance - $buyed_product->total_price
-            ]);
-
             $product = Product::where('id', $buyed_product->product_id)->first();
 
-            Product::where('id', $buyed_product->product_id)->update([
-                'quantity' => $product->quantity - $buyed_product->quantity,
-                'original_quantity' => $product->original_quantity - $buyed_product->quantity
+            $buy_bill = BuyBill::where('id', $buyed_product->buy_bill_id)->first();
+
+            DB::statement('UPDATE box SET box.remaining = CASE box.id
+                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
+                WHEN 6 THEN (SELECT remaining FROM box WHERE box.id = 6)-?
+                ELSE box.remaining
+                END,
+            box.counter = CASE box.id
+                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
+                WHEN 6 THEN (SELECT counter FROM box WHERE box.id = 6)-1
+                ELSE box.counter
+                END
+            WHERE box.id IN(1, 6, 7);', [$buyed_product->total_price - $buy_bill->discount, $buyed_product->total_price - $buy_bill->discount]);
+
+            $buy_bill = BuyBill::where('id', $buyed_product->buy_bill_id)->update([
+                'original_balance' => $buyed_product->buy_bill->original_balance - ($buyed_product->total_price - $buy_bill->discount),
+                'paid_balance' => $buyed_product->buy_bill->paid_balance - ($buyed_product->total_price - $buy_bill->discount),
+                'discount' => 0
             ]);
+            if (($product->quantity - $buyed_product->quantity) == 0) {
+                Product::where('id', $buyed_product->product_id)->update([
+                    'quantity' => $product->quantity - $buyed_product->quantity,
+                    'original_quantity' => $product->original_quantity - $buyed_product->quantity,
+                    'status' => false
+                ]);
+            } else {
+                Product::where('id', $buyed_product->product_id)->update([
+                    'quantity' => $product->quantity - $buyed_product->quantity,
+                    'original_quantity' => $product->original_quantity - $buyed_product->quantity,
+                    'status' => true
+                ]);
+            }
+            
 
             $buyed_product->delete();
 

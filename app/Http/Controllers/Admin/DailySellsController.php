@@ -267,8 +267,10 @@ class DailySellsController extends Controller
 
     public function delete_product($id)
     {
+
         DB::beginTransaction();
         try {
+            
             $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
             $product = Product::where('id', $sold_product->product_id)->first();
 
@@ -305,6 +307,7 @@ class DailySellsController extends Controller
             DB::rollBack();
             return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
+
     }
 
     public function to_pdf(Request $request)
