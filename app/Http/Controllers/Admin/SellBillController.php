@@ -302,10 +302,10 @@ class SellBillController extends Controller
             $sold_product->delete();
 
             DB::commit();
-            return redirect('/daily_sell/edit/' . $sold_product->sell_bill_id);
+            return redirect('/sell_bill/edit/' . $sold_product->sell_bill_id);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
+            return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
