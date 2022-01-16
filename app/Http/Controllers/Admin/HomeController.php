@@ -116,13 +116,26 @@ class HomeController extends Controller
         try {
 
             if ($movement == 1) {
+
+                DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
+
                 DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
 
                 DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,?,?,?)', [$balance, true, 'دخل الصندوق', date('Y-m-d H:i:s')]);
+
+            } else if ($movement == 2) {
+
+                DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
+                DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 3)+? WHERE id = 3;', [$balance]);
+
+                DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,?,?,?)', [$balance, true, 'مربح مباشر', date('Y-m-d H:i:s')]);
+
             } else if ($movement == 0) {
+
                 DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)-?, counter = (SELECT counter FROM box WHERE id = 1)-1 WHERE id = 1;', [$balance]);
 
                 DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,?,?,?)', [$balance, false, 'خرج من الصندوق', date('Y-m-d H:i:s')]);
+
             }
 
             DB::commit();

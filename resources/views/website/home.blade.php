@@ -204,6 +204,7 @@
                                         </div>
                                         <select class="form-control selectpicker" name="movement" required>
                                             <option value="1">اضافة</option>
+                                            <option value="2">مربح مباشر</option>
                                             <option value="0">سحب</option>
                                         </select>
                                     </div>

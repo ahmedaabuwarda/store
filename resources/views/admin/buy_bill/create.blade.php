@@ -102,7 +102,8 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-xl-5 col-md-12">
+
+                  <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الاصناف</label>
@@ -112,7 +113,7 @@
                               </div>
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
-                                  <option value="{{ $product->id }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}" @if($product->quantity > 0) class="text-success" @endif>{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}</option>
+                                  <option value="{{ $product->id }}" title="{{ $product->name }}" @if($product->quantity > 0) class="text-success" @endif>{{ $product->name }}</option>
                                 @endforeach
                               </select>
                           </div>
@@ -124,6 +125,27 @@
                   </div>
 
                   <div class="col-xl-3 col-md-12">
+
+                    <div class="form-group">
+                      <label class="form-control-label">الاسعار</label>
+                          <div class="input-group">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-info"></i></span>
+                              </div>
+                              <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
+                                @foreach($products as $product)
+                                  <option value="{{ $product->id }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} }" @if($product->quantity > 0) class="text-success" @endif>{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} }</option>
+                                @endforeach
+                              </select>
+                          </div>
+                          @error('product_id')
+                            <span class="text-danger">{{ $message }}</span>
+                          @enderror
+                    </div>
+
+                  </div>
+
+                  <div class="col-xl-2 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الكمية</label>

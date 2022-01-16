@@ -211,6 +211,8 @@ class SellBillController extends Controller
                                 'sell_bill_id' => $id,
                                 'status' => true
                             ]);
+                        } else {
+                            return redirect('/sell_bill/edit/'.$id);
                         }
 
                         $sold_product = new SoldProduct;

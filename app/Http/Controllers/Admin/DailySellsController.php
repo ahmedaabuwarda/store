@@ -209,6 +209,8 @@ class DailySellsController extends Controller
                                 'sell_bill_id' => $id,
                                 'status' => true
                             ]);
+                        } else {
+                            return redirect('/daily_sell/edit/'.$id);
                         }
 
                         $sold_product = new SoldProduct;
