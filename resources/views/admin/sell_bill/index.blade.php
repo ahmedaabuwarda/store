@@ -29,7 +29,7 @@
                             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                <a class="btn btn-dark text-white multi_button" data-movement="create_sell_bill">
+                                <a href="{{ url('/sell_bill/create') }}" class="btn btn-dark text-white" data-movement="create_sell_bill">
                                 <span class="badge text-white bg-warning mr-0">{{ $box[0]->remaining }} &#8362;</span>
                                 <span class="badge text-white bg-success mr-1">{{ $box[1]->remaining }} &#8362;</span> فاتورة بيع
                             </a>

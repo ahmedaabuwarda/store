@@ -50,8 +50,6 @@ class DailySellsController extends Controller
         $customers = DB::select('SELECT id, name FROM customers WHERE id = 1 ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
         $error = 1;
-        // $modal = view('admin.daily_sells.create', compact('customers', 'products'))->render();
-        // return response()->json(['status' => 'success', 'modal' => $modal]);
         return view('admin.daily_sells.create', compact('customers', 'products', 'error'));
     }
 
@@ -119,10 +117,10 @@ class DailySellsController extends Controller
                 $quantity = Quantity::where('id', $request->product_pr)->first();
 
                 if ($quantity->quantity - $tblArray[$i * 5 + 1] < 0) {
-                    session()->flash('error','error');
                     return redirect('/daily_sells');
-                    // return \Redirect::back()->withSuccess('Message you want show in View');
+                    
                 } else if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
+
                     Product::where('id', $tblArray[$i * 5 + 0])->update([
                         'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                         'sell_bill_id' => $sell_bill->id,
@@ -200,7 +198,7 @@ class DailySellsController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+
         $paid_balance = abs($request->paid_balance);
         $remaining_balance = $request->remaining_balance;
 
@@ -220,7 +218,6 @@ class DailySellsController extends Controller
 
                         $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
                         $quantity = Quantity::where('product_id', $tblArray[$i * 5 + 0])->where('id', $request->product_pr)->first();
-                        // dd($quantity);
 
                         if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
                             Product::where('id', $tblArray[$i * 5 + 0])->update([
@@ -291,7 +288,6 @@ class DailySellsController extends Controller
             return redirect('/daily_sell/edit/'.$id);
         } catch (Exception $e) {
             DB::rollBack();
-            // return $e->getMessage();
             return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
     }

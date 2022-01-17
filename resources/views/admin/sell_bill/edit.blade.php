@@ -36,7 +36,7 @@
             <!-- Card body -->
             <div class="card-body bg-secondary">
 
-              <form action="{{ URL('/sell_bill/update/' . $sell_bill->id) }}" method="POST">
+              <form action="{{ URL('/sell_bill/update/' . $sell_bill->id) }}" method="POST" id="daily_sell_update_form">
                 @csrf
                 <div class="row">
                   <div class="col-xl-6 col-md-12">
@@ -98,7 +98,7 @@
                           <td class="disblay-3 text-center">{{ $product->total_price }}</td>
                           <td class="disblay-3 text-center">{{ $product->profit }}</td>
                           <td class="disblay-3 text-center">
-                            <a href="#" data-dataid="{{ $product->id }}" id="delete_product_button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete_product_form').removeAttribute('action'); document.getElementById('delete_product_form').setAttribute('action','{{ url('/sell_bill/delete_product' . '/' . $product->id) }}'); document.getElementById('delete_product_form').submit();"><i class="fa fa-trash"></i></a>
+                            <a href="#" data-dataid="{{ $product->id }}" id="delete_product_button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete_product_form').removeAttribute('action'); document.getElementById('delete_product_form').setAttribute('action','{{ url('/daily_sell/delete_product' . '/' . $product->id) }}'); document.getElementById('delete_product_form').submit();"><i class="fa fa-trash"></i></a>
                           </td>
                         </tr>
                         @php $i++; @endphp
@@ -108,16 +108,15 @@
                   <table class="table table-hover mb-2" id="productTableTotal">
                     <thead>
                       <th class="text-center">الاجمالي</th>
-                      <th class="text-center" id="total">{{ $sell_bill->total_balance }}<i class='fa fa-shekel-sign ml-1'></i></th>
-                      <th class="text-center" id="profit"><span style="font-size: 16px; display: inline;">&#8362;</span>
-                      </th>
+                      <th class="text-center" id="total">{{ $sell_bill->total_balance }}</th>
+                      <th class="text-center" id="profit">{{ $sell_bill->total_profit }}</th>
                     </thead>
                   </table>
 
                 </div>
 
                 <div class="row">
-                  <div class="col-xl-5 col-md-12">
+                  <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الاصناف</label>
@@ -128,8 +127,7 @@
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
                                   @if($product->quantity > 0)
-                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">{ {{ $product->original_price }} &#8362;} {
-                                    {{ $product->quantity }} } {{ $product->name }}</option>
+                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{{ $product->name }}" onchange="alert(this.value);">{{ $product->name }}</option>
                                   @endif
                                 @endforeach
                               </select>
@@ -141,7 +139,13 @@
 
                   </div>
 
-                  <div class="col-xl-3 col-md-12">
+                  <div class="col-xl-3 col-md-12 m-auto" id="product_prices">
+                    <a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button">
+                      <i class="fa fa-search text-white"></i>
+                    </a>
+                  </div>
+
+                  <div class="col-xl-2 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الكمية</label>
@@ -180,6 +184,7 @@
                       <i class="fa fa-plus text-white"></i>
                     </a>
                   </div>
+
                 </div>
 
                 <div class="row">
@@ -330,15 +335,30 @@
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
+
+  $('#search_price_button').click(function(){
+    let val = $("#productname").val();
+    console.log(val);
+    $.ajax({
+      url: '/product/price/' + val,
+      type: 'GET',
+      success: function(responce){
+        if (responce.status == 'success') {
+          $('#product_prices').html(responce.price);
+        }
+      }
+    });
+  });
+
   var i = 1;
   var total = {{ $sell_bill->total_balance }};
-  var profit = 0;
+  var profit = {{ $sell_bill->total_profit }};
   $(document).ready(function () {
     $('#updateButton').click(function () {
         if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {
           var tota = $("#quantity").val() * $("#price").val();
           total += tota;
-          var profi = $("#quantity").val() * parseFloat($('#productname').find(":selected").data('original'));
+          var profi = $("#quantity").val() * parseFloat($('#product_pr').find(":selected").data('original'));
           profit += (tota - profi);
           $("#productTable tbody").append("<tr>" +
           "<td class='text-center'>" + i + "</td>" +
@@ -358,6 +378,9 @@
           $("#price").val("");
           i = i + 1;
         }
+        setTimeout(function() { 
+          $( "#daily_sell_update_form" ).submit();
+        }, 1000);
     });
     $('#paid_balance').keyup(function () {
       $('#remaining_balance').val($('#paid_balance').val() - total);
@@ -366,6 +389,7 @@
       $('#remaining_balance').val($('#paid_balance').val() - total);
     });
   });
+
   $(document).ready(function () {
     var tbl = $('#productTable tr').map(function() {
       return $(this).find('.imp').map(function() {
@@ -373,6 +397,7 @@
       }).get();
     }).get();
     $('#tbl').val(tbl);
+
     $('#updateButton').click(function () {
       var tbl = $('#productTable tr').map(function() {
         return $(this).find('.imp').map(function() {
@@ -381,6 +406,7 @@
       }).get();
       $('#tbl').val(tbl);
     });
+
     $("#productTable").on("click", "#delete_product_button", function() {
       let data = $(this).data('data');
       total = total - data;
@@ -394,5 +420,6 @@
       $('#tbl').val(tbl);
     });
   });
+
   </script>
 @endsection
