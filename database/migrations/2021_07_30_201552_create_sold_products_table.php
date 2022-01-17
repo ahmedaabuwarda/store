@@ -17,6 +17,7 @@ class CreateSoldProductsTable extends Migration
             $table->id();
             $table->integer('product_id');
             $table->integer('quantity');
+            $table->double('buy_price', 15, 4);
             $table->double('sell_price', 15, 4);
             $table->double('total_price', 15, 4);
             $table->double('profit', 15, 4);

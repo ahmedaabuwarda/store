@@ -340,6 +340,7 @@
           "<td class='disblay-3 text-center'><a data-data='" + tota + "' class='btn btn-dark btn-sm text-white' id='delete_product_button'><i class='fa fa-trash'></i></a></td>" +
           "</tr>");
           $("#total").text(total);
+          $("#paid_balance").val(total);
           $("#productname").val("");
           $("#quantity").val("");
           $("#price").val("");

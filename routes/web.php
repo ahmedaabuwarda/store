@@ -34,6 +34,7 @@ Route::post('/product/update', [App\Http\Controllers\Admin\ProductController::cl
 Route::post('/product/delete', [App\Http\Controllers\Admin\ProductController::class, 'delete']);
 Route::post('/product/jard_to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'jard_to_pdf']);
 Route::post('/product/to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'to_pdf']);
+Route::get('/product/price/{id}', [App\Http\Controllers\Admin\ProductController::class, 'price']);
 
 // providers
 Route::get('/providers', [App\Http\Controllers\Admin\ProviderController::class, 'index']);

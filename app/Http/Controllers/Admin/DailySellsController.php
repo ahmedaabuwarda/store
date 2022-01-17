@@ -12,6 +12,7 @@ use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\SellBill;
 use App\Models\SoldProduct;
+use App\Models\Quantity;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -48,12 +49,15 @@ class DailySellsController extends Controller
     {
         $customers = DB::select('SELECT id, name FROM customers WHERE id = 1 ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
-        $modal = view('admin.daily_sells.create', compact('customers', 'products'))->render();
-        return response()->json(['status' => 'success', 'modal' => $modal]);
+        $error = 1;
+        // $modal = view('admin.daily_sells.create', compact('customers', 'products'))->render();
+        // return response()->json(['status' => 'success', 'modal' => $modal]);
+        return view('admin.daily_sells.create', compact('customers', 'products', 'error'));
     }
 
     public function store(Request $request)
     {
+        
         DB::beginTransaction();
         try {
             $customer_id = $request['customer_id'];
@@ -110,22 +114,38 @@ class DailySellsController extends Controller
 
             $tblArray = explode(',', $request['tbl']);
             for ($i = 0; $i < count($tblArray) / 5; $i++) {
+
                 $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-                Product::where('id', $tblArray[$i * 5 + 0])->update([
-                    'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
-                    'sell_bill_id' => $sell_bill->id
-                ]);
-                if ($product->quantity == 0) {
-                    Product::where('id', $tblArray[$i * 5 + 0])->update(['status' => false]);
+                $quantity = Quantity::where('id', $request->product_pr)->first();
+
+                if ($quantity->quantity - $tblArray[$i * 5 + 1] < 0) {
+                    session()->flash('error','error');
+                    return redirect('/daily_sells');
+                    // return \Redirect::back()->withSuccess('Message you want show in View');
+                } else if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
+                    Product::where('id', $tblArray[$i * 5 + 0])->update([
+                        'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                        'sell_bill_id' => $sell_bill->id,
+                        'status' => false
+                    ]);
+                } else {
+                    Product::where('id', $tblArray[$i * 5 + 0])->update([
+                        'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
+                        'sell_bill_id' => $sell_bill->id
+                    ]);
                 }
+                Quantity::where('id', $request->product_pr)->update([
+                    'quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]
+                ]);
 
                 $sold_product = new SoldProduct;
                 $sold_product->product_id = $tblArray[$i * 5 + 0];
                 $sold_product->quantity = $tblArray[$i * 5 + 1];
                 $sold_product->sell_price = $tblArray[$i * 5 + 2];
                 $sold_product->total_price = $tblArray[$i * 5 + 3];
-                $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $quantity->buy_price);
                 $sold_product->profit = $profit;
+                $sold_product->buy_price = $quantity->buy_price;
                 $sold_product->sell_bill_id = $sell_bill->id;
                 $total_profit += $profit;
                 $sold_product->save();
@@ -151,10 +171,10 @@ class DailySellsController extends Controller
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة بيع', $date]);
 
             DB::commit();
-            return response()->json(['status' => 'success']);
+            return redirect('/daily_sells')->with('error', 1);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+            return redirect('/daily_sells')->with('error', 0);
         }
     }
 
@@ -174,12 +194,13 @@ class DailySellsController extends Controller
     {
         $sell_bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'total_profit', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->where('id', $id)->first();
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
-        return view('admin.daily_sells.edit', compact('sell_bill', 'products'));
+        $error = 1;
+        return view('admin.daily_sells.edit', compact('sell_bill', 'products', 'error'));
     }
 
     public function update(Request $request, $id)
     {
-
+        // dd($request->all());
         $paid_balance = abs($request->paid_balance);
         $remaining_balance = $request->remaining_balance;
 
@@ -196,19 +217,25 @@ class DailySellsController extends Controller
 
                 if ($request->tbl != null) {
                     for ($i = 0; $i < count($tblArray) / 5; $i++) {
+
                         $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-                        if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
+                        $quantity = Quantity::where('product_id', $tblArray[$i * 5 + 0])->where('id', $request->product_pr)->first();
+                        // dd($quantity);
+
+                        if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
                             Product::where('id', $tblArray[$i * 5 + 0])->update([
                                 'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                                 'sell_bill_id' => $id,
                                 'status' => false
                             ]);
-                        } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0){
+                            Quantity::where('id', $request->product_pr)->update(['quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]]);
+                        } else if ($quantity->quantity - $tblArray[$i * 5 + 1] > 0){
                             Product::where('id', $tblArray[$i * 5 + 0])->update([
                                 'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                                 'sell_bill_id' => $id,
                                 'status' => true
                             ]);
+                            Quantity::where('id', $request->product_pr)->update(['quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]]);
                         } else {
                             return redirect('/daily_sell/edit/'.$id);
                         }
@@ -218,8 +245,9 @@ class DailySellsController extends Controller
                         $sold_product->quantity = $tblArray[$i * 5 + 1];
                         $sold_product->sell_price = $tblArray[$i * 5 + 2];
                         $sold_product->total_price = $tblArray[$i * 5 + 3];
-                        $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+                        $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $quantity->buy_price);
                         $sold_product->profit = $profit;
+                        $sold_product->buy_price = $quantity->buy_price;
                         $sold_product->sell_bill_id = $id;
                         $total_profit += $profit;
                         $sold_product->save();
@@ -263,6 +291,7 @@ class DailySellsController extends Controller
             return redirect('/daily_sell/edit/'.$id);
         } catch (Exception $e) {
             DB::rollBack();
+            // return $e->getMessage();
             return redirect('/daily_sells')->with('error', 'Error: ' . $e->getMessage());
         }
     }
@@ -275,8 +304,9 @@ class DailySellsController extends Controller
             
             $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
             $product = Product::where('id', $sold_product->product_id)->first();
+            $quantity = Quantity::where('product_id', $sold_product->product_id)->where('buy_price', $sold_product->buy_price)->first();
 
-            $profit = ($sold_product->sell_price * $sold_product->quantity) - ($product->original_price * $sold_product->quantity);
+            $profit = ($sold_product->sell_price * $sold_product->quantity) - ($sold_product->buy_price * $sold_product->quantity);
 
             DB::statement('UPDATE box SET box.remaining = CASE box.id
                 WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
@@ -299,6 +329,10 @@ class DailySellsController extends Controller
             Product::where('id', $sold_product->product_id)->update([
                 'quantity' => $product->quantity + $sold_product->quantity,
                 'status' => true
+            ]);
+
+            $quantity->update([
+                'quantity' => $quantity->quantity + $sold_product->quantity
             ]);
 
             $sold_product->delete();

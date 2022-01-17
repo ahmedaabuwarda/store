@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-xl-5 col-md-12">
+                  <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الاصناف</label>
@@ -127,8 +127,7 @@
                               <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                                 @foreach($products as $product)
                                   @if($product->quantity > 0)
-                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{ {{ $product->original_price }} &#8362;} { {{ $product->quantity }} } {{ $product->name }}">{ {{ $product->original_price }} &#8362;} {
-                                    {{ $product->quantity }} } {{ $product->name }}</option>
+                                    <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{{ $product->name }}" onchange="alert(this.value);">{{ $product->name }}</option>
                                   @endif
                                 @endforeach
                               </select>
@@ -140,7 +139,13 @@
 
                   </div>
 
-                  <div class="col-xl-3 col-md-12">
+                  <div class="col-xl-3 col-md-12 m-auto" id="product_prices">
+                    <a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button">
+                      <i class="fa fa-search text-white"></i>
+                    </a>
+                  </div>
+
+                  <div class="col-xl-2 col-md-12">
 
                     <div class="form-group">
                       <label class="form-control-label">الكمية</label>
@@ -179,6 +184,7 @@
                       <i class="fa fa-plus text-white"></i>
                     </a>
                   </div>
+
                 </div>
 
                 <div class="row">
@@ -329,6 +335,21 @@
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
+
+  $('#search_price_button').click(function(){
+    let val = $("#productname").val();
+    console.log(val);
+    $.ajax({
+      url: '/product/price/' + val,
+      type: 'GET',
+      success: function(responce){
+        if (responce.status == 'success') {
+          $('#product_prices').html(responce.price);
+        }
+      }
+    });
+  });
+
   var i = 1;
   var total = {{ $sell_bill->total_balance }};
   var profit = {{ $sell_bill->total_profit }};
@@ -337,7 +358,7 @@
         if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {
           var tota = $("#quantity").val() * $("#price").val();
           total += tota;
-          var profi = $("#quantity").val() * parseFloat($('#productname').find(":selected").data('original'));
+          var profi = $("#quantity").val() * parseFloat($('#product_pr').find(":selected").data('original'));
           profit += (tota - profi);
           $("#productTable tbody").append("<tr>" +
           "<td class='text-center'>" + i + "</td>" +
@@ -368,6 +389,7 @@
       $('#remaining_balance').val($('#paid_balance').val() - total);
     });
   });
+
   $(document).ready(function () {
     var tbl = $('#productTable tr').map(function() {
       return $(this).find('.imp').map(function() {
@@ -375,6 +397,7 @@
       }).get();
     }).get();
     $('#tbl').val(tbl);
+
     $('#updateButton').click(function () {
       var tbl = $('#productTable tr').map(function() {
         return $(this).find('.imp').map(function() {
@@ -383,6 +406,7 @@
       }).get();
       $('#tbl').val(tbl);
     });
+
     $("#productTable").on("click", "#delete_product_button", function() {
       let data = $(this).data('data');
       total = total - data;
@@ -396,5 +420,6 @@
       $('#tbl').val(tbl);
     });
   });
+
   </script>
 @endsection

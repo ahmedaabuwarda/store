@@ -6,6 +6,7 @@ use PDF;
 use Exception;
 
 use App\Models\Product;
+use App\Models\Quantity;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -94,6 +95,13 @@ class ProductController extends Controller
             DB::rollBack();
             return response()->json(['status' => 'error']);
         }
+    }
+
+    public function price (Request $request, $id)
+    {
+        $quantities = Quantity::where('product_id', $id)->get();
+        $price = view('admin.product.quantity', compact('quantities'))->render();
+        return response()->json(['status' => 'success', 'price' => $price]);
     }
 
     public function jard_to_pdf (Request $request)

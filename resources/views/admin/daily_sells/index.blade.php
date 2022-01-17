@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                <a class="btn btn-dark text-white multi_button" data-movement="create_sell_bill">فاتورة يومية</a>
+                                <a href="{{ url('/daily_sell/create') }}" class="btn btn-dark text-white multi_button">فاتورة يومية</a>
                             </div>
                         </div>
                     </div>

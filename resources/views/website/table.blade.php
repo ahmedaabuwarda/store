@@ -2,10 +2,9 @@
     <tr>
         <th scope="col" class="text-center">جرد</th>
         <th scope="col" class="text-center">الحالة</th>
-        <th scope="col" class="text-center">السعر الكلي</th>
         <th scope="col" class="text-center">عدد الوحدات المتوفرة</th>
         <th scope="col" class="text-center">عدد الوحدات الاصلية</th>
-        <th scope="col" class="text-center">سعر التكلفة</th>
+        <th scope="col" class="text-center">اخر سعر تكلفة</th>
         <th scope="col" class="text-center">الاسم</th>
         <th scope="col" class="text-center">#</th>
     </tr>
@@ -13,7 +12,7 @@
 <tbody>
     @if ($products->count() == 0)
         <tr>
-            <td colspan="8" class="text-center">لا يوجد بيانات</td>
+            <td colspan="7" class="text-center">لا يوجد بيانات</td>
         </tr>
     @else
         @php $i = 1; @endphp
@@ -34,7 +33,6 @@
                         <span class="badge badge-pill badge-danger badge-lg">خلص</span>
                     @endif
                 </td>
-                <td class="display-3 text-center">&#8362;{{ $product->original_price * $product->quantity }}</td>
                 <td class="display-3 text-center">{{ $product->quantity }} - {{ $product->type }}</td>
                 <td class="display-3 text-center">{{ $product->original_quantity }} - {{ $product->type }}</td>
                 <td class="display-3 text-center">&#8362;{{ $product->original_price }}</td>

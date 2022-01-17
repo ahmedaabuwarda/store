@@ -15,6 +15,7 @@ class CreateQuantitiesTable extends Migration
     {
         Schema::create('quantities', function (Blueprint $table) {
             $table->id();
+            $table->integer('product_id');
             $table->integer('quantity');
             $table->double('buy_price', 15, 4);
             $table->timestamps();

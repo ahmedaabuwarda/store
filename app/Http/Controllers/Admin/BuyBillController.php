@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use PDF;
 use Exception;
 
+use App\Models\Quantity;
 use App\Models\Worker;
 use App\Models\User;
 use App\Models\BuyBill;
@@ -48,8 +49,10 @@ class BuyBillController extends Controller
 
     public function store(Request $request)
     {
+
         DB::beginTransaction();
         try {
+
             $customer_id = $request['customer_id'];
             $worker_id = $request['worker_id'];
             $provider_id = $request['provider_id'];
@@ -85,11 +88,12 @@ class BuyBillController extends Controller
                     throw new Exception('Worker not found');
                 }
             }
+
             $buy_bill->paid_balance = $paid_balance;
             $buy_bill->remaining_balance = $remaining_balance;
             $buy_bill->discount = $request['discount'];
             $buy_bill->original_balance = abs($remaining_balance) + $paid_balance;
-            if($request['byan'] == null){
+            if($request['byan'] == null) {
                 $buy_bill->byan = 'لا يوجد';
             } else {
                 $buy_bill->byan = $request['byan'];
@@ -97,15 +101,14 @@ class BuyBillController extends Controller
             $buy_bill->save();
 
             $tblArray = explode(',', $request['tbl']);
+
+            if ($tblArray == null) {
+                DB::rollBack();
+                return redirect('/buy_bills');
+            }
+
             for($i = 0; $i < count($tblArray)/4; $i++) {
-                $product = Product::where('id', $tblArray[$i*4 + 0])->first();
-                Product::where('id', $tblArray[$i*4 + 0])->update([
-                    'quantity' => $product->quantity + $tblArray[$i*4 + 1],
-                    'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
-                    'original_price' => $tblArray[$i*4 + 2],
-                    'buy_bill_id' => $buy_bill->id,
-                    'status' => true
-                ]);
+                
                 $buyed_product = new BuyedProduct;
                 $buyed_product->product_id = $tblArray[$i*4 + 0];
                 $buyed_product->quantity = $tblArray[$i*4 + 1];
@@ -113,6 +116,34 @@ class BuyBillController extends Controller
                 $buyed_product->total_price = $tblArray[$i*4 + 3];
                 $buyed_product->buy_bill_id = $buy_bill->id;
                 $buyed_product->save();
+
+                $quantity = Quantity::where('product_id', $tblArray[$i*4 + 0])->where('buy_price', $tblArray[$i*4 + 2])->first();
+                $product = Product::where('id', $tblArray[$i*4 + 0])->first();
+
+                if ($quantity == null) {
+
+                    $quantit = new Quantity;
+                    $quantit->product_id = $tblArray[$i*4 + 0];
+                    $quantit->quantity = $tblArray[$i*4 + 1];
+                    $quantit->buy_price = $tblArray[$i*4 + 2];
+                    $quantit->save();
+
+                } else if ($quantity != null) {
+
+                    Quantity::where('product_id', $tblArray[$i*4 + 0])->where('buy_price', $tblArray[$i*4 + 2])->update([
+                        'quantity' => $quantity->quantity + $tblArray[$i*4 + 1],
+                    ]);
+
+                }
+
+                Product::where('id', $tblArray[$i*4 + 0])->update([
+                    'quantity' => $product->quantity + $tblArray[$i*4 + 1],
+                    'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
+                    'original_price' => $tblArray[$i*4 + 2],
+                    'buy_bill_id' => $buy_bill->id,
+                    'status' => true
+                ]);
+
             }
 
             DB::statement('UPDATE box SET box.remaining = CASE box.id
@@ -174,7 +205,50 @@ class BuyBillController extends Controller
                 $tblArray = explode(',', $request['tbl']);
                 if ($request->tbl != null) {
                     for($i = 0; $i < count($tblArray)/4; $i++) {
+                        
+                        $buyed_product = new BuyedProduct;
+                        $buyed_product->product_id = $tblArray[$i*4 + 0];
+                        $buyed_product->quantity = $tblArray[$i*4 + 1];
+                        $buyed_product->buy_price = $tblArray[$i*4 + 2];
+                        $buyed_product->total_price = $tblArray[$i*4 + 3];
+                        $buyed_product->buy_bill_id = $id;
+                        $buyed_product->save();
+
+                        $quantity = Quantity::where('product_id', $tblArray[$i*4 + 0])->get();
                         $product = Product::where('id', $tblArray[$i*4 + 0])->first();
+
+                        if ($quantity == null) {
+
+                            $quantit = new Quantity;
+                            $quantit->product_id = $tblArray[$i*4 + 0];
+                            $quantit->quantity = $tblArray[$i*4 + 1];
+                            $quantit->buy_price = $tblArray[$i*4 + 2];
+                            $quantit->save();
+        
+                        } else if ($quantity != null) {
+                            
+                            $stat = 0;
+                            foreach ($quantity as $quantityy) {
+                                if ($tblArray[$i*4 + 2] == $quantityy->buy_price) {
+        
+                                    Quantity::where('product_id', $tblArray[$i*4 + 0])->where('buy_price', $tblArray[$i*4 + 2])->update([
+                                        'quantity' => $quantityy->quantity + $tblArray[$i*4 + 1],
+                                    ]);
+                                    $stat = 1;
+        
+                                }
+                            }
+                            if ($stat == 0) {
+        
+                                $quantit = new Quantity;
+                                $quantit->product_id = $tblArray[$i*4 + 0];
+                                $quantit->quantity = $tblArray[$i*4 + 1];
+                                $quantit->buy_price = $tblArray[$i*4 + 2];
+                                $quantit->save();
+        
+                            }
+                        }
+
                         Product::where('id', $tblArray[$i*4 + 0])->update([
                             'quantity' => $product->quantity + $tblArray[$i*4 + 1],
                             'original_quantity' => $product->original_quantity + $tblArray[$i*4 + 1],
@@ -183,26 +257,15 @@ class BuyBillController extends Controller
                             'status' => true
                         ]);
 
-                        $buyed_product = new BuyedProduct;
-                        $buyed_product->product_id = $tblArray[$i*4 + 0];
-                        $buyed_product->quantity = $tblArray[$i*4 + 1];
-                        $buyed_product->buy_price = $tblArray[$i*4 + 2];
-                        $buyed_product->total_price = $tblArray[$i*4 + 3];
-                        $buyed_product->buy_bill_id = $id;
-                        $buyed_product->save();
                     }
                 }
 
                 DB::statement('UPDATE box SET box.remaining = CASE box.id
-                    WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
+                    WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
                     WHEN 6 THEN (SELECT remaining FROM box WHERE box.id = 6)+?
                     ELSE box.remaining
-                    END,
-                box.counter = CASE box.id
-                    WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                    ELSE box.counter
                     END
-                WHERE box.id IN(1, 6);', [$paid_balance, $paid_balance + abs($remaining_balance)]);
+                WHERE box.id IN(1, 6);', [$buy_bill->paid_balance - $paid_balance, $paid_balance + abs($remaining_balance) - $buy_bill->original_balance]);
 
                 
                 BuyBill::where('id', $id)->update([
@@ -253,6 +316,8 @@ class BuyBillController extends Controller
             $buyed_product = BuyedProduct::where('id', $id)->with('buy_bill')->first();
             $product = Product::where('id', $buyed_product->product_id)->first();
 
+            $quantity = Quantity::where('product_id', $buyed_product->product_id)->where('buy_price', $buyed_product->buy_price)->first();
+
             $buy_bill = BuyBill::where('id', $buyed_product->buy_bill_id)->first();
 
             DB::statement('UPDATE box SET box.remaining = CASE box.id
@@ -262,7 +327,6 @@ class BuyBillController extends Controller
                 END,
             box.counter = CASE box.id
                 WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 6 THEN (SELECT counter FROM box WHERE box.id = 6)-1
                 ELSE box.counter
                 END
             WHERE box.id IN(1, 6, 7);', [$buyed_product->total_price - $buy_bill->discount, $buyed_product->total_price - $buy_bill->discount]);
@@ -288,13 +352,20 @@ class BuyBillController extends Controller
             
 
             $buyed_product->delete();
-
+            if ($quantity != null) {
+                $quantity->delete();
+            }
             DB::commit();
             return redirect('/buy_bill/edit/' . $buyed_product->buy_bill_id);
         } catch (Exception $e) {
             DB::rollBack();
             return redirect('/buy_bills')->with('error', 'Error: ' . $e->getMessage());
         }
+    }
+
+    public function delete ()
+    {
+        
     }
 
     public function to_pdf(Request $request)
