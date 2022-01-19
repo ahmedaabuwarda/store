@@ -209,7 +209,7 @@ class SellBillController extends Controller
 
         DB::beginTransaction();
         try {
-            if ($request['tbl'] == null && $sell_bill->paid_balance != $paid_balance) {
+            if ($request['tbl'] == null && $sell_bill->paid_balance == $paid_balance) {
                 return redirect('/sell_bills');
             } else {
 
