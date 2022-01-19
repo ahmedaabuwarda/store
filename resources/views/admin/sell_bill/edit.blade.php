@@ -98,7 +98,7 @@
                           <td class="disblay-3 text-center">{{ $product->total_price }}</td>
                           <td class="disblay-3 text-center">{{ $product->profit }}</td>
                           <td class="disblay-3 text-center">
-                            <a href="#" data-dataid="{{ $product->id }}" id="delete_product_button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete_product_form').removeAttribute('action'); document.getElementById('delete_product_form').setAttribute('action','{{ url('/daily_sell/delete_product' . '/' . $product->id) }}'); document.getElementById('delete_product_form').submit();"><i class="fa fa-trash"></i></a>
+                            <a href="#" data-dataid="{{ $product->id }}" id="delete_product_button" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('delete_product_form').removeAttribute('action'); document.getElementById('delete_product_form').setAttribute('action','{{ url('/sell_bill/delete_product' . '/' . $product->id) }}'); document.getElementById('delete_product_form').submit();"><i class="fa fa-trash"></i></a>
                           </td>
                         </tr>
                         @php $i++; @endphp
@@ -338,7 +338,7 @@
 
   $('#search_price_button').click(function(){
     let val = $("#productname").val();
-    console.log(val);
+    console.log("1");
     $.ajax({
       url: '/product/price/' + val,
       type: 'GET',
@@ -374,6 +374,7 @@
           $('#paid_balance').val(total);
           $("#profit").text(profit);
           $("#productname").val("");
+          // $("#product_prices").html('<a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button"><i class="fa fa-search text-white"></i></a>');
           $("#quantity").val("");
           $("#price").val("");
           i = i + 1;

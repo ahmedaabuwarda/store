@@ -58,7 +58,7 @@ class SellBillController extends Controller
 
     public function store(Request $request)
     {
-
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $customer_id = $request['customer_id'];
@@ -175,6 +175,7 @@ class SellBillController extends Controller
             return redirect('/sell_bills')->with('error', 1);
         } catch (\Exception $e) {
             DB::rollBack();
+            // return $e->getMessage();
             return redirect('/sell_bills')->with('error', 0);
         }
     }
@@ -193,7 +194,7 @@ class SellBillController extends Controller
 
     public function edit($id)
     {
-        $sell_bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->where('id', $id)->first();
+        $sell_bill = SellBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'total_profit', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,sell_bill_id')->where('id', $id)->first();
         $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
         return view('admin.sell_bill.edit', compact('sell_bill', 'products'));
     }
@@ -287,7 +288,7 @@ class SellBillController extends Controller
             }
 
             DB::commit();
-            return redirect('/sell_bills');
+            return redirect('/sell_bill/edit/'.$id);
         } catch (Exception $e) {
             DB::rollBack();
             return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());

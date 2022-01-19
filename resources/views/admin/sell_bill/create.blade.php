@@ -339,9 +339,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
 
-  $('#search_price_button').click(function(){
+  $('#product_prices #search_price_button').click(function(){
     let val = $("#productname").val();
-    console.log(val);
+    // console.log(val);
     $.ajax({
       url: '/product/price/' + val,
       type: 'GET',
@@ -377,14 +377,14 @@
           $('#paid_balance').val(total);
           $("#profit").text(profit);
           $("#productname").val("");
-          $("#product_prices").html('<a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button"><i class="fa fa-search text-white"></i></a>');
+          // $("#product_prices").html('<a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button"><i class="fa fa-search text-white"></i></a>');
           $("#quantity").val("");
           $("#price").val("");
           i = i + 1;
         }
-        // setTimeout(function() { 
-        //   $( "#daily_sell_update_form" ).submit();
-        // }, 1000);
+        setTimeout(function() { 
+          $( "#daily_sell_update_form" ).submit();
+        }, 1000);
     });
     $('#paid_balance').keyup(function () {
       $('#remaining_balance').val($('#paid_balance').val() - total);
