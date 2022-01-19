@@ -377,6 +377,7 @@
           $('#paid_balance').val(total);
           $("#profit").text(profit);
           $("#productname").val("");
+          $("#product_prices").html('<a class="btn btn-primary btn-block btm-sm" data-toggle="tooltip" data-placement="top" title="بحث عن السعر" id="search_price_button"><i class="fa fa-search text-white"></i></a>');
           $("#quantity").val("");
           $("#price").val("");
           i = i + 1;
