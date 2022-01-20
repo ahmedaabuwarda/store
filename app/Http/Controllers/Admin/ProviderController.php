@@ -148,7 +148,7 @@ class ProviderController extends Controller
 
         $provider_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM providers, sanadat_qapds WHERE providers.id = sanadat_qapds.provider_id AND providers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $provider_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM providers, buy_bills WHERE providers.id = buy_bills.provider_id AND providers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $provider_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance, buy_bills.discount FROM providers, buy_bills WHERE providers.id = buy_bills.provider_id AND providers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $provider_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM providers, sell_bills WHERE providers.id = sell_bills.provider_id AND providers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
@@ -205,7 +205,7 @@ class ProviderController extends Controller
 
         $qapd_table .= '</tbody></table>';
 
-        $i = 1; $buy_total = 0;
+        $i = 1; $buy_total = 0; $discount_total = 0;
         $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -213,7 +213,8 @@ class ProviderController extends Controller
             <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
-            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
+            <th width="10%" bgcolor="#eee">الخصم</th>
             <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
@@ -232,10 +233,11 @@ class ProviderController extends Controller
               <td width="20%">'.$buy_bill->number.'</td>
               <td width="20%">'.$buy_bill->date_created.'</td>
               <td width="15%">'.$buy_bill->paid_balance.'<span>&#8362;&#160;</span></td>
-              <td width="20%">'.$remaining.'</td>
+              <td width="10%">'.$remaining.'</td>
+              <td width="10%">'.$buy_bill->discount.'<span>&#8362;&#160;</span></td>
               <td width="20%">'.$buy_bill->byan.'</td>
             </tr>';
-            $buy_total += $buy_bill->remaining_balance; $i++;
+            $buy_total += $buy_bill->remaining_balance; $discount_total += $buy_bill->discount; $i++;
         }
         if ($buy_total > 0) {
             $buy_total = $buy_total.'<span>&#8362;&#160;</span> - دائن -';
@@ -310,13 +312,34 @@ class ProviderController extends Controller
         PDF::writeHTML($content);
         PDF::SetFont('freeserif', '', 11);
         PDF::writeHTML($sarf_table);
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$sarf_total.'<span>&#8362;&#160;</span> - مدين -</td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
+            <tbody>
+                <tr>
+                    <td width="10%">#</td>
+                    <td width="30%">المجموع</td>
+                    <td width="20%">'.$sarf_total.'<span>&#8362;&#160;</span> - مدين -</td>
+                </tr>
+            </tbody>
+        </table>');
 
         PDF::writeHTML($qapd_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$qapd_total.'<span>&#8362;&#160;</span> - دائن -</td></tr></tbody></table>');
 
         PDF::writeHTML($buy_table);
-        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$buy_total.'</td></tr></tbody></table>');
+        PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
+            <tbody>
+                <tr>
+                    <td width="10%">#</td>
+                    <td width="30%">المجموع</td>
+                    <td width="20%">'.$buy_total.'</td>
+                </tr>
+                <tr>
+                    <td width="10%">#</td>
+                    <td width="30%">الخصم</td>
+                    <td width="20%">'.$discount_total.'<span>&#8362;&#160;</span></td>
+                </tr>
+            </tbody>
+        </table>');
 
         PDF::writeHTML($sell_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$sell_total.'</td></tr></tbody></table>');
