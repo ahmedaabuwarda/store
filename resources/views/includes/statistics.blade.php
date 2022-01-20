@@ -86,7 +86,7 @@ $ooredoo_balance = $productsCount[0]->ooredoo_balance;
                     </tr>
                     @can('add_products')
                     <tr>
-                        <td class="display-3 text-center">&#8362;{{ $box[2]->remaining - ($box[1]->remaining + $box[7]->remaining) }}</td>
+                        <td class="display-3 text-center">&#8362;{{ ((($box[6]->remaining + $total_cost_price) - $box[5]->remaining) + $box[8]->remaining) - $box[1]->remaining - $box[7]->remaining }}</td>
                         <td class="display-3 text-center">المربح الكلي</td>
                     </tr>
                     @endcan

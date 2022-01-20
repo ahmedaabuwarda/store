@@ -126,7 +126,7 @@ class HomeController extends Controller
             } else if ($movement == 2) {
 
                 DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
-                DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 3)+? WHERE id = 3;', [$balance]);
+                DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 9)+? WHERE id = 9;', [$balance]);
 
                 DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,?,?,?)', [$balance, true, 'مربح مباشر', date('Y-m-d H:i:s')]);
 
