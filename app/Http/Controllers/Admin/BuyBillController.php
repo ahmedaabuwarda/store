@@ -353,7 +353,10 @@ class BuyBillController extends Controller
 
             $buyed_product->delete();
             if ($quantity != null) {
-                $quantity->delete();
+                $q = $quantity->quantity;
+                $quantity->update([
+                    'quantity' => $q - $buyed_product->quantity,
+                ]);
             }
             DB::commit();
             return redirect('/buy_bill/edit/' . $buyed_product->buy_bill_id);
