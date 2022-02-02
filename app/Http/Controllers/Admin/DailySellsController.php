@@ -169,10 +169,10 @@ class DailySellsController extends Controller
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة بيع', $date]);
 
             DB::commit();
-            return redirect('/daily_sells')->with('error', 1);
+            return redirect('/daily_sell/edit/' . $sell_bill->id);
         } catch (Exception $e) {
             DB::rollBack();
-            return redirect('/daily_sells')->with('error', 0);
+            return redirect('/daily_sell/edit/' . $sell_bill->id);
         }
     }
 

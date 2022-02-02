@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $table = 'customers';
-    protected $fillable = ['name', 'balance', 'status', 'notes', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'name', 'balance', 'status', 'notes', 'created_at', 'updated_at'];
 
     public function sanadat_sarf()
     {

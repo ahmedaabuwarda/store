@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes([
-    'register' => false,
+    'register' => true,
     'reset' => false,
     'verify' => false,
 ]);
@@ -23,8 +23,54 @@ Auth::routes([
 Route::get('/', function () { return redirect('/home'); });
 Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index']);
 Route::get('/search', [App\Http\Controllers\Admin\HomeController::class, 'search']);
+
+// permission
+Route::get('/permission/create', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
+Route::get('/permission/update', [App\Http\Controllers\Admin\PermissionController::class, 'update']);
+
+// box
 Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 'to_pdf']);
 Route::post('/box/store', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
+
+// broken
+Route::get('/brokens', [App\Http\Controllers\Admin\BrokenController::class, 'index']);
+Route::get('/broken/create', [App\Http\Controllers\Admin\BrokenController::class, 'create']);
+Route::post('/broken/store', [App\Http\Controllers\Admin\BrokenController::class, 'store']);
+Route::get('/broken/show', [App\Http\Controllers\Admin\BrokenController::class, 'show']);
+Route::get('/broken/edit/{id}', [App\Http\Controllers\Admin\BrokenController::class, 'edit']);
+Route::post('/broken/update/{id}', [App\Http\Controllers\Admin\BrokenController::class, 'update']);
+Route::post('/broken/to_pdf', [App\Http\Controllers\Admin\BrokenController::class, 'to_pdf']);
+
+// buy_bills
+Route::get('/buy_bills', [App\Http\Controllers\Admin\BuyBillController::class, 'index']);
+Route::get('/buy_bill/create', [App\Http\Controllers\Admin\BuyBillController::class, 'create']);
+Route::post('/buy_bill/store', [App\Http\Controllers\Admin\BuyBillController::class, 'store']);
+Route::get('/buy_bill/show', [App\Http\Controllers\Admin\BuyBillController::class, 'show']);
+Route::get('/buy_bill/edit/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'edit']);
+Route::post('/buy_bill/update/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'update']);
+Route::post('/buy_bill/delete', [App\Http\Controllers\Admin\BuyBillController::class, 'delete']);
+Route::post('/buy_bill/delete_product/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'delete_product']);
+Route::post('/buy_bill/to_pdf', [App\Http\Controllers\Admin\BuyBillController::class, 'to_pdf']);
+
+Route::get('/daily_sells', [App\Http\Controllers\Admin\DailySellsController::class, 'index']);
+Route::get('/daily_sell/create', [App\Http\Controllers\Admin\DailySellsController::class, 'create']);
+Route::post('/daily_sell/store', [App\Http\Controllers\Admin\DailySellsController::class, 'store']);
+Route::get('/daily_sell/show', [App\Http\Controllers\Admin\DailySellsController::class, 'show']);
+Route::get('/daily_sell/edit/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'edit']);
+Route::post('/daily_sell/update/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'update']);
+Route::post('/daily_sell/delete_product/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'delete_product']);
+Route::post('/daily_sell/to_pdf', [App\Http\Controllers\Admin\DailySellsController::class, 'to_pdf']);
+
+// customers
+Route::get('/customers', [App\Http\Controllers\Admin\CustomerController::class, 'index']);
+Route::post('/customer/store', [App\Http\Controllers\Admin\CustomerController::class, 'store']);
+Route::post('/customer/to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'to_pdf']);
+Route::post('/customer/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'kashf_to_pdf']);
+
+// discounts
+Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);
+Route::post('/discount/store', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'store']);
+Route::post('/discount/to_pdf', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'to_pdf']);
 
 // products
 Route::get('/product/create', [App\Http\Controllers\Admin\ProductController::class, 'create']);
@@ -42,17 +88,10 @@ Route::post('/provider/store', [App\Http\Controllers\Admin\ProviderController::c
 Route::post('/provider/to_pdf', [App\Http\Controllers\Admin\ProviderController::class, 'to_pdf']);
 Route::post('/provider/kashf_to_pdf', [App\Http\Controllers\Admin\ProviderController::class, 'kashf_to_pdf']);
 
-// customers
-Route::get('/customers', [App\Http\Controllers\Admin\CustomerController::class, 'index']);
-Route::post('/customer/store', [App\Http\Controllers\Admin\CustomerController::class, 'store']);
-Route::post('/customer/to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'to_pdf']);
-Route::post('/customer/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'kashf_to_pdf']);
-
-// sanadat_sarf
-Route::get('/sanadat_sarfs', [App\Http\Controllers\Admin\SanadatSarfController::class, 'index']);
-Route::post('/sanadat_sarf/store', [App\Http\Controllers\Admin\SanadatSarfController::class, 'store']);
-Route::post('/sanadat_sarf/delete', [App\Http\Controllers\Admin\SanadatSarfController::class, 'delete']);
-Route::post('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
+// salaries
+Route::post('/salary/create', [App\Http\Controllers\Admin\SalaryController::class, 'create']);
+Route::post('/salary/store', [App\Http\Controllers\Admin\SalaryController::class, 'store']);
+Route::post('/salary/to_pdf', [App\Http\Controllers\Admin\SalaryController::class, 'to_pdf']);
 
 // sanadat_dapd
 Route::get('/sanadat_qapds', [App\Http\Controllers\Admin\SanadatQapdController::class, 'index']);
@@ -60,15 +99,11 @@ Route::post('/sanadat_qapd/store', [App\Http\Controllers\Admin\SanadatQapdContro
 Route::post('/sanadat_qapd/delete', [App\Http\Controllers\Admin\SanadatQapdController::class, 'delete']);
 Route::post('/sanadat_qapd/to_pdf', [App\Http\Controllers\Admin\SanadatQapdController::class, 'to_pdf']);
 
-// buy_bills
-Route::get('/buy_bills', [App\Http\Controllers\Admin\BuyBillController::class, 'index']);
-Route::get('/buy_bill/create', [App\Http\Controllers\Admin\BuyBillController::class, 'create']);
-Route::post('/buy_bill/store', [App\Http\Controllers\Admin\BuyBillController::class, 'store']);
-Route::get('/buy_bill/show', [App\Http\Controllers\Admin\BuyBillController::class, 'show']);
-Route::get('/buy_bill/edit/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'edit']);
-Route::post('/buy_bill/update/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'update']);
-Route::post('/buy_bill/delete_product/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'delete_product']);
-Route::post('/buy_bill/to_pdf', [App\Http\Controllers\Admin\BuyBillController::class, 'to_pdf']);
+// sanadat_sarf
+Route::get('/sanadat_sarfs', [App\Http\Controllers\Admin\SanadatSarfController::class, 'index']);
+Route::post('/sanadat_sarf/store', [App\Http\Controllers\Admin\SanadatSarfController::class, 'store']);
+Route::post('/sanadat_sarf/delete', [App\Http\Controllers\Admin\SanadatSarfController::class, 'delete']);
+Route::post('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
 
 // sell_bills
 Route::get('/sell_bills', [App\Http\Controllers\Admin\SellBillController::class, 'index']);
@@ -77,34 +112,12 @@ Route::post('/sell_bill/store', [App\Http\Controllers\Admin\SellBillController::
 Route::get('/sell_bill/show', [App\Http\Controllers\Admin\SellBillController::class, 'show']);
 Route::get('/sell_bill/edit/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'edit']);
 Route::post('/sell_bill/update/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'update']);
+Route::post('/sell_bill/delete', [App\Http\Controllers\Admin\SellBillController::class, 'delete']);
 Route::post('/sell_bill/delete_product/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'delete_product']);
 Route::post('/sell_bill/to_pdf', [App\Http\Controllers\Admin\SellBillController::class, 'to_pdf']);
-
-Route::get('/daily_sells', [App\Http\Controllers\Admin\DailySellsController::class, 'index']);
-Route::get('/daily_sell/create', [App\Http\Controllers\Admin\DailySellsController::class, 'create']);
-Route::post('/daily_sell/store', [App\Http\Controllers\Admin\DailySellsController::class, 'store']);
-Route::get('/daily_sell/show', [App\Http\Controllers\Admin\DailySellsController::class, 'show']);
-Route::get('/daily_sell/edit/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'edit']);
-Route::post('/daily_sell/update/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'update']);
-Route::post('/daily_sell/delete_product/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'delete_product']);
-Route::post('/daily_sell/to_pdf', [App\Http\Controllers\Admin\DailySellsController::class, 'to_pdf']);
 
 // workers
 Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);
 Route::post('/worker/store', [App\Http\Controllers\Admin\WorkerController::class, 'store']);
 Route::post('/worker/to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'to_pdf']);
 Route::post('/worker/kashf_to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'kashf_to_pdf']);
-
-// salaries
-Route::post('/salary/create', [App\Http\Controllers\Admin\SalaryController::class, 'create']);
-Route::post('/salary/store', [App\Http\Controllers\Admin\SalaryController::class, 'store']);
-Route::post('/salary/to_pdf', [App\Http\Controllers\Admin\SalaryController::class, 'to_pdf']);
-
-// discounts
-Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);
-Route::post('/discount/store', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'store']);
-Route::post('/discount/to_pdf', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'to_pdf']);
-
-// permission
-Route::get('/permission/create', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
-Route::get('/permission/update', [App\Http\Controllers\Admin\PermissionController::class, 'update']);

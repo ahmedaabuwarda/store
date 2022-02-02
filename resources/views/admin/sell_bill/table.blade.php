@@ -21,6 +21,9 @@
         @foreach ($sell_bills as $sell_bill)
             <tr>
                 <td class="display-3 text-center">
+                    @if ($sell_bill->paid_balance == 0 && $sell_bill->remaining_balance == 0 && Auth::user()->id == 1)
+                        <button class="btn btn-sm btn-danger delete_sell_bill_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $sell_bill->id }}"><i class="fa fa-trash"></i></button>
+                    @endif
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
                         title="عرض" data-dataid="{{ $sell_bill->id }}" data-movement="show_sell_bill"><i class="fa fa-eye"></i></button>
                     @if(date('Y-m-d') == $sell_bill->date_created || Auth::user()->id == 1)

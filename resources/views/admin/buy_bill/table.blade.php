@@ -20,6 +20,9 @@
         @foreach ($buy_bills as $buy_bill)
             <tr>
                 <td class="display-3 text-center">
+                    @if ($buy_bill->paid_balance == 0 && $buy_bill->remaining_balance == 0 && Auth::user()->id == 1)
+                        <button class="btn btn-sm btn-danger delete_buy_bill_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $buy_bill->id }}"><i class="fa fa-trash"></i></button>
+                    @endif
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
                         title="عرض" data-dataid="{{ $buy_bill->id }}"><i class="fa fa-eye"></i></button>
                     <a href="{{ URL('/buy_bill/edit/' . $buy_bill->id) }}" class="btn btn-sm btn-info"

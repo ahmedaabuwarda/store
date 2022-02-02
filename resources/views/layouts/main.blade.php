@@ -181,6 +181,21 @@
                                             </div>
                                         </div>
                                     </a>
+                                    <a href="{{ URL('/brokens') }}"
+                                        class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-box-open"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Brokens | البضاعة التالفة</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                     @endcan
                                 </div>
                             </div>

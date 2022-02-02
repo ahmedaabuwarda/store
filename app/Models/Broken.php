@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-class SellBill extends Model
+ 
+class Broken extends Model
 {
     use HasFactory;
-    
-    protected $table = 'sell_bills';
-    protected $fillable = ['id', 'total_profit', 'discount', 'created_at', 'updated_at'];
-    
+
+    protected $table = 'brokens';
+    protected $fillable = ['id', 'number', 'date_created','provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'byan', 'created_at', 'updated_at'];
+
     public function provider()
     {
         return $this->belongsTo('App\Models\Provider');
@@ -36,4 +36,5 @@ class SellBill extends Model
     {
         return $this->hasMany('App\Models\SoldProduct');
     }
+
 }

@@ -64,6 +64,10 @@ $ooredoo_balance = $productsCount[0]->ooredoo_balance;
                         <td class="display-3 text-center">اجمالي الرواتب</td>
                     </tr>
                     @endcan
+                    <tr>
+                        <td class="display-3 text-center">({{ $box[9]->counter }}) - &#8362;{{ $box[9]->remaining }}</td>
+                        <td class="display-3 text-center">اجمالي التالفة</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

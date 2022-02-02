@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use PDF;
 use Exception;
 
-use App\Models\User;
+use App\Models\Worker;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Provider;
@@ -18,7 +18,6 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 class SellBillController extends Controller
 {
@@ -51,14 +50,13 @@ class SellBillController extends Controller
         $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
         $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
         $products = DB::select('SELECT id, name, original_price, quantity FROM products WHERE original_price != 0 ORDER BY id DESC');
-        // $modal = view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'))->render();
-        // return response()->json(['status' => 'success', 'modal' => $modal]);
+
         return view('admin.sell_bill.create', compact('providers', 'customers', 'workers', 'products'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
+
         DB::beginTransaction();
         try {
             $customer_id = $request['customer_id'];
@@ -172,11 +170,10 @@ class SellBillController extends Controller
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة بيع', $date]);
 
             DB::commit();
-            return redirect('/sell_bills')->with('error', 1);
+            return redirect('/sell_bill/edit/' . $sell_bill->id);
         } catch (\Exception $e) {
             DB::rollBack();
-            // return $e->getMessage();
-            return redirect('/sell_bills')->with('error', 0);
+            return redirect('/sell_bill/edit/' . $sell_bill->id);
         }
     }
 
@@ -265,7 +262,7 @@ class SellBillController extends Controller
                     WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
                     ELSE box.counter
                     END
-                WHERE box.id IN(1, 3, 7);', [($paid_balance - $sell_bill->paid_balance), $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
+                WHERE box.id IN(1, 3, 7);', [(buy_bill), $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
                 
                 SellBill::where('id', $id)->update([
                         'paid_balance' => $paid_balance,
@@ -341,6 +338,21 @@ class SellBillController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect('/sell_bills')->with('error', 'Error: ' . $e->getMessage());
+        }
+    }
+
+    // delete
+    public function delete (Request $request)
+    {
+        // delete sell_bill
+        $sell_bill = SellBill::where('id', $request['id'])->first();
+        if ($sell_bill != null) {
+
+            $sell_bill->delete();
+            return response()->json(['status' => 'success']);
+
+        } else {
+            return response()->json(['status' => 'error']);
         }
     }
 

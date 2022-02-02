@@ -35,7 +35,7 @@
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
-          <table class="table tablee align-items-center table-flush table-hover">
+          <table class="table tablee align-items-center table-flush table-hover" id="buy_bill_table">
             @include('admin.buy_bill.table')
           </table>
         </div>
@@ -77,6 +77,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
   $(document).ready(function(){
     $("#search_input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
@@ -85,6 +86,7 @@
       });
     });
   });
+
   $('.show_button').on('click', function(){
     let id = $(this).data('dataid');
     let _token = $('input[name="_token"]').val();
@@ -101,10 +103,63 @@
       }
     });
   });
+
+  $("#buy_bill_table").on("click", ".delete_buy_bill_button", function(e) {
+      e.preventDefault();
+      let id = $(this).data('id');
+      Swal.fire({
+          title: 'هل انت متاكد من الحذف ؟',
+          text: "!لا يمكنك التراجع بعد هذه الخطوة",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'نعم!',
+          cancelButtonText: 'الغاء'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              let _token = $('input[name=_token]').val();
+              $.ajax({
+                  url: "/buy_bill/delete",
+                  type: "POST",
+                  data: {
+                      id: id,
+                      _token: _token
+                  },
+                  success: function(response) {
+                      if (response.status == 'success') {
+                          Swal.fire(
+                              'تم الحذف!',
+                              'تم الحذف بنجاح',
+                              'success'
+                          );
+                          // refresh page
+                          location.reload();
+                      } else {
+                          Swal.fire(
+                              'خطأ',
+                              'حدث خطأ أثناء الحذف',
+                              'error'
+                          );
+                      }
+                  },
+                  error: function(response) {
+                      Swal.fire(
+                          'خطأ',
+                          'حدث خطأ أثناء الحذف',
+                          'error'
+                      );
+                  }
+              });
+          }
+      });
+  });
+
   // show bill to pdf modal
   $('.from_to_pdf_button').click(function(e){
     $('#from_to_pdf_modal').modal('show');
   });
+
   // sanadat qapd to pdf form
   $('#from_to_pdf_form').submit(function(e){
     e.preventDefault();
@@ -126,5 +181,6 @@
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
   });
+
 </script>
 @endsection

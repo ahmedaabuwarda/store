@@ -196,7 +196,7 @@ class BuyBillController extends Controller
 
         $buy_bill = BuyBill::where('id', $id)->first();
 
-        if($request['tbl'] == null && $buy_bill->paid_balance != $paid_balance) {
+        if($request['tbl'] == null && $buy_bill->paid_balance == $paid_balance && $buy_bill->remaining == $remaining_balance) {
             return redirect('/buy_bills');
         } else {
 
@@ -366,9 +366,19 @@ class BuyBillController extends Controller
         }
     }
 
-    public function delete ()
+    // delete
+    public function delete (Request $request)
     {
-        
+        // delete buy bill
+        $buy_bill = BuyBill::where('id', $request['id'])->first();
+        if ($buy_bill != null) {
+
+            $buy_bill->delete();
+            return response()->json(['status' => 'success']);
+
+        } else {
+            return response()->json(['status' => 'error']);
+        }
     }
 
     public function to_pdf(Request $request)
