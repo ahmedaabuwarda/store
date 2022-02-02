@@ -120,7 +120,6 @@ class BrokenController extends Controller
             }
 
             DB::statement('UPDATE box SET box.remaining = CASE box.id
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
                 WHEN 10 THEN (SELECT remaining FROM box WHERE box.id = 10)+?
                 ELSE box.remaining
                 END,
@@ -232,7 +231,6 @@ class BrokenController extends Controller
             }
 
             DB::statement('UPDATE box SET box.remaining = CASE box.id
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
                 WHEN 10 THEN (SELECT remaining FROM box WHERE box.id = 10)+?
                 ELSE box.remaining
                 END,
