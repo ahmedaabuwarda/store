@@ -262,7 +262,7 @@ class SellBillController extends Controller
                     WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
                     ELSE box.counter
                     END
-                WHERE box.id IN(1, 3, 7);', [(buy_bill), $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
+                WHERE box.id IN(1, 3, 7);', [$paid_balance - $sell_bill->paid_balance, $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $sell_bill->total_balance)]);
                 
                 SellBill::where('id', $id)->update([
                         'paid_balance' => $paid_balance,
