@@ -72,7 +72,7 @@ class SanadatSarfController extends Controller
 
             if ($request['target'] == 'customers') {
                 $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
-                if ($customer != null && ($customer->balance - $balance) >= -500 && ($customer->balance - $balance) <= 500) {
+                if ($customer != null) {
                     Customer::where('id', $customer_id)->update(['balance' => $customer->balance - $balance]);
                     $sanadat_sarf->customer_id = $customer_id;
                     $target = $customer->name;
@@ -82,7 +82,7 @@ class SanadatSarfController extends Controller
                 }
             } elseif ($request['target'] == 'providers') {
                 $provider = Provider::where('id', $provider_id)->select('name', 'balance')->first();
-                if ($provider != null && ($provider->balance - $balance) >= -500 && ($provider->balance - $balance) <= 500) {
+                if ($provider != null) {
                     Provider::where('id', $provider_id)->update(['balance' => $provider->balance - $balance]);
                     $sanadat_sarf->provider_id = $provider_id;
                     $target = $provider->name;
