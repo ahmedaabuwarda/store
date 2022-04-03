@@ -16,3 +16,20 @@
     </div>
 
 </div>
+
+<div class="col-xl-12 col-md-12">
+
+    <div class="form-group">
+        <label class="form-control-label">الكمية</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><i
+                        class="fa fa-box"></i></span>
+            </div>
+            <input type="text" class="form-control @error('quantity') is-invalid @enderror"
+                name="quantity" placeholder="الكمية" value="{{ $product->quantity }}"
+                autocomplete="quantity" required autofocus>
+        </div>
+    </div>
+
+</div>

@@ -59,23 +59,37 @@ class ProductController extends Controller
 
     public function edit (Request $request)
     {
-        $product = Product::where('id', $request->id)->select('id', 'name')->first();
+        $product = Product::where('id', $request->id)->select('id', 'name', 'quantity')->first();
         $modal = view('admin.product.edit', compact('product'))->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
     }
 
     public function update (Request $request)
     {
-        
+
+        $product_id = $request->product_id;
+        $quantity = $request->quantity;
+
         DB::beginTransaction();
         try {
+            
+            $quantities = DB::select('SELECT id, product_id, quantity FROM `quantities` WHERE product_id = ? AND quantity = (SELECT MAX(quantity) FROM quantities WHERE product_id = ?)' , [$product_id, $product_id]);
 
-            $product = Product::where('id', $request->product_id)->update(['name' => $request->name]);
+            $product = Product::where('id', $product_id)->first();
+
+            DB::update('UPDATE quantities SET quantity = ? WHERE id = ?', [($quantity - $product->quantity) + $quantities[0]->quantity, $quantities[0]->id]);
+
+            $product->update([
+                'name' => $request->name,
+                'quantity' => $quantity,
+                'original_quantity' => ($quantity - $product->quantity) + $product->original_quantity,
+            ]);
 
             DB::commit();
             return response()->json(['status' => 'success']);
         } catch (Exception $e) {
             DB::rollBack();
+            return $e->getMessage();
             return response()->json(['status' => 'error']);
         }
 
