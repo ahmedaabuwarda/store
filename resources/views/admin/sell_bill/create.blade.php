@@ -159,7 +159,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-success"></i></span>
                             </div>
-                            <input type="number" id="price" class="form-control @error('original_price') is-invalid @enderror" name="original_price" placeholder="سعر التكلفة" value="{{ old('original_price') }}" step="0.0001" autocomplete="original_price">
+                            <input type="number" id="price" class="form-control @error('original_price') is-invalid @enderror" name="original_price" placeholder="سعر البيع" value="{{ old('original_price') }}" step="0.0001" autocomplete="original_price">
                         </div>
                         @error('original_price')
                           <span class="text-danger">{{ $message }}</span>
