@@ -18,7 +18,8 @@ class CreateProductsTable extends Migration
             $table->string('name')->unique();
             $table->integer('quantity')->default(0);
             $table->integer('original_quantity')->default(0);
-            $table->double('original_price', 15, 4);
+            $table->double('original_price', 15, 4)->default(0);
+            $table->double('taseet_price', 15, 4)->default(0);
             $table->integer('sell_bill_id');
             $table->integer('buy_bill_id');
             $table->boolean('status')->default(true);

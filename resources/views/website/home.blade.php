@@ -14,7 +14,7 @@
     <div class="container-fluid mt--6">
 
         <!-- statistics -->
-        <div class="row" id="statistics_table">     
+        <div class="row" id="statistics_table">
             @include('includes.statistics')
         </div>
 
@@ -375,6 +375,7 @@
                     }
                 });
             } else {
+                console.log("sdvsbv");
                 $.ajax({
                     url: "/product/store",
                     type: "POST",
@@ -611,6 +612,6 @@
                 }
             });
         }
-        
+
     </script>
 @endsection

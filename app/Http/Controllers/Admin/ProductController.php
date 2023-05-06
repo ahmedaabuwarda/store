@@ -22,7 +22,7 @@ class ProductController extends Controller
         $this->middleware('auth');
     }
 
-    public function create () 
+    public function create ()
     {
         $modal = view('admin.product.create')->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
@@ -35,6 +35,7 @@ class ProductController extends Controller
             $product = new Product;
             $product->name = $request->name;
             $product->original_price = 0;
+            $product->taqseet_price = $request->taqseet_price | 0;
             $product->quantity = 0;
             $product->original_quantity = 0;
             $product->sell_bill_id = 0;
@@ -43,23 +44,29 @@ class ProductController extends Controller
             $product->type = $request->type;
             $product->save();
 
+            // DB::statement('UPDATE box SET box.counter = CASE box.id
+            //     WHEN 3 THEN (SELECT counter FROM box WHERE box.id = 3)+1
+            //     ELSE box.counter
+            //     END
+            // WHERE box.id IN(3);');
             DB::statement('UPDATE box SET box.counter = CASE box.id
-                WHEN 3 THEN (SELECT counter FROM box WHERE box.id = 3)+1
-                ELSE box.counter
-                END
-            WHERE box.id IN(3);');
+            WHEN 3 THEN (SELECT temp.counter FROM (SELECT counter FROM box WHERE box.id = 3) AS temp)+1
+            ELSE box.counter
+            END
+            WHERE box.id IN(3);
+           ');
 
             DB::commit();
             return response()->json(['status' => 'success']);
         } catch (Exception $e) {
-            DB::rollBack();
-            return response()->json(['status' => 'error']);
+            DB::rollBack();return response()->json(['status' => 'error']);
+            // return response()->json(['status' => 'error', 'error' => $e->getMessage()]);
         }
     }
 
     public function edit (Request $request)
     {
-        $product = Product::where('id', $request->id)->select('id', 'name', 'quantity')->first();
+        $product = Product::where('id', $request->id)->select('id', 'name', 'quantity', 'taqseet_price')->first();
         $modal = view('admin.product.edit', compact('product'))->render();
         return response()->json(['status' => 'success', 'modal' => $modal]);
     }
@@ -72,7 +79,7 @@ class ProductController extends Controller
 
         DB::beginTransaction();
         try {
-            
+
             $quantities = DB::select('SELECT id, product_id, quantity FROM `quantities` WHERE product_id = ? AND quantity = (SELECT MAX(quantity) FROM quantities WHERE product_id = ?)' , [$product_id, $product_id]);
 
             $product = Product::where('id', $product_id)->first();
@@ -82,6 +89,7 @@ class ProductController extends Controller
             $product->update([
                 'name' => $request->name,
                 'quantity' => $quantity,
+                'taqseet_price' => $request->taqseet_price | 0,
                 'original_quantity' => ($quantity - $product->quantity) + $product->original_quantity,
             ]);
 
@@ -100,7 +108,7 @@ class ProductController extends Controller
     {
         DB::beginTransaction();
         try {
-            
+
             Product::where('id', $request->id)->delete();
 
             DB::commit();
