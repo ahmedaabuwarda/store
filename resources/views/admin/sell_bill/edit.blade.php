@@ -350,16 +350,8 @@
   });
 
   var i = 1;
-  var total = {
-    {
-      $sell_bill - > total_balance
-    }
-  };
-  var profit = {
-    {
-      $sell_bill - > total_profit
-    }
-  };
+  var total = {{ $sell_bill->total_balance }};
+  var profit = {{ $sell_bill->total_profit }};
   $(document).ready(function() {
     $('#updateButton').click(function() {
       if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {
