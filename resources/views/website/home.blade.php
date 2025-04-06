@@ -25,21 +25,18 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">الاصناف</h3>
+                                <h3 class="mb-0">العينيات</h3>
                             </div>
                             <div class="col-xl-7 col-md-9 text-center">
                                 <input type="text" name="search_input" id="search_input" class="form-control"
-                                    placeholder="...ابحث عن صنف">
+                                    placeholder="...ابحث عن عينية">
                             </div>
-                            <div class="col-xl-4 col-md-12 text-right">
+                            <div class="col-xl-3 col-md-12 text-right">
                                 <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                                     title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-                                @if(Auth::user()->id == 1)
-                                <a href="{{ url('/permission/update') }}" class="btn btn-info text-dark">خيارات</a>
-                                @endif
                                 @can('add_products')
                                 <a class="btn text-white btn-dark create_product_button" data-toggle="modal"
-                                    data-movement="create_product"><i class="fa fa-plus"></i> صنف</a>
+                                    data-movement="create_product"><i class="fa fa-plus"></i> عينية</a>
                                 @endcan
                             </div>
                         </div>
@@ -87,7 +84,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">اضافة صنف جديد</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">اضافة عينية جديد</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -375,7 +372,7 @@
                     }
                 });
             } else {
-                console.log("sdvsbv");
+                // console.log("sdvsbv");
                 $.ajax({
                     url: "/product/store",
                     type: "POST",

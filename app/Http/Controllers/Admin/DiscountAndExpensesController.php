@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use PDF;
 
+use App\Models\Box;
+
 use App\Models\User;
 use App\Models\Discount;
 
@@ -16,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscountAndExpensesController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,9 +27,10 @@ class DiscountAndExpensesController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
-        $discounts = Discount::select('date_created', 'balance', 'notes', 'done_by')->orderBy('date_created', 'DESC')->paginate($page);
+        $discounts = Discount::select('id', 'date_created', 'balance', 'notes', 'done_by', 'box_id')->orderBy('date_created', 'DESC')->with('box')->paginate($page);
         $users = DB::select('SELECT id, name FROM users ORDER BY created_at DESC');
         $box = DB::select('SELECT remaining FROM box WHERE id = 2 ORDER BY created_at DESC');
+        $boxes = Box::select('id', 'balance', 'remaining', 'name')->get();
         // if the request is ajax
         if ($request->ajax()) {
             $table = view('admin.discount.table', compact('discounts'))->render();
@@ -35,12 +38,14 @@ class DiscountAndExpensesController extends Controller
             // if the request is not ajax
         } else {
             $pages = ceil(Discount::count() / $page);
-            return view('admin.discount.index', compact('discounts', 'pages', 'users', 'box'));
+            return view('admin.discount.index', compact('discounts', 'pages', 'users', 'box', 'boxes'));
         }
     }
 
     public function store(DiscountStoreRequest $request)
     {
+        $balance = $request->balance;
+
         DB::beginTransaction();
         try {
             $balance = abs($request->balance);
@@ -48,6 +53,7 @@ class DiscountAndExpensesController extends Controller
             $discount->balance = $balance;
             $discount->date_created = $request->date_created;
             $discount->done_by = $request->done_by;
+            $discount->box_id = $request->box_id;
             if ($request->notes == null) {
                 $discount->notes = 'لا يوجد';
             } else {
@@ -55,26 +61,21 @@ class DiscountAndExpensesController extends Controller
             }
             $discount->save();
 
-            DB::statement('UPDATE box SET box.remaining = CASE box.id
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
-                WHEN 2 THEN (SELECT remaining FROM box WHERE box.id = 2)+?
-                ELSE box.remaining
-                END,
-            box.counter = CASE box.id
-                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 2 THEN (SELECT counter FROM box WHERE box.id = 2)+1
-                ELSE box.counter
-                END
-            WHERE box.id IN(1, 2);', [$balance, $balance]);
+            $box = Box::select('id', 'balance', 'remaining', 'counter')->where('id', $request->box_id)->first();
+            $box->update([
+                'balance' => $box->balance - $balance,
+                'remaining' => $box->remaining - $balance,
+                'counter' => $box->counter + 1
+            ]);
 
             $date = date($request['date_created'] . ' H:i:s');
             DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)', [$balance, 'مصروف', $date]);
 
             DB::commit();
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success' , 'message' => 'تمت الاضافة بنجاح']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => 'error']);
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 

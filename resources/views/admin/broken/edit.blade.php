@@ -120,7 +120,7 @@
                   <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
-                      <label class="form-control-label">الاصناف</label>
+                      <label class="form-control-label">العينيات</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-info"></i></span>
@@ -194,17 +194,17 @@
                     <div class="text-center">
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers" checked>
-                        <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                        <label class="custom-control-label" for="customRadio2">المستفيدون</label>
                       </div>
                     </div>
 
                     <div class="form-group mt--3">
-                      <label class="form-control-label">الزبائن</label>
+                      <label class="form-control-label">المستفيدون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الزبائن" value="{{ $customer[0]->name }}" disabled>
+                              <input type="text" class="form-control" placeholder="المستفيدون" value="{{ $customer[0]->name }}" disabled>
                               <input type="hidden" name="customer_id" value="{{ $broken_bill->customer_id }}">
                           </div>
                           @error('customer_id')
@@ -312,7 +312,7 @@
           $("#price").val("");
           i = i + 1;
         }
-        setTimeout(function() { 
+        setTimeout(function() {
           $( "#broken_update_form" ).submit();
         }, 1000);
     });

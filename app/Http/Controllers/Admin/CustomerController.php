@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,11 +24,11 @@ class CustomerController extends Controller
     {
         $page = config('app.page');
         if($request->ajax()) {
-            $customers = Customer::select('id','name', 'balance', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
+            $customers = Customer::select('id','name', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
             $table = view('admin.customer.table', compact('customers'))->render();
             return response()->json(['table' => $table]);
         } else {
-            $customers = Customer::select('id','name', 'balance', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
+            $customers = Customer::select('id','name', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
             $pages = ceil(Customer::count()/$page);
             return view('admin.customer.index', compact('customers', 'pages'));
         }
@@ -54,7 +54,7 @@ class CustomerController extends Controller
             return response()->json(['status' => 'error']);
         }
     }
-    
+
     public function to_pdf(Request $request)
     {
         $from = $request->from;
@@ -64,7 +64,7 @@ class CustomerController extends Controller
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل الزبائن</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل المستفيدون</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -109,7 +109,7 @@ class CustomerController extends Controller
         }
 
         $table_content .= '</tbody></table>';
-        PDF::SetTitle('كل الزبائن');
+        PDF::SetTitle('كل المستفيدون');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
         $lg = Array();
@@ -153,7 +153,7 @@ class CustomerController extends Controller
         $customer_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM customers, sell_bills WHERE customers.id = sell_bills.customer_id AND customers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$customer[0]->name.' - زبون</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$customer[0]->name.' - مستفيد</p></br>';
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -204,7 +204,7 @@ class CustomerController extends Controller
         $qapd_table .= '</tbody></table>';
 
         $i = 1; $buy_total = 0;
-        $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $buy_table = '<h2>عينيات واردة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -246,7 +246,7 @@ class CustomerController extends Controller
         $buy_table .= '</tbody></table>';
 
         $i = 1; $sell_total = 0;
-        $sell_table = '<h2>فواتير البيع</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $sell_table = '<h2>عينيات صادرة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -330,7 +330,7 @@ class CustomerController extends Controller
 
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">الرصيد</td><td width="20%">'.$balance.'</td></tr></tbody></table>');
 
-        PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','I');
+        PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','D');
         return response()->json(['status' => 'success']);
     }
 

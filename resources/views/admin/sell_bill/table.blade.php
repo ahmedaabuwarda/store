@@ -43,9 +43,9 @@
                 <td class="display-3 text-center">&#8362;{{ $sell_bill->paid_balance }}</td>
                 <td class="display-3 text-center">
                     @if ($sell_bill->provider_id > 0)
-                        {{ $sell_bill->provider->name }} - مورد
+                        {{ $sell_bill->provider->name }} - داعم
                     @elseif($sell_bill->customer_id > 0)
-                        {{ $sell_bill->customer->name }} - زبون
+                        {{ $sell_bill->customer->name }} - مستفيد
                     @elseif($sell_bill->worker_id > 0)
                         {{ $sell_bill->worker->name }} - موظف
                     @endif

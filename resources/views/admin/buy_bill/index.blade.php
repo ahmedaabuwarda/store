@@ -4,8 +4,8 @@
 <div class="header pb-6" style="background-color:#222222;">
   <div class="container-fluid">
     <div class="header-body">
-      <div class="row align-items-center py-5">
-
+      <div class="row align-items-center py-5 m-auto">
+        @include('includes.alert')
       </div>
     </div>
   </div>
@@ -20,16 +20,15 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
-              <h3 class="mb-0">فواتير الشراء</h3>
+              <h3 class="mb-0">عينيات واردة</h3>
             </div>
             <div class="col-xl-7 col-md-12 text-xl-left text-md-center">
-              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة شراء">
+              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة عينيات واردة">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a href="{{ URL('/buy_bill/create') }}" class="btn btn-dark text-white">
-                <span class="badge text-white bg-success mr-1">{{ $box[0]->remaining }} &#8362;
-                </span>فاتورة شراء</a>
+                <i class="fa fa-plus"></i> فاتورة عينيات واردة</a>
             </div>
           </div>
         </div>
@@ -48,19 +47,19 @@
     <ul class="pagination justify-content-center">
       <li class="page-item">
         <a class="page-link" href="{{ Request::fullUrl(); }}" tabindex="-1">
-        <i class="fa fa-angle-left"></i>
-        <span class="sr-only">Previous</span>
+          <i class="fa fa-angle-left"></i>
+          <span class="sr-only">Previous</span>
         </a>
       </li>
       @for($p = 1; $p <= $pages; $p++)
-      <li class="page-item @if(Request::fullUrl() == URL('/buy_bills?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/buy_bills?page=' . $p) }}">{{ $p }}</a></li>
-      @endfor
-      <li class="page-item">
-        <a class="page-link" href="{{ Request::fullUrl(); }}">
-        <i class="fa fa-angle-right"></i>
-        <span class="sr-only">Next</span>
-        </a>
-      </li>
+        <li class="page-item @if(Request::fullUrl() == URL('/buy_bills?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/buy_bills?page=' . $p) }}">{{ $p }}</a></li>
+        @endfor
+        <li class="page-item">
+          <a class="page-link" href="{{ Request::fullUrl(); }}">
+            <i class="fa fa-angle-right"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
     </ul>
   </nav>
 
@@ -77,8 +76,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-
-  $(document).ready(function(){
+  $(document).ready(function() {
     $("#search_input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
       $(".tablee tbody tr").filter(function() {
@@ -87,7 +85,7 @@
     });
   });
 
-  $('.show_button').on('click', function(){
+  $('.show_button').on('click', function() {
     let id = $(this).data('dataid');
     let _token = $('input[name="_token"]').val();
     $.ajax({
@@ -105,63 +103,63 @@
   });
 
   $("#buy_bill_table").on("click", ".delete_buy_bill_button", function(e) {
-      e.preventDefault();
-      let id = $(this).data('id');
-      Swal.fire({
-          title: 'هل انت متاكد من الحذف ؟',
-          text: "!لا يمكنك التراجع بعد هذه الخطوة",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'نعم!',
-          cancelButtonText: 'الغاء'
-      }).then((result) => {
-          if (result.isConfirmed) {
-              let _token = $('input[name=_token]').val();
-              $.ajax({
-                  url: "/buy_bill/delete",
-                  type: "POST",
-                  data: {
-                      id: id,
-                      _token: _token
-                  },
-                  success: function(response) {
-                      if (response.status == 'success') {
-                          Swal.fire(
-                              'تم الحذف!',
-                              'تم الحذف بنجاح',
-                              'success'
-                          );
-                          // refresh page
-                          location.reload();
-                      } else {
-                          Swal.fire(
-                              'خطأ',
-                              'حدث خطأ أثناء الحذف',
-                              'error'
-                          );
-                      }
-                  },
-                  error: function(response) {
-                      Swal.fire(
-                          'خطأ',
-                          'حدث خطأ أثناء الحذف',
-                          'error'
-                      );
-                  }
-              });
+    e.preventDefault();
+    let id = $(this).data('id');
+    Swal.fire({
+      title: 'هل انت متاكد من الحذف ؟',
+      text: "!لا يمكنك التراجع بعد هذه الخطوة",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'نعم!',
+      cancelButtonText: 'الغاء'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let _token = $('input[name=_token]').val();
+        $.ajax({
+          url: "/buy_bill/delete",
+          type: "POST",
+          data: {
+            id: id,
+            _token: _token
+          },
+          success: function(response) {
+            if (response.status == 'success') {
+              Swal.fire(
+                'تم الحذف!',
+                'تم الحذف بنجاح',
+                'success'
+              );
+              // refresh page
+              location.reload();
+            } else {
+              Swal.fire(
+                'خطأ',
+                'حدث خطأ أثناء الحذف',
+                'error'
+              );
+            }
+          },
+          error: function(response) {
+            Swal.fire(
+              'خطأ',
+              'حدث خطأ أثناء الحذف',
+              'error'
+            );
           }
-      });
+        });
+      }
+    });
   });
 
   // show bill to pdf modal
-  $('.from_to_pdf_button').click(function(e){
+  $('.from_to_pdf_button').click(function(e) {
     $('#from_to_pdf_modal').modal('show');
   });
 
   // sanadat qapd to pdf form
-  $('#from_to_pdf_form').submit(function(e){
+  $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
     let from = $('input[name="from"]').val();
     let to = $('input[name="to"]').val();
@@ -174,13 +172,12 @@
         to: to,
         _token: _token
       },
-      success: function(response){
+      success: function(response) {
         $('#from_to_pdf_modal').modal('hide');
       }
     });
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
   });
-
 </script>
 @endsection

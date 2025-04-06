@@ -15,8 +15,12 @@ class CreateBoxTable extends Migration
     {
         Schema::create('box', function (Blueprint $table) {
             $table->id();
-            $table->double('remaining', 15, 4);
-            $table->integer('counter');
+            $table->string('name');
+            $table->double('balance', 15, 4)->default(0);
+            $table->unsignedBigInteger('currency_id');
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
+            $table->double('remaining', 15, 4)->default(0);
+            $table->integer('counter')->default(0);
             $table->timestamps();
         });
     }

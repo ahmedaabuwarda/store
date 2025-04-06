@@ -24,14 +24,14 @@
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->byan }}</td>
-                <td class="display-3 text-center">&#8362;{{ $sanadat_qapd->balance }}</td>
+                <td class="display-3 text-center">{{ $sanadat_qapd->box->currency->symbol }} {{ $sanadat_qapd->balance }}</td>
                 <td class="display-3 text-center">
                     @if ($sanadat_qapd->worker_id > 0)
                         {{ $sanadat_qapd->worker->name }} - موظف
                     @elseif($sanadat_qapd->customer_id > 0)
-                        {{ $sanadat_qapd->customer->name }} - زبون
+                        {{ $sanadat_qapd->customer->name }} - مستفيد
                     @elseif($sanadat_qapd->provider_id > 0)
-                        {{ $sanadat_qapd->provider->name }} - مورد
+                        {{ $sanadat_qapd->provider->name }} - داعم
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->date_created }}</td>

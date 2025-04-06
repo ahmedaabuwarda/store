@@ -23,7 +23,7 @@
             <div class="card-header">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">فاتورة بيع</h5>
+                  <h5 class="card-title text-uppercase text-muted mb-0">فاتورة عينيات صادرة</h5>
                   <span class="h2 font-weight-bold mb-0">تعديل</span>
                 </div>
                 <div class="col-auto">
@@ -119,7 +119,7 @@
                   <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
-                      <label class="form-control-label">الاصناف</label>
+                      <label class="form-control-label">العينيات</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-info"></i></span>
@@ -193,11 +193,11 @@
                     <div class="mt-5 mb-5 text-center mb-3">
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" @if($sell_bill->provider_id > 0) checked @endif disabled>
-                        <label class="custom-control-label" for="customRadio1">الموردون</label>
+                        <label class="custom-control-label" for="customRadio1">الداعمون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers" @if($sell_bill->customer_id > 0) checked @endif disabled>
-                        <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                        <label class="custom-control-label" for="customRadio2">المستفيدون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers" @if($sell_bill->worker_id > 0) checked @endif disabled>
@@ -208,12 +208,12 @@
                     @if($sell_bill->provider_id > 0)
 
                     <div class="form-group mt--3">
-                      <label class="form-control-label"> الموردون</label>
+                      <label class="form-control-label"> الداعمون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الموردون" value="{{ $sell_bill->provider->name }}" disabled>
+                              <input type="text" class="form-control" placeholder="الداعمون" value="{{ $sell_bill->provider->name }}" disabled>
                               <input type="hidden" name="provider_id" value="{{ $sell_bill->provider_id }}">
                           </div>
                           @error('provider_id')
@@ -224,12 +224,12 @@
                     @elseif($sell_bill->customer_id > 0)
 
                     <div class="form-group mt--3">
-                      <label class="form-control-label">الزبائن</label>
+                      <label class="form-control-label">المستفيدون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الزبائن" value="{{ $sell_bill->customer->name }}" disabled>
+                              <input type="text" class="form-control" placeholder="المستفيدون" value="{{ $sell_bill->customer->name }}" disabled>
                               <input type="hidden" name="customer_id" value="{{ $sell_bill->customer_id }}">
                           </div>
                           @error('customer_id')
@@ -378,7 +378,7 @@
           $("#price").val("");
           i = i + 1;
         }
-        setTimeout(function() { 
+        setTimeout(function() {
           $( "#daily_sell_update_form" ).submit();
         }, 1000);
     });

@@ -15,7 +15,7 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->id();
-            $table->integer('worker_id');
+            $table->unsignedBigInteger('worker_id');
             $table->double('remaining_balance', 15, 4);
             $table->double('balance', 15, 4);
             $table->double('net_balance', 15, 4);

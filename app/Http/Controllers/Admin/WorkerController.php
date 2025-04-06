@@ -117,7 +117,7 @@ class WorkerController extends Controller
         } else {
             $total = $total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $table_content .= '</tbody></table>';
         PDF::SetTitle('كل الموظفين');
         PDF::SetAuthor('اياد الهسي');
@@ -145,18 +145,18 @@ class WorkerController extends Controller
         PDF::Output('all_workers_'.date('ymdhis').'.pdf','I');
         return response()->json(['status' => 'success']);
     }
-    
+
     public function kashf_to_pdf(Request $request)
     {
         $from = $request->from;
         $to = $request->to;
         $id = $request->id;
-        
+
         $worker = DB::select('SELECT name, balance FROM workers WHERE id = :id', ['id' => $id]);
         $worker_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.byan FROM workers, sanadat_sarfs WHERE workers.id = sanadat_sarfs.worker_id AND workers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $worker_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM workers, sanadat_qapds WHERE workers.id = sanadat_qapds.worker_id AND workers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
-        
+
         $worker_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM workers, buy_bills WHERE workers.id = buy_bills.worker_id AND workers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $worker_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM workers, sell_bills WHERE workers.id = sell_bills.worker_id AND workers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
@@ -188,7 +188,7 @@ class WorkerController extends Controller
             </tr>';
             $sarf_total += $sanadat_sarf->balance; $i++;
         }
-        
+
         $sarf_table .= '</tbody></table>';
 
         $i = 1; $qapd_total = 0;
@@ -213,11 +213,11 @@ class WorkerController extends Controller
             </tr>';
             $qapd_total += $sanadat_qapd->balance; $i++;
         }
-        
+
         $qapd_table .= '</tbody></table>';
 
         $i = 1; $buy_total = 0;
-        $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $buy_table = '<h2>عينيات واردة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -255,11 +255,11 @@ class WorkerController extends Controller
         } else {
             $buy_total = $buy_total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $buy_table .= '</tbody></table>';
 
         $i = 1; $sell_total = 0;
-        $sell_table = '<h2>فواتير البيع</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $sell_table = '<h2>عينيات صادرة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -297,7 +297,7 @@ class WorkerController extends Controller
         } else {
             $sell_total = $sell_total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $sell_table .= '</tbody></table>';
 
         $i = 1; $salary_total = 0;
@@ -310,7 +310,7 @@ class WorkerController extends Controller
                 <th width="20%" bgcolor="#eee">رصيد متبقي</th>
                 <th width="15%" bgcolor="#eee">راتب اساسي</th>
                 <th width="10%" bgcolor="#eee">صافي الراتب</th>
-                <th width="10%" bgcolor="#eee">ملاحظات</th> 
+                <th width="10%" bgcolor="#eee">ملاحظات</th>
             </tr>
         </thead>
         <tbody>';
@@ -341,7 +341,7 @@ class WorkerController extends Controller
         } else {
             $salary_total = $salary_total.'<span>&#8362;&#160;</span>';
         }
-        
+
         $salary_table .= '</tbody></table>';
 
         PDF::SetTitle('كشف حساب');
@@ -370,7 +370,7 @@ class WorkerController extends Controller
 
         PDF::writeHTML($qapd_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$qapd_total.'<span>&#8362;&#160;</span> - دائن -</td></tr></tbody></table>');
-        
+
         PDF::writeHTML($buy_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$buy_total.'</td></tr></tbody></table>');
 
@@ -379,7 +379,7 @@ class WorkerController extends Controller
 
         PDF::writeHTML($salary_table);
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$salary_total.'</td></tr></tbody></table>');
-        
+
         $balance = '';
         if ($worker[0]->balance > 0) {
             $balance = $worker[0]->balance.'<span>&#8362;&#160;</span> - دائن -';

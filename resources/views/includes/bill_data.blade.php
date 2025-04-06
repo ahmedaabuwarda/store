@@ -95,12 +95,12 @@
             <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                 <input class="custom-control-input" id="customRadio1" type="radio" value="providers" disabled
                     @if ($bill->provider_id > 0) checked @endif />
-                <label class="custom-control-label" for="customRadio1">الموردون</label>
+                <label class="custom-control-label" for="customRadio1">الداعمون</label>
             </div>
             <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                 <input class="custom-control-input" id="customRadio2" type="radio" value="customers" disabled
                     @if ($bill->customer_id > 0) checked @endif />
-                <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                <label class="custom-control-label" for="customRadio2">المستفيدون</label>
             </div>
             <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                 <input class="custom-control-input" id="customRadio3" type="radio" value="workers" disabled

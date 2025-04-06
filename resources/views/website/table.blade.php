@@ -4,7 +4,7 @@
         <th scope="col" class="text-center">الحالة</th>
         <th scope="col" class="text-center">عدد الوحدات المتوفرة</th>
         <th scope="col" class="text-center">عدد الوحدات الاصلية</th>
-        <th scope="col" class="text-center">اخر سعر تكلفة</th>
+        <th scope="col" class="text-center">سعر التقسيط</th>
         <th scope="col" class="text-center">الاسم</th>
         <th scope="col" class="text-center">#</th>
     </tr>
@@ -35,7 +35,7 @@
                 </td>
                 <td class="display-3 text-center">{{ $product->quantity }} - {{ $product->type }}</td>
                 <td class="display-3 text-center">{{ $product->original_quantity }} - {{ $product->type }}</td>
-                <td class="display-3 text-center">&#8362;{{ $product->original_price }}</td>
+                <td class="display-3 text-center">&#8362;{{ $product->taqseet_price }}</td>
                 <td class="display-3 text-center">{{ $product->name }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>

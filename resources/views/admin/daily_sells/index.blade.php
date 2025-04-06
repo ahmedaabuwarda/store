@@ -13,7 +13,7 @@
     <!-- Page content -->
     <div class="container-fluid mt--8">
 
-        <!-- All sell bills -->
+        <!-- All Export Ainiat -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card" id="sell_bill_table_card">
@@ -88,7 +88,7 @@
                 });
             });
         });
-        // create sell bill
+        // create Export Ainiat
         $('#sell_bill_table_card').on('click', '.multi_button', function() {
             var movement = $(this).data('movement');
             if (movement == 'create_sell_bill') {
@@ -99,7 +99,7 @@
                         if (response.status == 'success') {
                             $('#show_bill_form .modal-body').html('');
                             $('#show_bill_form .modal-body').html(response.modal);
-                            $('#show_bill_modal #show_bill_modalLabel').text('انشاء فاتورة بيع جديدة');
+                            $('#show_bill_modal #show_bill_modalLabel').text('انشاء فاتورة عينيات صادرة جديدة');
                             $('#show_bill_modal #movement').val(movement);
                             $('#show_bill_modal').modal('show');
                             $('.selectpicker').selectpicker();
@@ -148,7 +148,7 @@
                 }
             });
         });
-        // show sell bill
+        // show Export Ainiat
         $('#sell_bill_table').on('click', '.show_button', function() {
             let id = $(this).data('dataid');
             let movement = $(this).data('movement');
@@ -164,7 +164,7 @@
                     success: function(response) {
                         $('#show_bill_form .modal-body').html('');
                         $('#show_bill_form .modal-body').html(response.bill_data);
-                        $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة بيع');
+                        $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة عينيات صادرة');
                         $('#show_bill_modal').modal('show');
                     }
                 });

@@ -19,6 +19,8 @@ class CreateDiscountsTable extends Migration
             $table->date('date_created');
             $table->string('notes');
             $table->string('done_by', 15);
+            $table->unsignedBigInteger('box_id');
+            $table->foreign('box_id')->references('id')->on('box')->onDelete('cascade');
             $table->timestamps();
         });
     }

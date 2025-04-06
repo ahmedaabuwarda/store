@@ -86,7 +86,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">اضافة صنف جديد</h5>
+                <h5 class="modal-title" id="exampleModalLabel">اضافة عينية جديد</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -138,7 +138,7 @@
       $('#from_to_pdf_modal').modal('show');
       $('#from_to').val(from_to);
     });
-    
+
     // show provider to pdf modal
     $('.from_to_pdf_button').click(function(e){
       let from_to = $(this).data('fromto');
@@ -322,7 +322,7 @@
         });
     });
 
-    
+
     $("#product_table").on("click", ".delete_product_button", function(e) {
         e.preventDefault();
         let id = $(this).data('id');
@@ -438,8 +438,8 @@
     });
 
   @elseif($target == 'sell_bills')
-  
-    // show sell bill
+
+    // show Export Ainiat
     $('#product_table').on('click', '.show_button', function() {
         let id = $(this).data('dataid');
         let movement = $(this).data('movement');
@@ -455,7 +455,7 @@
                 success: function(response) {
                     $('#show_bill_form .modal-body').html('');
                     $('#show_bill_form .modal-body').html(response.bill_data);
-                    $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة بيع');
+                    $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة عينيات صادرة');
                     $('#show_bill_modal').modal('show');
                 }
             });

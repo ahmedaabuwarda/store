@@ -20,14 +20,6 @@ $ooredoo_balance = $productsCount[0]->ooredoo_balance;
                         <td class="display-3 text-center">{{ $total_products_count }}</td>
                         <td class="display-3 text-center">الوحدات المتوفرة</td>
                     </tr>
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ abs($needFromPeople) }}</td>
-                        <td class="display-3 text-center">دائن</td>
-                    </tr>
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ abs($peopleNeedFromMe) }}</td>
-                        <td class="display-3 text-center">مدين</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -41,33 +33,19 @@ $ooredoo_balance = $productsCount[0]->ooredoo_balance;
             <table class="table align-items-center table-flush table-hover">
                 <tbody>
                     <tr>
-                        <td class="display-3 text-center">({{ $box[3]->counter }}) - &#8362;{{ $box[3]->remaining }}</td>
+                        <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
                         <td class="display-3 text-center">سند قبض</td>
                     </tr>
                     <tr>
-                        <td class="display-3 text-center">({{ $box[4]->counter }}) - &#8362;{{ $box[4]->remaining }}</td>
+                        <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
                         <td class="display-3 text-center">سند صرف</td>
-                    </tr>
-                    @can('add_buy_bills')
-                    <tr>
-                        <td class="display-3 text-center">({{ $box[5]->counter }}) - &#8362;{{ $box[5]->remaining }}</td>
-                        <td class="display-3 text-center"> فاتورة شراء</td>
-                    </tr>
-                    @endcan
-                    <tr>
-                        <td class="display-3 text-center">({{ $box[6]->counter }}) - &#8362;{{ $box[6]->remaining }}</td>
-                        <td class="display-3 text-center">فاتورة بيع</td>
                     </tr>
                     @can('add_workers')
                     <tr>
-                        <td class="display-3 text-center">({{ $box[7]->counter }}) - &#8362;{{ $box[7]->remaining }}</td>
+                        <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
                         <td class="display-3 text-center">اجمالي الرواتب</td>
                     </tr>
                     @endcan
-                    <tr>
-                        <td class="display-3 text-center">({{ $box[9]->counter }}) - &#8362;{{ $box[9]->remaining }}</td>
-                        <td class="display-3 text-center">اجمالي التالفة</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -81,30 +59,12 @@ $ooredoo_balance = $productsCount[0]->ooredoo_balance;
             <table class="table align-items-center table-flush table-hover">
                 <tbody>
                     <tr>
-                        <td class="display-3 text-center">({{ $box[0]->counter }}) - &#8362;{{ $box[0]->remaining }}</td>
+                        <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
                         <td class="display-3 text-center">الصندوق</td>
                     </tr>
                     <tr>
-                        <td class="display-3 text-center">({{ $box[1]->counter }}) - &#8362;{{ $box[1]->remaining }}</td>
+                        <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
                         <td class="display-3 text-center">اجمالي المصاريف الكلي</td>
-                    </tr>
-                    @can('add_products')
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ ((($box[6]->remaining + $total_cost_price) - $box[5]->remaining) + $box[8]->remaining) - $box[1]->remaining - $box[7]->remaining }}</td>
-                        <td class="display-3 text-center">المربح الكلي</td>
-                    </tr>
-                    @endcan
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ $productsCount[0]->daily_profit }}</td>
-                        <td class="display-3 text-center">المربح اليومي</td>
-                    </tr>
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ $jawwal_balance }}</td>
-                        <td class="display-3 text-center">رصيد جوال</td>
-                    </tr>
-                    <tr>
-                        <td class="display-3 text-center">&#8362;{{ $ooredoo_balance }}</td>
-                        <td class="display-3 text-center">رصيد وطنية</td>
                     </tr>
                 </tbody>
             </table>

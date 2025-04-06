@@ -25,7 +25,7 @@
                                 </div>
                                 @csrf
                                 <input class="form-control" name="search_field"
-                                    placeholder="...ابحث عن اسم مورد او زبون او صنف" type="text" value="{{ old('search_field') }}">
+                                    placeholder="...ابحث عن اسم داعم او مستفيد او عينية" type="text" value="{{ old('search_field') }}">
                                 <div class="input-group-append align-items-center">
                                     <div class="dropdown">
                                         <button class="btn btn-gray btn-sm btn-round dropdown-toggle" type="button"
@@ -34,10 +34,10 @@
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
-                                                    <input name="target" class="custom-control-input" id="customRadio5"
+                                                    <input name="target" class="custom-control-input" id="customRadio3"
                                                         type="radio" value="sell_bills">
                                                     <label class="custom-control-label"
-                                                        for="customRadio5">فواتير بيع</label>
+                                                        for="customRadio3">فواتير بيع</label>
                                                 </div>
                                             </a>
                                             @can('add_providers')
@@ -46,24 +46,26 @@
                                                     <input name="target" class="custom-control-input" id="customRadio4"
                                                         type="radio" value="providers">
                                                     <label class="custom-control-label"
-                                                        for="customRadio4">الموردون</label>
+                                                        for="customRadio4">الداعمون</label>
                                                 </div>
                                             </a>
                                             @endcan
+                                            @can('add_customers')
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio5"
                                                         type="radio" value="customers">
                                                     <label class="custom-control-label"
-                                                        for="customRadio5">الزبائن</label>
+                                                        for="customRadio5">المستفيدون</label>
                                                 </div>
                                             </a>
+                                            @endcan
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio6"
                                                         type="radio" value="products" checked>
                                                     <label class="custom-control-label"
-                                                        for="customRadio6">الاصناف</label>
+                                                        for="customRadio6">العينيات</label>
                                                 </div>
                                             </a>
                                         </div>
@@ -87,7 +89,57 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
-                                <i class="fas fa-university"></i> كشوفات وسندات وفواتير
+                                <i class="fas fa-university"></i> العينيات
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
+                                <!-- Dropdown header -->
+                                <div class="px-3 py-3">
+                                    <h6 class="text-sm text-muted m-0"><strong class="text-primary">Choose |
+                                            اختار</strong></h6>
+                                </div>
+                                <!-- List group -->
+                                <div class="list-group list-group-flush">
+                                    @can('add_buy_bills')
+                                    <a href="{{ URL('/buy_bills') }}"
+                                        class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-shekel-sign"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Buy Bills | عينيات واردة</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    @endcan
+                                    @can('add_sell_bills')
+                                    <a href="{{ URL('/sell_bills') }}"
+                                        class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-shekel-sign"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Export Ainiat | عينيات صادرة</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    @endcan
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <i class="fas fa-university"></i> السندات
                             </a>
                             <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
                                 <!-- Dropdown header -->
@@ -131,72 +183,6 @@
                                         </div>
                                     </a>
                                     @endcan
-                                    @can('add_buy_bills')
-                                    <a href="{{ URL('/buy_bills') }}"
-                                        class="btn list-group-item list-group-item-action">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <i class="fa fa-shekel-sign"></i>
-                                            </div>
-                                            <div class="col ml--2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="mb-0 text-sm">Buy Bills | فواتير الشراء</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    @endcan
-                                    @can('add_sell_bills')
-                                    <a href="{{ URL('/sell_bills') }}"
-                                        class="btn list-group-item list-group-item-action">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <i class="fa fa-shekel-sign"></i>
-                                            </div>
-                                            <div class="col ml--2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="mb-0 text-sm">Sell Bills | فواتير البيع</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    @endcan
-                                    @can('add_sell_bills')
-                                    <a href="{{ URL('/daily_sells') }}"
-                                        class="btn list-group-item list-group-item-action">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <i class="fa fa-shekel-sign"></i>
-                                            </div>
-                                            <div class="col ml--2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="mb-0 text-sm">Daily Sells | مبيعات يومية</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="{{ URL('/brokens') }}"
-                                        class="btn list-group-item list-group-item-action">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <i class="fa fa-box-open"></i>
-                                            </div>
-                                            <div class="col ml--2">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <h4 class="mb-0 text-sm">Brokens | البضاعة التالفة</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    @endcan
                                 </div>
                             </div>
                         </li>
@@ -213,26 +199,24 @@
                                 </div>
                                 <!-- List group -->
                                 <div class="list-group list-group-flush">
-                                    @can('add_to_box')
-                                    <a class="btn list-group-item list-group-item-action" data-toggle="modal"
-                                        data-target="#add_box_modal">
+                                    @can('add_currencies')
+                                    <a href="{{ URL('/currencies') }}" class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-wallet text-orange"></i>
+                                                <i class="fa fa-box-open text-success"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <h4 class="mb-0 text-sm">Add Box | اضافة للصندوق</h4>
+                                                        <h4 class="mb-0 text-sm">Currencies | العملات</h4>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </a>
                                     @endcan
-                                    @can('add_customers')
-                                    <a class="btn list-group-item list-group-item-action" data-toggle="modal"
-                                        data-target="#show_box_modal">
+                                    @can('show_boxes')
+                                    <a href="{{url('/boxes')}}" class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <i class="fa fa-box-open text-success"></i>
@@ -274,7 +258,7 @@
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <h4 class="mb-0 text-sm">Providers | الموردون</h4>
+                                                        <h4 class="mb-0 text-sm">Providers | الداعمون</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -291,7 +275,7 @@
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <h4 class="mb-0 text-sm">Customers | الزبائن</h4>
+                                                        <h4 class="mb-0 text-sm">Customers | المستفيدون</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -348,9 +332,13 @@
                                 </a>
                                 <div class="dropdown-menu  dropdown-menu-right ">
                                     <div class="dropdown-header noti-title">
-                                        <h6 class="text-overflow m-0">Welcome!</h6>
+                                        <h6 class="text-overflow m-0">مرحبا!</h6>
                                     </div>
                                     <div class="dropdown-divider"></div>
+                                    <a href="{{ url('/permissions') }}" class="dropdown-item">
+                                        <i class="fa fa-edit text-dark"></i>
+                                        <span>Permissions | الصلاحيات</span>
+                                    </a>
                                     <a href="{{ route('logout') }}" class="dropdown-item"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <i class="fa fa-running text-danger"></i>

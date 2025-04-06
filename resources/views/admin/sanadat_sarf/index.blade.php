@@ -4,8 +4,8 @@
 <div class="header pb-6" style="background-color:#222222;">
   <div class="container-fluid">
     <div class="header-body">
-      <div class="row align-items-center py-5">
-
+      <div class="row align-items-center py-5 m-auto">
+        @include('includes.alert')
       </div>
     </div>
   </div>
@@ -27,9 +27,7 @@
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><span
-                class="badge text-white bg-success mr-1">{{ $box[0]->remaining }} &#8362;
-            </span> سند صرف</a>
+              <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><i class="fa fa-plus"></i> سند صرف </a>
             </div>
           </div>
         </div>
@@ -48,19 +46,19 @@
     <ul class="pagination justify-content-center">
       <li class="page-item">
         <a class="page-link" href="{{ Request::fullUrl(); }}" tabindex="-1">
-        <i class="fa fa-angle-left"></i>
-        <span class="sr-only">Previous</span>
+          <i class="fa fa-angle-left"></i>
+          <span class="sr-only">Previous</span>
         </a>
       </li>
       @for($p = 1; $p <= $pages; $p++)
-      <li class="page-item @if(Request::fullUrl() == URL('/sanadat_sarfs?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/sanadat_sarfs?page=' . $p) }}">{{ $p }}</a></li>
-      @endfor
-      <li class="page-item">
-        <a class="page-link" href="{{ Request::fullUrl(); }}">
-        <i class="fa fa-angle-right"></i>
-        <span class="sr-only">Next</span>
-        </a>
-      </li>
+        <li class="page-item @if(Request::fullUrl() == URL('/sanadat_sarfs?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/sanadat_sarfs?page=' . $p) }}">{{ $p }}</a></li>
+        @endfor
+        <li class="page-item">
+          <a class="page-link" href="{{ Request::fullUrl(); }}">
+            <i class="fa fa-angle-right"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
     </ul>
   </nav>
 
@@ -83,53 +81,77 @@
         <div class="modal-body">
           @csrf
           <div class="row">
-            <div class="col-xl-6 col-md-12">
+            <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">اختار التاريخ</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
-                      </div>
-                      <input class="form-control datepicker @error('date_created') is-invalid @enderror" placeholder="اختار التاريخ" type="text" name="date_created" value="{{ date('Y-m-d') }}" required>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
                   </div>
-                  @error('date_created')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input class="form-control datepicker @error('date_created') is-invalid @enderror" placeholder="اختار التاريخ" type="text" name="date_created" value="{{ date('Y-m-d') }}" required>
+                </div>
+                @error('date_created')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
 
-            <div class="col-xl-6 col-md-12">
+            <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">رقم السند</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-university text-primary"></i></span>
-                      </div>
-                      <input type="number" class="form-control @error('number') is-invalid @enderror" name="number" placeholder="رقم السند" value="{{ date('ymdhis') }}" autocomplete="number" required>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-university text-primary"></i></span>
                   </div>
-                  @error('number')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="number" class="form-control @error('number') is-invalid @enderror" name="number" placeholder="رقم السند" value="{{ date('ymdhis') }}" autocomplete="number" required>
+                </div>
+                @error('number')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
 
-            <div class="col-xl-6 col-md-12">
+            <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">المبلغ</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
-                      </div>
-                      <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" step="0.0001" autocomplete="balance" required>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-book text-danger"></i></span>
                   </div>
-                  @error('balance')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" step="0.0001" autocomplete="balance" required>
+                </div>
+                @error('balance')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+            </div>
+
+
+            <div class="col-xl-4 col-md-12">
+
+              <div class="form-group">
+                <label class="form-control-label">الصندوق</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i
+                        class="fa fa-box text-info"></i></span>
+                  </div>
+                  <select class="form-control selectpicker" name="box_id"
+                    data-live-search="true">
+                    @foreach ($boxes as $box)
+                    <option value="{{ $box->id }}">{{ $box->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('box_id')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -138,16 +160,16 @@
 
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" checked>
-                <label class="custom-control-label" for="customRadio1">الموردون</label>
+                <label class="custom-control-label" for="customRadio1">الداعمون</label>
               </div>
               @if(Auth::user()->id == 1)
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers">
-                <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                <label class="custom-control-label" for="customRadio2">المستفيدون</label>
               </div>
               <div class="custom-control custom-radio mb-3 d-inline">
-                <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers">
-                <label class="custom-control-label" for="customRadio3">الموظفون</label>
+                <input name="target" class="custom-control-input" id="customRadio33" type="radio" value="workers">
+                <label class="custom-control-label" for="customRadio33">الموظفون</label>
               </div>
               @endif
 
@@ -156,20 +178,20 @@
             <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
-                <label class="form-control-label">الموردون</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
-                      </div>
-                      <select class="form-control selectpicker" name="provider_id" data-live-search="true">
-                        @foreach($providers as $provider)
-                          <option value="{{ $provider->id }}">{{ $provider->name }}</option>
-                        @endforeach
-                      </select>
+                <label class="form-control-label">الداعمون</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                   </div>
-                  @error('provider_id')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <select class="form-control selectpicker" name="provider_id" data-live-search="true">
+                    @foreach($providers as $provider)
+                    <option value="{{ $provider->id }}">{{ $provider->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('provider_id')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -177,21 +199,21 @@
             <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
-                <label class="form-control-label">الزبائن</label>
+                <label class="form-control-label">المستفيدون</label>
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
-                    </div>
-                    <select class="form-control selectpicker" name="customer_id" data-live-search="true">
-                      @if(Auth::user()->id == 1)
-                      @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                      @endforeach
-                      @endif
-                    </select>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
+                  </div>
+                  <select class="form-control selectpicker" name="customer_id" data-live-search="true">
+                    @if(Auth::user()->id == 1)
+                    @foreach($customers as $customer)
+                    <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                    @endforeach
+                    @endif
+                  </select>
                 </div>
                 @error('customer_id')
-                  <span class="text-danger">{{ $message }}</span>
+                <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
 
@@ -202,19 +224,19 @@
               <div class="form-group">
                 <label class="form-control-label">الموظفون</label>
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
-                    </div>
-                    <select class="form-control selectpicker" name="worker_id" data-live-search="true">
-                      @if(Auth::user()->id == 1)
-                      @foreach($workers as $worker)
-                        <option value="{{ $worker->id }}">{{ $worker->name }}</option>
-                      @endforeach
-                      @endif
-                    </select>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
+                  </div>
+                  <select class="form-control selectpicker" name="worker_id" data-live-search="true">
+                    @if(Auth::user()->id == 1)
+                    @foreach($workers as $worker)
+                    <option value="{{ $worker->id }}">{{ $worker->name }}</option>
+                    @endforeach
+                    @endif
+                  </select>
                 </div>
                 @error('worker_id')
-                  <span class="text-danger">{{ $message }}</span>
+                <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
 
@@ -224,12 +246,12 @@
 
               <div class="form-group">
                 <label class="form-control-label">البيان</label>
-                  <div class="input-group">
-                      <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان (في حال كان فارغ : لايوجد)" autocomplete="byan" rows="3">{{ old('byan') }}</textarea>
-                  </div>
-                  @error('byan')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                <div class="input-group">
+                  <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان (في حال كان فارغ : لايوجد)" autocomplete="byan" rows="3">{{ old('byan') }}</textarea>
+                </div>
+                @error('byan')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -251,7 +273,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
+  $(document).ready(function() {
     $("#search_input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
       $(".tablee tbody tr").filter(function() {
@@ -260,7 +282,7 @@
     });
   });
   // create sanadat sarf form
-  $('#create_sanadat_sarf_form').submit(function(e){
+  $('#create_sanadat_sarf_form').submit(function(e) {
     e.preventDefault();
     let data = new FormData(this);
     $.ajax({
@@ -270,11 +292,11 @@
       processData: false,
       contentType: false,
       cache: false,
-      success: function(response){
-        if(response.status == "success"){
+      success: function(response) {
+        if (response.status == "success") {
           Swal.fire(
             'تم !',
-            'تم اضافة سند الصرف بنجاح',
+            response.message,
             'success'
           );
           // refresh table
@@ -285,26 +307,26 @@
         } else {
           Swal.fire(
             'عفواً !',
-            'حدث خطأ ما، قد يكون السند موجود بالفعل او تم الوصول للحد الاقصى للسحب',
+            response.message,
             'error'
           );
         }
       },
-      error: function(response){
+      error: function(response) {
         Swal.fire(
           '! عفوا',
-          'حدث خطأ أثناء حفظ السند',
+          response.message,
           'error'
         );
       }
     });
   });
   // show sanadat sarf modal
-  $('.from_to_pdf_button').click(function(e){
+  $('.from_to_pdf_button').click(function(e) {
     $('#from_to_pdf_modal').modal('show');
   });
   // sanadat sarf to pdf form
-  $('#from_to_pdf_form').submit(function(e){
+  $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
     let from = $('input[name="from"]').val();
     let to = $('input[name="to"]').val();
@@ -317,7 +339,7 @@
         to: to,
         _token: _token
       },
-      success: function(response){
+      success: function(response) {
         $('#from_to_pdf_modal').modal('hide');
       }
     });
@@ -344,11 +366,11 @@
           url: "/sanadat_sarf/delete",
           type: "POST",
           data: {
-            id : id,
+            id: id,
             _token: _token
           },
-          success: function(response){
-            if(response.status != 'Not Found'){
+          success: function(response) {
+            if (response.status != 'Not Found') {
               Swal.fire(
                 'تم الحذف!',
                 'تم حذف السند بنجاح',
@@ -364,7 +386,7 @@
               );
             }
           },
-          error: function(response){
+          error: function(response) {
             Swal.fire(
               'خطأ',
               'حدث خطأ أثناء حذف السند',
@@ -380,11 +402,11 @@
     $.ajax({
       url: "/sanadat_sarfs",
       type: "GET",
-      success: function(response){
+      success: function(response) {
         $('#sanadat_sarf_table').html('');
         $('#sanadat_sarf_table').append(response.table);
       },
-      error: function(response){
+      error: function(response) {
         Swal.fire(
           'خطأ',
           'حدث خطأ أثناء حذف السند',

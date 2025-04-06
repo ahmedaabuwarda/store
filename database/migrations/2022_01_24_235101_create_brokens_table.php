@@ -17,9 +17,9 @@ class CreateBrokensTable extends Migration
             $table->id();
             $table->bigInteger('number')->unique();
             $table->date('date_created');
-            $table->integer('provider_id')->default(0);
-            $table->integer('customer_id')->default(0);
-            $table->integer('worker_id')->default(0);
+            $table->unsignedBigInteger('provider_id')->default(0);
+            $table->unsignedBigInteger('customer_id')->default(0);
+            $table->unsignedBigInteger('worker_id')->default(0);
             $table->double('total_balance', 15, 4);
             $table->double('paid_balance', 15, 4);
             $table->string('byan');

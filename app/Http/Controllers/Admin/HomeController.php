@@ -30,17 +30,19 @@ class HomeController extends Controller
 
         $permissions = Permission::all();
         if ($permissions->isEmpty()) {
-            Permission::create(['name' => 'add_to_box']);
-            Permission::create(['name' => 'add_buy_bills']);
-            Permission::create(['name' => 'add_customers']);
-            Permission::create(['name' => 'add_discounts']);
-            Permission::create(['name' => 'add_products']);
-            Permission::create(['name' => 'add_providers']);
-            Permission::create(['name' => 'add_salaries']);
-            Permission::create(['name' => 'add_sanadat_qapds']);
-            Permission::create(['name' => 'add_sanadat_sarfs']);
-            Permission::create(['name' => 'add_sell_bills']);
-            Permission::create(['name' => 'add_workers']);
+            Permission::create(['name' => 'add_to_box', 'description' => 'إضافة إلى الصندوق']);
+            Permission::create(['name' => 'show_boxes', 'description' => 'عرض الصناديق']);
+            Permission::create(['name' => 'add_currencies', 'description' => 'إضافة عملات']);
+            Permission::create(['name' => 'add_buy_bills', 'description' => 'إضافة فواتير شراء']);
+            Permission::create(['name' => 'add_customers', 'description' => 'إضافة مستفيدين']);
+            Permission::create(['name' => 'add_discounts', 'description' => 'إضافة خصومات']);
+            Permission::create(['name' => 'add_products', 'description' => 'إضافة منتجات']);
+            Permission::create(['name' => 'add_providers', 'description' => 'إضافة داعمون']);
+            Permission::create(['name' => 'add_salaries', 'description' => 'إضافة رواتب']);
+            Permission::create(['name' => 'add_sanadat_qapds', 'description' => 'إضافة سندات قبض']);
+            Permission::create(['name' => 'add_sanadat_sarfs', 'description' => 'إضافة سندات صرف']);
+            Permission::create(['name' => 'add_sell_bills', 'description' => 'إضافة فواتير بيع']);
+            Permission::create(['name' => 'add_workers', 'description' => 'إضافة موظفين']);
         }
         $page = config('app.page');
         $date = date('Y-m-d H:i:s');
@@ -59,7 +61,7 @@ class HomeController extends Controller
 
         $box = DB::select('SELECT remaining, counter FROM box');
 
-        $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->orderBy('quantity', 'ASC')->paginate($page);
+        $products = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'status', 'type')->orderBy('quantity', 'ASC')->paginate($page);
 
         if ($request->ajax()) {
 
@@ -70,13 +72,14 @@ class HomeController extends Controller
         } else {
             if ($box == null) {
 
-                DB::insert('INSERT INTO box (remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
+                DB::insert('INSERT INTO box (name, remaining, counter, created_at, updated_at) VALUES (0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?),(0, 0, ?, ?)', [$date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date, $date]);
+
                 $box = DB::select('SELECT remaining, counter FROM box');
 
             }
 
             $movements = DB::select('SELECT movements.balance, movements.type, movements.from, movements.date_created FROM movements ORDER BY movements.id DESC LIMIT 20');
-            $pages = ceil($box[2]->counter / $page);
+            $pages = ceil(Product::count() / $page);
             return view('website.home', compact('products', 'productsCount', 'pages', 'box', 'movements'));
 
         }
@@ -97,7 +100,7 @@ class HomeController extends Controller
         } else if ($target == 'customers') {
             $result = Customer::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         } else if ($target == 'products') {
-            $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+            $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
         } else if ($target == 'sell_bills') {
             $result = SellBill::where('date_created', date($search_query))->orderBy('id', 'DESC')->get();
         }

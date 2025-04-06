@@ -55,7 +55,7 @@ class DailySellsController extends Controller
 
     public function store(Request $request)
     {
-        
+
         DB::beginTransaction();
         try {
             $customer_id = $request['customer_id'];
@@ -118,7 +118,7 @@ class DailySellsController extends Controller
 
                 if ($quantity->quantity - $tblArray[$i * 5 + 1] < 0) {
                     return redirect('/daily_sells');
-                    
+
                 } else if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
 
                     Product::where('id', $tblArray[$i * 5 + 0])->update([
@@ -166,7 +166,7 @@ class DailySellsController extends Controller
             WHERE box.id IN(1, 3, 7);', [$paid_balance, $total_profit, $sell_bill->total_balance]);
 
             $date = date($request['date_created'] . ' H:i:s');
-            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة بيع', $date]);
+            DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$paid_balance, 'فاتورة عينيات صادرة', $date]);
 
             DB::commit();
             return redirect('/daily_sell/edit/' . $sell_bill->id);
@@ -297,7 +297,7 @@ class DailySellsController extends Controller
 
         DB::beginTransaction();
         try {
-            
+
             $sold_product = SoldProduct::where('id', $id)->with('sell_bill')->first();
             $product = Product::where('id', $sold_product->product_id)->first();
             $quantity = Quantity::where('product_id', $sold_product->product_id)->where('buy_price', $sold_product->buy_price)->first();
@@ -321,7 +321,7 @@ class DailySellsController extends Controller
                 'paid_balance' => $sold_product->sell_bill->paid_balance - $sold_product->total_price,
                 'total_profit' => $sold_product->sell_bill->total_profit - $profit
             ]);
-  
+
             Product::where('id', $sold_product->product_id)->update([
                 'quantity' => $product->quantity + $sold_product->quantity,
                 'status' => true
@@ -357,7 +357,7 @@ class DailySellsController extends Controller
         $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل فواتير البيع</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل عينيات صادرة</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -376,9 +376,9 @@ class DailySellsController extends Controller
             $target = '';
             $balance = '';
             if ($sell_bill->provider_id > 0) {
-                $target = $sell_bill->provider->name . ' - مورد';
+                $target = $sell_bill->provider->name . ' - داعم';
             } elseif ($sell_bill->customer_id > 0) {
-                $target = $sell_bill->customer->name . ' - زبون';
+                $target = $sell_bill->customer->name . ' - مستفيد';
             } elseif ($sell_bill->worker_id > 0) {
                 $target = $sell_bill->worker->name . ' - موظف';
             }
@@ -412,7 +412,7 @@ class DailySellsController extends Controller
             $total_rem = $total_rem . '<span>&#8362;&#160;</span>';
         }
         $table_content .= '</tbody></table>';
-        PDF::SetTitle('كل فواتير البيع');
+        PDF::SetTitle('كل عينيات صادرة');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
         $lg = array();

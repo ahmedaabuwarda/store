@@ -3,7 +3,6 @@
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">الحالة</th>
         <th scope="col" class="text-center">ملاحظات</th>
-        <th scope="col" class="text-center">الرصيد</th>
         <th scope="col" class="text-center">الاسم</th>
         <th scope="col" class="text-center">#</th>
     </tr>
@@ -29,13 +28,6 @@
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $provider->notes }}</td>
-                <td class="display-3 text-center">&#8362;{{ $provider->balance }}
-                    @if ($provider->balance < 0)
-                        - مدين -
-                    @elseif($provider->balance > 0)
-                        - دائن -
-                    @endif
-                </td>
                 <td class="display-3 text-center">{{ $provider->name }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>

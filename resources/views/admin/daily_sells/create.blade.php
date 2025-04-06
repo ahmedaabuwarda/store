@@ -108,7 +108,7 @@
                   <div class="col-xl-3 col-md-12">
 
                     <div class="form-group">
-                      <label class="form-control-label">الاصناف</label>
+                      <label class="form-control-label">العينيات</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-info"></i></span>
@@ -182,11 +182,11 @@
                     <div class="mt-5 mb-5 text-center mb-3">
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers">
-                        <label class="custom-control-label" for="customRadio1">الموردون</label>
+                        <label class="custom-control-label" for="customRadio1">الداعمون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers" checked>
-                        <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                        <label class="custom-control-label" for="customRadio2">المستفيدون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers">
@@ -195,12 +195,12 @@
                     </div>
 
                     <div class="form-group mt--3">
-                      <label class="form-control-label">الزبائن</label>
+                      <label class="form-control-label">المستفيدون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الزبائن" value="مبيعات يومية">
+                              <input type="text" class="form-control" placeholder="المستفيدون" value="مبيعات يومية">
                               <input type="hidden" name="customer_id" value="1">
                           </div>
                     </div>
@@ -339,7 +339,7 @@
           $("#price").val("");
           i = i + 1;
         }
-        // setTimeout(function() { 
+        // setTimeout(function() {
         //   $( "#daily_sell_update_form" ).submit();
         // }, 1000);
     });

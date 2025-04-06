@@ -30,7 +30,7 @@
                 <td class="display-3 text-center">&#8362;{{ $broken->paid_balance }}</td>
                 <td class="display-3 text-center">
                     @if($broken->customer_id > 0)
-                        {{ $broken->customer->name }} - زبون
+                        {{ $broken->customer->name }} - مستفيد
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $broken->date_created }}</td>

@@ -15,13 +15,14 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('barcode')->nullable()->unique();
             $table->string('name')->unique();
             $table->integer('quantity')->default(0);
             $table->integer('original_quantity')->default(0);
             $table->double('original_price', 15, 4)->default(0);
-            $table->double('taseet_price', 15, 4)->default(0);
-            $table->integer('sell_bill_id');
-            $table->integer('buy_bill_id');
+            $table->double('taqseet_price', 15, 4)->default(0);
+            $table->unsignedBigInteger('sell_bill_id');
+            $table->unsignedBigInteger('buy_bill_id');
             $table->boolean('status')->default(true);
             $table->string('type');
             $table->timestamps();

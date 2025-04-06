@@ -23,7 +23,7 @@
             <div class="card-header">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">فاتورة شراء</h5>
+                  <h5 class="card-title text-uppercase text-muted mb-0">فاتورة عينيات واردة</h5>
                   <span class="h2 font-weight-bold mb-0">اضافة جديد</span>
                 </div>
                 <div class="col-auto">
@@ -106,7 +106,7 @@
                   <div class="col-xl-5 col-md-12">
 
                     <div class="form-group">
-                      <label class="form-control-label">الاصناف</label>
+                      <label class="form-control-label">العينيات</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-shopping-cart text-info"></i></span>
@@ -190,11 +190,11 @@
                     <div class="mt-5 mb-5 text-center">
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" checked>
-                        <label class="custom-control-label" for="customRadio1">الموردون</label>
+                        <label class="custom-control-label" for="customRadio1">الداعمون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers">
-                        <label class="custom-control-label" for="customRadio2">الزبائن</label>
+                        <label class="custom-control-label" for="customRadio2">المستفيدون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
                         <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers">
@@ -203,7 +203,7 @@
                     </div>
 
                     <div class="form-group mt--3">
-                      <label class="form-control-label">الموردون</label>
+                      <label class="form-control-label">الداعمون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
@@ -220,7 +220,7 @@
                     </div>
 
                     <div class="form-group">
-                      <label class="form-control-label">الزبائن</label>
+                      <label class="form-control-label">المستفيدون</label>
                           <div class="input-group">
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>

@@ -59,8 +59,10 @@ class ProductController extends Controller
             DB::commit();
             return response()->json(['status' => 'success']);
         } catch (Exception $e) {
-            DB::rollBack();return response()->json(['status' => 'error']);
-            // return response()->json(['status' => 'error', 'error' => $e->getMessage()]);
+            DB::rollBack();
+            // return response()->json(['status' => 'error']);
+            // return dd($e->getMessage());
+            return response()->json(['status' => 'error', 'error' => $e->getMessage()]);
         }
     }
 

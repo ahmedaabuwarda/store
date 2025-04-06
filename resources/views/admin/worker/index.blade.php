@@ -4,8 +4,8 @@
 <div class="header pb-6" style="background-color:#222222;">
   <div class="container-fluid">
     <div class="header-body">
-      <div class="row align-items-center py-5">
-
+      <div class="row align-items-center py-5 m-auto">
+        @include('includes.alert')
       </div>
     </div>
   </div>
@@ -47,19 +47,19 @@
     <ul class="pagination justify-content-center">
       <li class="page-item">
         <a class="page-link" href="{{ Request::fullUrl(); }}" tabindex="-1">
-        <i class="fa fa-angle-left"></i>
-        <span class="sr-only">Previous</span>
+          <i class="fa fa-angle-left"></i>
+          <span class="sr-only">Previous</span>
         </a>
       </li>
       @for($p = 1; $p <= $pages; $p++)
-      <li class="page-item @if(Request::fullUrl() == URL('/workers?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/workers?page=' . $p) }}">{{ $p }}</a></li>
-      @endfor
-      <li class="page-item">
-        <a class="page-link" href="{{ Request::fullUrl(); }}">
-        <i class="fa fa-angle-right"></i>
-        <span class="sr-only">Next</span>
-        </a>
-      </li>
+        <li class="page-item @if(Request::fullUrl() == URL('/workers?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/workers?page=' . $p) }}">{{ $p }}</a></li>
+        @endfor
+        <li class="page-item">
+          <a class="page-link" href="{{ Request::fullUrl(); }}">
+            <i class="fa fa-angle-right"></i>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
     </ul>
   </nav>
 
@@ -86,25 +86,25 @@
 
               <div class="form-group">
                 <label class="form-control-label">اسم الموظف</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
-                      </div>
-                      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم الموظف" value="{{ old('name') }}" autocomplete="name" required autofocus>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  @error('name')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم الموظف" value="{{ old('name') }}" autocomplete="name" required autofocus>
+                </div>
+                @error('name')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
               <div class="form-group">
                 <label class="form-control-label">ملاحظات + العنوان</label>
-                  <div class="input-group">
-                      <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="ملاحظات + العنوان (في حال كان فارغ : لايوجد)" autocomplete="notes">{{ old('name') }}</textarea>
-                  </div>
-                  @error('notes')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                <div class="input-group">
+                  <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="ملاحظات + العنوان (في حال كان فارغ : لايوجد)" autocomplete="notes">{{ old('name') }}</textarea>
+                </div>
+                @error('notes')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -177,47 +177,47 @@
 
               <div class="form-group">
                 <label class="form-control-label">اسم الموظف</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
-                      </div>
-                      <input type="text" id="worker_name" class="form-control @error('name') is-invalid @enderror" placeholder="اسم الموظف" value="" autocomplete="name" required autofocus>
-                      <input type="hidden" name="worker_id" id="worker_id" value="">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  @error('name')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="text" id="worker_name" class="form-control @error('name') is-invalid @enderror" placeholder="اسم الموظف" value="" autocomplete="name" required autofocus>
+                  <input type="hidden" name="worker_id" id="worker_id" value="">
+                </div>
+                @error('name')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
 
             <div class="col-xl-6 col-md-12">
 
-                <div class="form-group">
-                  <label class="form-control-label">اختار التاريخ</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
-                        </div>
-                        <input class="form-control datepicker @error('date_created') is-invalid @enderror" placeholder="اختار التاريخ" type="text" name="date_created" value="{{ date('Y-m-d') }}" required>
-                    </div>
-                    @error('date_created')
-                      <span class="text-danger">{{ $message }}</span>
-                    @enderror
+              <div class="form-group">
+                <label class="form-control-label">اختار التاريخ</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
+                  </div>
+                  <input class="form-control datepicker @error('date_created') is-invalid @enderror" placeholder="اختار التاريخ" type="text" name="date_created" value="{{ date('Y-m-d') }}" required>
                 </div>
+                @error('date_created')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
 
             </div>
 
             <div class="col-xl-6 col-md-12">
 
               <div class="form-group">
-                <label class="form-control-label">المبلغ المتبقي</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
-                      </div>
-                      <input type="number" id="remaining_balance" step="0.0001" class="form-control" placeholder="المبلغ المتبقي" value="" disabled>
+                <label class="form-control-label">مجموع السلف</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                   </div>
+                  <input type="number" id="remaining_balance" step="0.0001" class="form-control" placeholder="المبلغ المتبقي" value="" disabled>
+                </div>
               </div>
 
             </div>
@@ -226,15 +226,15 @@
 
               <div class="form-group">
                 <label class="form-control-label">راتب اساسي</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
-                      </div>
-                      <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="500" step="0.0001" autocomplete="balance" required>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                   </div>
-                  @error('balance')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="number" id="balance" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="راتب اساسي" value="500" step="0.0001" autocomplete="balance" required>
+                </div>
+                @error('balance')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -243,15 +243,15 @@
 
               <div class="form-group">
                 <label class="form-control-label">صافي الراتب</label>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
-                      </div>
-                      <input type="number" id="net_balance" class="form-control @error('net_balance') is-invalid @enderror" name="net_balance" step="0.0001" placeholder="صافي الراتب" autocomplete="net_balance" required>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                   </div>
-                  @error('net_balance')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                  <input type="number" id="net_balance" class="form-control @error('net_balance') is-invalid @enderror" name="net_balance" step="0.0001" placeholder="صافي الراتب" autocomplete="net_balance" required>
+                </div>
+                @error('net_balance')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -260,12 +260,12 @@
 
               <div class="form-group">
                 <label class="form-control-label">ملاحظات</label>
-                  <div class="input-group">
-                      <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="(في حال كان فارغ : لايوجد) ملاحظات" autocomplete="notes" rows="3">{{ old('notes') }}</textarea>
-                  </div>
-                  @error('notes')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
+                <div class="input-group">
+                  <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="(في حال كان فارغ : لايوجد) ملاحظات" autocomplete="notes" rows="3">{{ old('notes') }}</textarea>
+                </div>
+                @error('notes')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
               </div>
 
             </div>
@@ -287,7 +287,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
+  $(document).ready(function() {
     $("#search_input").on("keyup", function() {
       var value = $(this).val().toLowerCase();
       $(".tablee tbody tr").filter(function() {
@@ -296,7 +296,7 @@
     });
   });
   // create worker form
-  $('#create_worker_form').submit(function(e){
+  $('#create_worker_form').submit(function(e) {
     e.preventDefault();
     let data = new FormData(this);
     $.ajax({
@@ -306,8 +306,8 @@
       processData: false,
       contentType: false,
       cache: false,
-      success: function(response){
-        if(response.status == "success"){
+      success: function(response) {
+        if (response.status == "success") {
           Swal.fire(
             'تم !',
             'تم اضافة الموظف بنجاح',
@@ -325,7 +325,7 @@
           );
         }
       },
-      error: function(response){
+      error: function(response) {
         Swal.fire(
           'عفواً !',
           'حدث خطأ ما، قد يكون الموظف موجوداً بالفعل',
@@ -335,26 +335,26 @@
     });
   });
   // show worker kashf to pdf modal
-  $('#worker_table').on('click', '.from_to_pdf_button', function(e){
+  $('#worker_table').on('click', '.from_to_pdf_button', function(e) {
     let from_to = $(this).data('fromto');
     $('#from_to_pdf_modal').modal('show');
     $('#from_to').val(from_to);
   });
   // show worker to pdf modal
-  $('.from_to_pdf_button').click(function(e){
+  $('.from_to_pdf_button').click(function(e) {
     let from_to = $(this).data('fromto');
     $('#from_to_pdf_modal').modal('show');
     $('#from_to').val(from_to);
   });
   // create worker to pdf form
-  $('#from_to_pdf_form').submit(function(e){
+  $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
     let from = $('input[name="from"]').val();
     let to = $('input[name="to"]').val();
     let from_to = $('input[name="from_to"]').val();
     let _token = $('input[name="_token"]').val();
     // from to == 0 mean: for all salaries
-    if(from_to == '0'){
+    if (from_to == '0') {
       $.ajax({
         url: "/salary/to_pdf",
         type: "POST",
@@ -363,12 +363,12 @@
           to: to,
           _token: _token
         },
-        success: function(response){
+        success: function(response) {
           $('#worker_to_pdf_modal').modal('hide');
         }
       });
-    // from to == -1 means: for all workers
-    } else if(from_to == '-1'){
+      // from to == -1 means: for all workers
+    } else if (from_to == '-1') {
       $.ajax({
         url: "/worker/to_pdf",
         type: "POST",
@@ -377,7 +377,7 @@
           to: to,
           _token: _token
         },
-        success: function(response){
+        success: function(response) {
           $('#from_to_pdf_modal').modal('hide');
         }
       });
@@ -388,10 +388,10 @@
         data: {
           from: from,
           to: to,
-          id : from_to,
+          id: from_to,
           _token: _token
         },
-        success: function(response){
+        success: function(response) {
           $('#from_to_pdf_modal').modal('hide');
         }
       });
@@ -400,7 +400,7 @@
     $('#from_to_pdf_modal').modal('hide');
   });
   // show salary modal
-  $('#worker_table').on('click', '.create_salary_button', function(e){
+  $('#worker_table').on('click', '.create_salary_button', function(e) {
     let id = $(this).data('dataid');
     $.ajax({
       url: "/salary/create",
@@ -409,8 +409,8 @@
         id: id,
         _token: $('input[name="_token"]').val()
       },
-      success: function(response){
-        if(response.status == 'success'){
+      success: function(response) {
+        if (response.status == 'success') {
           $('#create_salary_modal').modal('show');
           $('#create_salary_modal #worker_id').val(response.worker[0].id);
           $('#create_salary_modal #worker_name').val(response.worker[0].name);
@@ -446,7 +446,7 @@
     });
   });
   // create new salary modal
-  $('#create_salary_form').submit(function(e){
+  $('#create_salary_form').submit(function(e) {
     e.preventDefault();
     let data = new FormData(this);
     $.ajax({
@@ -456,8 +456,8 @@
       processData: false,
       contentType: false,
       cache: false,
-      success: function(response){
-        if(response.status == 'success'){
+      success: function(response) {
+        if (response.status == 'success') {
           $('#create_salary_modal').modal('hide');
           Swal.fire(
             '!تم',
@@ -473,7 +473,7 @@
           );
         }
       },
-      error: function(response){
+      error: function(response) {
         Swal.fire(
           '!عفواً',
           '!حدث خطأ ما',
@@ -489,13 +489,13 @@
     $.ajax({
       url: "/workers",
       type: "GET",
-      success: function(response){
+      success: function(response) {
         $('#worker_table').html('');
         $('#worker_table').append(response.table);
         $('#salary_table').html('');
         $('#salary_table').append(response.salaries_table);
       },
-      error: function(response){
+      error: function(response) {
         Swal.fire(
           'خطأ',
           'حدث خطأ أثناء جلب البيانات',
@@ -506,3 +506,4 @@
   }
 </script>
 @endsection
+      

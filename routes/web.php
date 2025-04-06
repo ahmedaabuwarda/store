@@ -25,12 +25,32 @@ Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index'])
 Route::get('/search', [App\Http\Controllers\Admin\HomeController::class, 'search']);
 
 // permission
+Route::get('/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
 Route::get('/permission/create', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
-Route::get('/permission/update', [App\Http\Controllers\Admin\PermissionController::class, 'update']);
+Route::post('/permission/store', [App\Http\Controllers\Admin\PermissionController::class, 'store']);
+Route::get('/permission/edit/{id}', [App\Http\Controllers\Admin\PermissionController::class, 'edit']);
+Route::post('/permission/updateOne', [App\Http\Controllers\Admin\PermissionController::class, 'updateOne']);
+Route::get('/permission/upgrade', [App\Http\Controllers\Admin\PermissionController::class, 'upgrade']);
+Route::post('/permission/grant', [App\Http\Controllers\Admin\PermissionController::class, 'grant']);
 
 // box
+Route::get('/boxes', [App\Http\Controllers\Admin\BoxController::class, 'index']);
+Route::get('/box/create', [App\Http\Controllers\Admin\BoxController::class, 'create']);
+Route::post('/box/store', [App\Http\Controllers\Admin\BoxController::class, 'store']);
+Route::get('/box/edit/{id}', [App\Http\Controllers\Admin\BoxController::class, 'edit']);
+Route::post('/box/update', [App\Http\Controllers\Admin\BoxController::class, 'update']);
+Route::post('/box/convert', [App\Http\Controllers\Admin\BoxController::class, 'convert']);
 Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 'to_pdf']);
-Route::post('/box/store', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
+Route::post('/box/store1', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
+
+// currency
+Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index']);
+Route::get('/currency/create', [App\Http\Controllers\Admin\CurrencyController::class, 'create']);
+Route::post('/currency/store', [App\Http\Controllers\Admin\CurrencyController::class, 'store']);
+Route::get('/currency/show', [App\Http\Controllers\Admin\CurrencyController::class, 'show']);
+Route::get('/currency/edit/{id}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit']);
+Route::post('/currency/update', [App\Http\Controllers\Admin\CurrencyController::class, 'update']);
+Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\BrokenController::class, 'to_pdf']);
 
 // broken
 Route::get('/brokens', [App\Http\Controllers\Admin\BrokenController::class, 'index']);

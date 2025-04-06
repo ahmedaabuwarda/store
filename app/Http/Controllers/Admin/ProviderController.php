@@ -25,11 +25,11 @@ class ProviderController extends Controller
     {
         $page = config('app.page');
         if($request->ajax()){
-            $providers = Provider::select('id', 'name', 'balance', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
+            $providers = Provider::select('id', 'name', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
             $table = view('admin.provider.table', compact('providers'))->render();
             return response()->json(['table' => $table]);
         } else {
-            $providers = Provider::select('id', 'name', 'balance', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
+            $providers = Provider::select('id', 'name', 'notes', 'status')->orderBy('id', 'DESC')->paginate($page);
             $pages = ceil(Provider::count()/$page);
             return view('admin.provider.index', compact('providers', 'pages'));
         }
@@ -66,7 +66,7 @@ class ProviderController extends Controller
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل الموردين</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل الداعمون</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -110,7 +110,7 @@ class ProviderController extends Controller
         }
 
         $table_content .= '</tbody></table>';
-        PDF::SetTitle('كل الموردين');
+        PDF::SetTitle('كل الداعمون');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
         $lg = Array();
@@ -133,7 +133,7 @@ class ProviderController extends Controller
         PDF::writeHTML($table_content);
 
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">'.$total.'</td></tr></tbody></table>');
-        PDF::Output('all_providers_'.date('ymdhis').'.pdf','I');
+        PDF::Output('all_providers_'.date('ymdhis').'.pdf','D');
         return response()->json(['status' => 'success']);
     }
 
@@ -155,7 +155,7 @@ class ProviderController extends Controller
         $i = 1; $sarf_total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - مورد</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف حساب</h1></br><p align="right">التاريخ: '.$date.'&#160;&#160;الوقت: '.$time.'&#160;&#160;&#160;&#160;بواسطة: '.$by.'</p><p align="right">من: '.$from.' - الى: '.$to.'&#160;&#160;&#160;&#160;الاسم: '.$provider[0]->name.' - داعم</p></br>';
         $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -206,7 +206,7 @@ class ProviderController extends Controller
         $qapd_table .= '</tbody></table>';
 
         $i = 1; $buy_total = 0; $discount_total = 0;
-        $buy_table = '<h2>فواتير الشراء</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $buy_table = '<h2>عينيات واردة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -250,7 +250,7 @@ class ProviderController extends Controller
         $buy_table .= '</tbody></table>';
 
         $i = 1; $sell_total = 0;
-        $sell_table = '<h2>فواتير البيع</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
+        $sell_table = '<h2>عينيات صادرة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">#</th>
@@ -355,7 +355,7 @@ class ProviderController extends Controller
 
         PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">الرصيد</td><td width="20%">'.$balance.'</td></tr></tbody></table>');
 
-        PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','I');
+        PDF::Output('provider_kashf_hisab_'.date('ymdhis').'.pdf','D');
         return response()->json(['status' => 'success']);
     }
 

@@ -17,7 +17,7 @@
         @foreach ($discounts as $discount)
             <tr>
                 <td class="display-3 text-center">{{ $discount->notes }}</td>
-                <td class="display-3 text-center">&#8362;{{ $discount->balance }}</td>
+                <td class="display-3 text-center">{{ $discount->box->currency->symbol }} {{ $discount->balance }}</td>
                 <td class="display-3 text-center">{{ $discount->done_by }}</td>
                 <td class="display-3 text-center">{{ $discount->date_created }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>

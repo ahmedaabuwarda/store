@@ -3,7 +3,6 @@
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">الحالة</th>
         <th scope="col" class="text-center">ملاحظات</th>
-        <th scope="col" class="text-center">الرصيد</th>
         <th scope="col" class="text-center">الاسم</th>
         <th scope="col" class="text-center">#</th>
     </tr>
@@ -28,11 +27,6 @@
                     @endif
                 </td>
                 <td class="display-3 text-center">{{ $customer->notes }}</td>
-                <td class="display-3 text-center">&#8362;{{ $customer->balance }}
-                    @if ($customer->balance > 0)
-                        { دائن }
-                    @elseif($customer->balance < 0) { مدين } @endif
-                </td>
                 <td class="display-3 text-center">{{ $customer->name }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>

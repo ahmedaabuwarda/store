@@ -17,9 +17,11 @@ class CreateSanadatQapdsTable extends Migration
             $table->id();
             $table->bigInteger('number')->unique();
             $table->date('date_created');
-            $table->integer('provider_id')->default(0);
-            $table->integer('customer_id')->default(0);
-            $table->integer('worker_id')->default(0);
+            $table->unsignedBigInteger('provider_id')->default(0);
+            $table->unsignedBigInteger('customer_id')->default(0);
+            $table->unsignedBigInteger('worker_id')->default(0);
+            $table->unsignedBigInteger('box_id');
+            $table->foreign('box_id')->references('id')->on('box')->onDelete('cascade');
             $table->double('balance', 15, 4);
             $table->string('byan');
             $table->timestamps();

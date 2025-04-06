@@ -13,7 +13,7 @@
     <!-- Page content -->
     <div class="container-fluid mt--8">
 
-        <!-- All sell bills -->
+        <!-- All Export Ainiat -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card" id="broken_table_card">
@@ -93,8 +93,8 @@
                 });
             });
         });
-        
-        // show sell bill
+
+        // show Export Ainiat
         $('#broken_table').on('click', '.show_button', function() {
             let id = $(this).data('dataid');
             let movement = $(this).data('movement');
@@ -110,7 +110,7 @@
                     success: function(response) {
                         $('#show_bill_form .modal-body').html('');
                         $('#show_bill_form .modal-body').html(response.bill_data);
-                        $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة بيع');
+                        $('#show_bill_modal #show_bill_modalLabel').text('عرض فاتورة عينيات صادرة');
                         $('#show_bill_modal').modal('show');
                     }
                 });
@@ -143,6 +143,6 @@
             $('#from_to_pdf_form')[0].reset();
             $('#from_to_pdf_modal').modal('hide');
         });
-        
+
     </script>
 @endsection
