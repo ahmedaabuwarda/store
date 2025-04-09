@@ -146,7 +146,7 @@
                   <select class="form-control selectpicker" name="box_id"
                     data-live-search="true">
                     @foreach ($boxes as $box)
-                    <option value="{{ $box->id }}">{{ $box->name }}</option>
+                    <option value="{{ $box->id }}">{{ $box->name }} ({{ $box->balance }})</option>
                     @endforeach
                   </select>
                 </div>

@@ -34,7 +34,7 @@ class SanadatSarfController extends Controller
     $page = config('app.page');
     $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->orderBy('date_created', 'DESC')->paginate($page);
 
-    $boxes = Box::select('id', 'name')->get();
+    $boxes = Box::select('id', 'name', 'balance')->get();
 
     // if the request is ajax
     if ($request->ajax()) {
