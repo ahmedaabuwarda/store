@@ -36,7 +36,7 @@
             <!-- Card body -->
             <div class="card-body bg-secondary">
 
-              <form action="{{ URL('/daily_sell/update/' . $sell_bill->id) }}" method="POST" id="daily_sell_update_form">
+              <form action="{{ URL('/daily_sell/update/' . $export_ainiat->id) }}" method="POST" id="daily_sell_update_form">
                 @csrf
                 <div class="row">
                   <div class="col-xl-6 col-md-12">
@@ -47,7 +47,7 @@
                           <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-calendar text-success"></i></span>
                           </div>
-                          <input class="form-control datepicker" placeholder="اختار التاريخ" type="text" value="{{ $sell_bill->date_created }}" disabled>
+                          <input class="form-control datepicker" placeholder="اختار التاريخ" type="text" value="{{ $export_ainiat->date_created }}" disabled>
                       </div>
                       @error('date_created')
                         <span class="text-danger">{{ $message }}</span>
@@ -64,7 +64,7 @@
                           <div class="input-group-prepend">
                               <span class="input-group-text" id="basic-addon1"><i class="fa fa-university text-primary"></i></span>
                           </div>
-                          <input type="number" class="form-control" placeholder="رقم الفاتورة" value="{{ $sell_bill->number }}" disabled>
+                          <input type="number" class="form-control" placeholder="رقم الفاتورة" value="{{ $export_ainiat->number }}" disabled>
                       </div>
                     </div>
 
@@ -77,8 +77,8 @@
                     <thead>
                         <tr>
                             <th class="text-center">الرقم</th>
-                            <th class="text-center">رقم المنتج</th>
-                            <th class="text-center">اسم المنتج</th>
+                            <th class="text-center">رقم العينية</th>
+                            <th class="text-center">اسم العينية</th>
                             <th class="text-center">الكمية</th>
                             <th class="text-center">سعر البيع</th>
                             <th class="text-center">الاجمالي</th>
@@ -88,7 +88,7 @@
                     </thead>
                     <tbody>
                       @php $i = 1; @endphp
-                      @foreach($sell_bill->sold_product as $product)
+                      @foreach($export_ainiat->sold_product as $product)
                         <tr>
                           <td class="disblay-3 text-center">{{ $i }}</td>
                           <td class="disblay-3 text-center">{{ $product->id }}</td>
@@ -108,8 +108,8 @@
                   <table class="table table-hover mb-2" id="productTableTotal">
                     <thead>
                       <th class="text-center">الاجمالي</th>
-                      <th class="text-center" id="total">{{ $sell_bill->total_balance }}</th>
-                      <th class="text-center" id="profit">{{ $sell_bill->total_profit }}</th>
+                      <th class="text-center" id="total">{{ $export_ainiat->total_balance }}</th>
+                      <th class="text-center" id="profit">{{ $export_ainiat->total_profit }}</th>
                     </thead>
                   </table>
 
@@ -192,20 +192,20 @@
 
                     <div class="mt-5 mb-5 text-center mb-3">
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
-                        <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" @if($sell_bill->provider_id > 0) checked @endif disabled>
+                        <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" @if($export_ainiat->provider_id > 0) checked @endif disabled>
                         <label class="custom-control-label" for="customRadio1">الداعمون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
-                        <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers" @if($sell_bill->customer_id > 0) checked @endif disabled>
+                        <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers" @if($export_ainiat->customer_id > 0) checked @endif disabled>
                         <label class="custom-control-label" for="customRadio2">المستفيدون</label>
                       </div>
                       <div class="custom-control custom-radio mb-3 mr-4 d-inline">
-                        <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers" @if($sell_bill->worker_id > 0) checked @endif disabled>
+                        <input name="target" class="custom-control-input" id="customRadio3" type="radio" value="workers" @if($export_ainiat->worker_id > 0) checked @endif disabled>
                         <label class="custom-control-label" for="customRadio3">الموظفون</label>
                       </div>
                     </div>
 
-                    @if($sell_bill->provider_id > 0)
+                    @if($export_ainiat->provider_id > 0)
 
                     <div class="form-group mt--3">
                       <label class="form-control-label"> الداعمون</label>
@@ -213,15 +213,15 @@
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الداعمون" value="{{ $sell_bill->provider->name }}" disabled>
-                              <input type="hidden" name="provider_id" value="{{ $sell_bill->provider_id }}">
+                              <input type="text" class="form-control" placeholder="الداعمون" value="{{ $export_ainiat->provider->name }}" disabled>
+                              <input type="hidden" name="provider_id" value="{{ $export_ainiat->provider_id }}">
                           </div>
                           @error('provider_id')
                             <span class="text-danger">{{ $message }}</span>
                           @enderror
                     </div>
 
-                    @elseif($sell_bill->customer_id > 0)
+                    @elseif($export_ainiat->customer_id > 0)
 
                     <div class="form-group mt--3">
                       <label class="form-control-label">المستفيدون</label>
@@ -229,15 +229,15 @@
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="المستفيدون" value="{{ $sell_bill->customer->name }}" disabled>
-                              <input type="hidden" name="customer_id" value="{{ $sell_bill->customer_id }}">
+                              <input type="text" class="form-control" placeholder="المستفيدون" value="{{ $export_ainiat->customer->name }}" disabled>
+                              <input type="hidden" name="customer_id" value="{{ $export_ainiat->customer_id }}">
                           </div>
                           @error('customer_id')
                             <span class="text-danger">{{ $message }}</span>
                           @enderror
                     </div>
 
-                    @elseif($sell_bill->worker_id > 0)
+                    @elseif($export_ainiat->worker_id > 0)
 
                     <div class="form-group mt--3">
                       <label class="form-control-label">الموظفون</label>
@@ -245,8 +245,8 @@
                               <div class="input-group-prepend">
                                   <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
                               </div>
-                              <input type="text" class="form-control" placeholder="الموظفون" value="{{ $sell_bill->worker->name }}" disabled>
-                              <input type="hidden" name="worker_id" value="{{ $sell_bill->worker_id }}">
+                              <input type="text" class="form-control" placeholder="الموظفون" value="{{ $export_ainiat->worker->name }}" disabled>
+                              <input type="hidden" name="worker_id" value="{{ $export_ainiat->worker_id }}">
                           </div>
                           @error('customer_id')
                             <span class="text-danger">{{ $message }}</span>
@@ -258,7 +258,7 @@
                     <div class="form-group">
                       <label class="form-control-label">البيان</label>
                         <div class="input-group">
-                            <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان" autocomplete="byan" rows="2">{{ $sell_bill->byan }}</textarea>
+                            <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان" autocomplete="byan" rows="2">{{ $export_ainiat->byan }}</textarea>
                         </div>
                         @error('byan')
                           <span class="text-danger">{{ $message }}</span>
@@ -275,7 +275,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-yellow"></i></span>
                             </div>
-                            <input type="number" id="discount" class="form-control" placeholder="خصم" value="{{ $sell_bill->discount }}" step="0.0001" disabled>
+                            <input type="number" id="discount" class="form-control" placeholder="خصم" value="{{ $export_ainiat->discount }}" step="0.0001" disabled>
                         </div>
                     </div>
 
@@ -285,7 +285,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-primary"></i></span>
                             </div>
-                            <input type="number" id="paid_balance" class="form-control @error('paid_balance') is-invalid @enderror" name="paid_balance" placeholder="المبلغ المدفوع" value="{{ $sell_bill->paid_balance }}" autocomplete="paid_balance" step="0.0001" required>
+                            <input type="number" id="paid_balance" class="form-control @error('paid_balance') is-invalid @enderror" name="paid_balance" placeholder="المبلغ المدفوع" value="{{ $export_ainiat->paid_balance }}" autocomplete="paid_balance" step="0.0001" required>
                         </div>
                         @error('paid_balance')
                           <span class="text-danger">{{ $message }}</span>
@@ -298,7 +298,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-danger"></i></span>
                             </div>
-                            <input type="number" id="remaining_balance" class="form-control @error('remaining_balance') is-invalid @enderror" name="remaining_balance" placeholder="المبلغ المتبقي" value="{{ $sell_bill->remaining_balance }}" autocomplete="remaining_balance" step="0.0001" required>
+                            <input type="number" id="remaining_balance" class="form-control @error('remaining_balance') is-invalid @enderror" name="remaining_balance" placeholder="المبلغ المتبقي" value="{{ $export_ainiat->remaining_balance }}" autocomplete="remaining_balance" step="0.0001" required>
                         </div>
                         @error('remaining_balance')
                           <span class="text-danger">{{ $message }}</span>
@@ -351,8 +351,8 @@
   });
 
   var i = 1;
-  var total = {{ $sell_bill->total_balance }};
-  var profit = {{ $sell_bill->total_profit }};
+  var total = {{ $export_ainiat->total_balance }};
+  var profit = {{ $export_ainiat->total_profit }};
   $(document).ready(function () {
     $('#updateButton').click(function () {
         if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != '' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {

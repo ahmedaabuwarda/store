@@ -35,7 +35,7 @@
                                             <a class="dropdown-item" href="#">
                                                 <div class="custom-control custom-radio">
                                                     <input name="target" class="custom-control-input" id="customRadio3"
-                                                        type="radio" value="sell_bills">
+                                                        type="radio" value="export_ainiats">
                                                     <label class="custom-control-label"
                                                         for="customRadio3">فواتير بيع</label>
                                                 </div>
@@ -116,8 +116,8 @@
                                         </div>
                                     </a>
                                     @endcan
-                                    @can('add_sell_bills')
-                                    <a href="{{ URL('/sell_bills') }}"
+                                    @can('add_export_ainiats')
+                                    <a href="{{ URL('/export_ainiats') }}"
                                         class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
@@ -203,7 +203,7 @@
                                     <a href="{{ URL('/currencies') }}" class="btn list-group-item list-group-item-action">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <i class="fa fa-box-open text-success"></i>
+                                                <i class="fa fa-arrow-up text-primary"></i>
                                             </div>
                                             <div class="col ml--2">
                                                 <div class="d-flex justify-content-between align-items-center">
@@ -231,6 +231,20 @@
                                         </div>
                                     </a>
                                     @endcan
+                                    <a href="{{url('/movements')}}" class="btn list-group-item list-group-item-action">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <i class="fa fa-home text-dark"></i>
+                                            </div>
+                                            <div class="col ml--2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h4 class="mb-0 text-sm">Movements | الحركات المالية</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                     @can('add_discounts')
                                     <a href="{{ URL('/discounts') }}"
                                         class="btn list-group-item list-group-item-action">

@@ -1,11 +1,11 @@
 <div class="col-xl-12 col-md-12">
   <div class="form-group">
-    <label class="form-control-label">اسم المنتج</label>
+    <label class="form-control-label">اسم العينية</label>
     <div class="input-group">
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1"><i class="fa fa-box"></i></span>
       </div>
-      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم المنتج" value="{{ old('name') }}" autocomplete="name" required autofocus>
+      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم العينية" value="{{ old('name') }}" autocomplete="name" required autofocus>
     </div>
     @error('name')
     <span class="text-danger">{{ $message }}</span>

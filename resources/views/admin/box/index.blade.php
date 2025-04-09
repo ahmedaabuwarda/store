@@ -171,7 +171,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="number" class="form-control @error('convert_price') is-invalid @enderror" step="0.01" name="convert_price" placeholder="سعر التحويل" value="{{ old('convert_price') }}" autocomplete="convert_price" required autofocus>
+                  <input type="number" class="form-control @error('convert_price') is-invalid @enderror" step="0.001" name="convert_price" placeholder="سعر التحويل" value="{{ old('convert_price') }}" autocomplete="convert_price" required autofocus>
                 </div>
                 @error('convert_price')
                 <span class="text-danger">{{ $message }}</span>
@@ -206,10 +206,27 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" step="0.01" placeholder="مبلغ التحويل" value="{{ old('balance') }}" autocomplete="balance" required autofocus>
+                  <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" step="0.001" placeholder="مبلغ التحويل" value="{{ old('balance') }}" autocomplete="balance" required autofocus>
                 </div>
                 @error('balance')
                 <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+              <div class="form-group">
+                <label class="form-control-label">العميلة</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                  </div>
+                  <select class="form-control @error('operation') is-invalid @enderror" name="operation" id="operation" required>
+                    <option value="">اختر العملية</option>
+                    <option value="*">ضرب</option>
+                    <option value="/">قسمة</option>
+                  </select>
+                </div>
+                @error('operation')
+                <span class="text-danger">{{ $operation }}</span>
                 @enderror
               </div>
 

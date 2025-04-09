@@ -10,9 +10,9 @@ class SoldProduct extends Model
     use HasFactory;
     protected $table = 'sold_products';
     
-    public function sell_bill()
+    public function export_ainiat()
     {
-        return $this->belongsTo('App\Models\SellBill', 'sell_bill_id', 'id');
+        return $this->belongsTo('App\Models\ExportAiniat', 'export_ainiat_id', 'id');
     }
     public function product()
     {

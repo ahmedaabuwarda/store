@@ -21,7 +21,7 @@ class CreateSoldProductsTable extends Migration
             $table->double('sell_price', 15, 4);
             $table->double('total_price', 15, 4);
             $table->double('profit', 15, 4);
-            $table->integer('sell_bill_id')->nullable();
+            $table->integer('export_ainiat_id')->nullable();
             $table->integer('broken_id')->nullable();
             $table->timestamps();
         });

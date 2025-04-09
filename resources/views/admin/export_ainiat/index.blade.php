@@ -16,7 +16,7 @@
   <!-- All Export Ainiat -->
   <div class="row">
     <div class="col-xl-12">
-      <div class="card" id="sell_bill_table_card">
+      <div class="card" id="export_ainiat_table_card">
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
@@ -29,7 +29,7 @@
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                 title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a href="{{ url('/sell_bill/create') }}" class="btn btn-dark text-white" data-movement="create_sell_bill">
+              <a href="{{ url('/export_ainiat/create') }}" class="btn btn-dark text-white" data-movement="create_export_ainiat">
                 <i class="fa fa-plus"></i> فاتورة عينيات صادرة
               </a>
             </div>
@@ -37,8 +37,8 @@
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
-          <table class="table tablee align-items-center table-flush table-hover" id="sell_bill_table">
-            @include('admin.sell_bill.table')
+          <table class="table tablee align-items-center table-flush table-hover" id="export_ainiat_table">
+            @include('admin.export_ainiat.table')
           </table>
         </div>
       </div>
@@ -55,8 +55,8 @@
         </a>
       </li>
       @for ($p = 1; $p <= $pages; $p++)
-        <li class="page-item @if (Request::fullUrl() == URL('/sell_bills?page=' . $p)) active @endif"><a class="page-link"
-          href="{{ URL('/sell_bills?page=' . $p) }}">{{ $p }}</a></li>
+        <li class="page-item @if (Request::fullUrl() == URL('/export_ainiats?page=' . $p)) active @endif"><a class="page-link"
+          href="{{ URL('/export_ainiats?page=' . $p) }}">{{ $p }}</a></li>
         @endfor
         <li class="page-item">
           <a class="page-link" href="{{ Request::fullUrl() }}">
@@ -93,11 +93,11 @@
   });
 
   // create Export Ainiat
-  $('#sell_bill_table_card').on('click', '.multi_button', function() {
+  $('#export_ainiat_table_card').on('click', '.multi_button', function() {
     var movement = $(this).data('movement');
-    if (movement == 'create_sell_bill') {
+    if (movement == 'create_export_ainiat') {
       $.ajax({
-        url: 'sell_bill/create',
+        url: 'export_ainiat/create',
         type: 'GET',
         success: function(response) {
           if (response.status == 'success') {
@@ -124,7 +124,7 @@
     var data = new FormData(this);
     var movement = data.get('movement');
     $.ajax({
-      url: 'sell_bill/store',
+      url: 'export_ainiat/store',
       type: 'POST',
       processData: false,
       contentType: false,
@@ -155,13 +155,13 @@
   });
 
   // show Export Ainiat
-  $('#sell_bill_table').on('click', '.show_button', function() {
+  $('#export_ainiat_table').on('click', '.show_button', function() {
     let id = $(this).data('dataid');
     let movement = $(this).data('movement');
     let _token = $('input[name="_token"]').val();
-    if (movement == 'show_sell_bill') {
+    if (movement == 'show_export_ainiat') {
       $.ajax({
-        url: 'sell_bill/show',
+        url: 'export_ainiat/show',
         type: 'GET',
         data: {
           id: id,
@@ -184,7 +184,7 @@
 
   });
 
-  $("#sell_bill_table").on("click", ".delete_sell_bill_button", function(e) {
+  $("#export_ainiat_table").on("click", ".delete_export_ainiat_button", function(e) {
     e.preventDefault();
     let id = $(this).data('id');
     Swal.fire({
@@ -200,7 +200,7 @@
       if (result.isConfirmed) {
         let _token = $('input[name=_token]').val();
         $.ajax({
-          url: "/sell_bill/delete",
+          url: "/export_ainiat/delete",
           type: "POST",
           data: {
             id: id,
@@ -247,7 +247,7 @@
     let to = $('input[name="to"]').val();
     let _token = $('input[name="_token"]').val();
     $.ajax({
-      url: "/sell_bill/to_pdf",
+      url: "/export_ainiat/to_pdf",
       type: "POST",
       data: {
         from: from,
@@ -264,11 +264,11 @@
 
   function get_tables() {
     $.ajax({
-      url: 'sell_bills',
+      url: 'export_ainiats',
       type: 'GET',
       success: function(response) {
-        $('#sell_bill_table').html('');
-        $('#sell_bill_table').html(response.table);
+        $('#export_ainiat_table').html('');
+        $('#export_ainiat_table').html(response.table);
       }
     });
   }

@@ -21,7 +21,7 @@ class CreateProductsTable extends Migration
             $table->integer('original_quantity')->default(0);
             $table->double('original_price', 15, 4)->default(0);
             $table->double('taqseet_price', 15, 4)->default(0);
-            $table->unsignedBigInteger('sell_bill_id');
+            $table->unsignedBigInteger('export_ainiat_id');
             $table->unsignedBigInteger('buy_bill_id');
             $table->boolean('status')->default(true);
             $table->string('type');

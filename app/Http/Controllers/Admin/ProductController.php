@@ -38,7 +38,7 @@ class ProductController extends Controller
             $product->taqseet_price = $request->taqseet_price | 0;
             $product->quantity = 0;
             $product->original_quantity = 0;
-            $product->sell_bill_id = 0;
+            $product->export_ainiat_id = 0;
             $product->buy_bill_id = 0;
             $product->status = false;
             $product->type = $request->type;
@@ -134,7 +134,7 @@ class ProductController extends Controller
         $from = date($request->from.' 00:00:00');
         $to = date($request->to.' 23:59:59');
 
-        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, sold_products.created_at, products.id, products.name, products.type, products.status, products.original_price, products.original_quantity, sell_bills.number FROM sold_products INNER JOIN products ON sold_products.product_id = products.id INNER JOIN sell_bills ON sold_products.sell_bill_id = sell_bills.id WHERE products.id = ? AND sold_products.created_at >= ? AND sold_products.created_at <= ? ORDER BY sold_products.id DESC', [$id, $from, $to]);
+        $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, sold_products.created_at, products.id, products.name, products.type, products.status, products.original_price, products.original_quantity, export_ainiats.number FROM sold_products INNER JOIN products ON sold_products.product_id = products.id INNER JOIN export_ainiats ON sold_products.export_ainiat_id = export_ainiats.id WHERE products.id = ? AND sold_products.created_at >= ? AND sold_products.created_at <= ? ORDER BY sold_products.id DESC', [$id, $from, $to]);
 
         $i = 1;
         $total = 0;
@@ -145,7 +145,7 @@ class ProductController extends Controller
         $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل العينيةات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -182,7 +182,7 @@ class ProductController extends Controller
         }
 
         $table_content .= '</tbody></table>';
-        PDF::SetTitle('جرد منتج');
+        PDF::SetTitle('جرد عينية');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
         $lg = array();
@@ -257,7 +257,7 @@ class ProductController extends Controller
         $by = Auth::user()->name;
         $company = config('app.company');
 
-        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل المنتجات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+        $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">'.$company.'</h3><h1 align="center">كشف كل العينيةات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
         $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
@@ -293,7 +293,7 @@ class ProductController extends Controller
         }
 
         $table_content .= '</tbody></table>';
-        PDF::SetTitle('كل المنتجات');
+        PDF::SetTitle('كل العينيةات');
         PDF::SetAuthor('اياد الهسي');
         // set some language dependent data:
         $lg = array();

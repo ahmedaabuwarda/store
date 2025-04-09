@@ -3,8 +3,6 @@ $total_cost_price = $productsCount[0]->total_cost_price;
 $total_products_count = $productsCount[0]->total_products_count;
 $needFromPeople = $productsCount[0]->needFromPeople1 + $productsCount[0]->needFromPeople2;
 $peopleNeedFromMe = $productsCount[0]->peopleNeedFromMe1 + $productsCount[0]->peopleNeedFromMe2;
-$jawwal_balance = $productsCount[0]->jawwal_balance;
-$ooredoo_balance = $productsCount[0]->ooredoo_balance;
 @endphp
 <div class="col-xl-4">
     <div class="card">

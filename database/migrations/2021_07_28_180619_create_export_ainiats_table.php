@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSellBillsTable extends Migration
+class CreateExportAiniatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSellBillsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sell_bills', function (Blueprint $table) {
+        Schema::create('export_ainiats', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('number')->unique();
             $table->date('date_created');
@@ -37,6 +37,6 @@ class CreateSellBillsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sell_bills');
+        Schema::dropIfExists('export_ainiats');
     }
 }

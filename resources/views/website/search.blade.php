@@ -44,9 +44,9 @@
             @elseif($target == 'products')
               @php $products = $result; @endphp
               @include('website.table')
-            @elseif($target == 'sell_bills')
-              @php $sell_bills = $result; @endphp
-              @include('admin.sell_bill.table')
+            @elseif($target == 'export_ainiats')
+              @php $export_ainiats = $result; @endphp
+              @include('admin.export_ainiat.table')
             @endif
           </table>
         </div>
@@ -113,7 +113,7 @@
 <!-- Modal::product to pdf -->
 @include('includes.from_to')
 
-@if($target == 'sell_bills')
+@if($target == 'export_ainiats')
 <!-- Modal::show bill -->
 @include('includes.show_bill')
 @endif
@@ -260,7 +260,7 @@
             success: function(response) {
                 if (response.status == "success") {
                     $('#create_product_modal').modal('show');
-                    $('#exampleModalLabel').text('تعديل منتج');
+                    $('#exampleModalLabel').text('تعديل عينية');
                     $('#create_product_modal .row').html(response.modal);
                 } else {
                     Swal.fire(
@@ -437,16 +437,16 @@
         $('#from_to_pdf_modal').modal('hide');
     });
 
-  @elseif($target == 'sell_bills')
+  @elseif($target == 'export_ainiats')
 
     // show Export Ainiat
     $('#product_table').on('click', '.show_button', function() {
         let id = $(this).data('dataid');
         let movement = $(this).data('movement');
         let _token = $('input[name="_token"]').val();
-        if (movement == 'show_sell_bill') {
+        if (movement == 'show_export_ainiat') {
             $.ajax({
-                url: 'sell_bill/show',
+                url: 'export_ainiat/show',
                 type: 'GET',
                 data: {
                     id: id,

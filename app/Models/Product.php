@@ -9,15 +9,15 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'products';
-    protected $fillable = ['barcode', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'sell_bill_id', 'buy_bill_id', 'status', 'type', 'created_at', 'updated_at'];
+    protected $fillable = ['barcode', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'export_ainiat_id', 'buy_bill_id', 'status', 'type', 'created_at', 'updated_at'];
 
     public function buy_bill()
     {
         return $this->belongsTo('App\Models\BuyBill');
     }
-    public function sell_bill()
+    public function export_ainiat()
     {
-        return $this->belongsTo('App\Models\SellBill');
+        return $this->belongsTo('App\Models\ExportAiniat');
     }
     public function sold_product()
     {

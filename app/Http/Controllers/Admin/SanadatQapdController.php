@@ -17,6 +17,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use Maatwebsite\Excel\Facades\Excel;
+
 class SanadatQapdController extends Controller
 {
 
@@ -30,7 +32,7 @@ class SanadatQapdController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id','box_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->orderBy('date_created', 'DESC')->paginate($page);
+    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->orderBy('date_created', 'DESC')->paginate($page);
 
     $boxes = Box::select('id', 'name')->get();
 
@@ -54,7 +56,8 @@ class SanadatQapdController extends Controller
   // store
   public function store(Request $request)
   {
-
+    $user_id = Auth::user()->id;
+    $box_id = $request['box_id'];
     DB::beginTransaction();
     try {
 
@@ -62,7 +65,6 @@ class SanadatQapdController extends Controller
       $customer_id = $request['customer_id'];
       $provider_id = $request['provider_id'];
       $worker_id = $request['worker_id'];
-      $box_id = $request['box_id'];
       $target = '';
 
       $sanadat_qapd = new Sanadat_Qapd;
@@ -120,7 +122,7 @@ class SanadatQapdController extends Controller
       ]);
 
       $date = date($request['date_created'] . ' H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,1,?,?)', [$balance, 'سند قبض', $date]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,1,?,?,?,?)', [$balance, 'سند قبض', $date, $box_id, $user_id]);
 
       DB::commit();
       return response()->json(['status' => 'success']);
@@ -132,6 +134,8 @@ class SanadatQapdController extends Controller
 
   public function delete(Request $request)
   {
+    $user_id = Auth::user()->id;
+
     DB::beginTransaction();
     $id = $request['id'];
     $sadat_qapd = Sanadat_Qapd::where('id', $id)->first();
@@ -140,6 +144,7 @@ class SanadatQapdController extends Controller
       $provider_id = $sadat_qapd->provider_id;
       $worker_id = $sadat_qapd->worker_id;
       $balance = $sadat_qapd->balance;
+      $box_id = $sadat_qapd->box->id;
 
       if ($sadat_qapd != null && $provider_id > 0) {
         $provider = Provider::where('id', $provider_id)->select('balance')->first();
@@ -169,20 +174,15 @@ class SanadatQapdController extends Controller
         return response()->json(['status' => 'error']);
       }
 
-      DB::statement('UPDATE box SET box.remaining = CASE box.id
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
-                WHEN 4 THEN (SELECT remaining FROM box WHERE box.id = 4)-?
-                ELSE box.remaining
-                END,
-            box.counter = CASE box.id
-                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 4 THEN (SELECT counter FROM box WHERE box.id = 4)-1
-                ELSE box.counter
-                END
-            WHERE box.id IN(1, 4);', [$balance, $balance]);
+      $box = Box::select('id', 'balance', 'counter')->where('id', $box_id)->first();
+
+      $box->update([
+        'balance' => $box->balance - $balance,
+        'counter' => $box->counter + 1,
+      ]);
 
       $date = date('Y-m-d H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)', [$balance, 'سند قبض', $date]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'سند قبض', $date, $box_id, $user_id]);
 
       $sadat_qapd->delete();
       DB::commit();
@@ -263,7 +263,40 @@ class SanadatQapdController extends Controller
     PDF::writeHTML($table_content);
 
     PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
-    PDF::Output('all_sanadat_qapd_' . date('ymdhis') . '.pdf', 'I');
-    return response()->json(['status' => 'success']);
+    // Ensure the directory exists before saving the file
+    $directoryPath = storage_path('app/public/pdf/sanadat_qapd');
+    // $directoryPath = '/media/ahmed/Downloads';
+    if (!file_exists($directoryPath)) {
+      mkdir($directoryPath, 0755, true);
+    }
+
+    // Save the file to the storage folder
+    $filePath = $directoryPath . '/كشف سندات القبض_' . date('Y-m-d-his') . '.pdf';
+    PDF::Output($filePath, 'F');
+    // dd($filePath);
+    // Ensure the symbolic link exists for the storage folder
+    if (!file_exists(public_path('storage'))) {
+      symlink(storage_path('app/public'), public_path('storage'));
+    }
+    // PDF::Output('all_sanadat_qapd_' . date('ymdhis') . '.pdf', 'D');
+    // return response()->json(['status' => 'success']);
   }
+
+  public function to_xlsx(Request $request) {
+
+    $fileName = 'كشف سندات القبض_' . date('Y-m-d_His') . '.xlsx';
+
+    // Ensure the directory exists
+    $directoryPath = public_path('storage/xlsx/sanadat_qapd');
+    if (!file_exists($directoryPath)) {
+      mkdir($directoryPath, 0755, true);
+    }
+
+    // Save the file to the specified path
+    Excel::store(new \App\Exports\SanadatSarfExport(), 'xlsx/sanadat_qapd/' . $fileName, 'public');
+
+    // Return the file path for download
+    return response()->json(['status' => 'success', 'file' => asset('storage/xlsx/' . $fileName)]);
+  }
+
 }

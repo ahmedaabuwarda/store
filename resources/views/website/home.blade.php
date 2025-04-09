@@ -96,14 +96,14 @@
                             <div class="col-xl-12 col-md-12">
 
                                 <div class="form-group">
-                                    <label class="form-control-label">اسم المنتج</label>
+                                    <label class="form-control-label">اسم العينية</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1"><i
                                                     class="fa fa-box"></i></span>
                                         </div>
                                         <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                            name="name" placeholder="اسم المنتج" value="{{ old('name') }}"
+                                            name="name" placeholder="اسم العينية" value="{{ old('name') }}"
                                             autocomplete="name" required autofocus>
                                     </div>
                                     @error('name')
@@ -384,7 +384,7 @@
                         if (response.status == "success") {
                             Swal.fire(
                                 'تم!',
-                                'تم اضافة المنتج بنجاح',
+                                'تم اضافة العينية بنجاح',
                                 'success'
                             );
                             // refresh the table
@@ -394,7 +394,7 @@
                         } else {
                             Swal.fire(
                                 'عفواً',
-                                'حدث خطأ ما، قد يكون المنتج موجوداً بالفعل',
+                                'حدث خطأ ما، قد يكون العينية موجوداً بالفعل',
                                 'error'
                             );
                         }
@@ -402,7 +402,7 @@
                     error: function(response) {
                         Swal.fire(
                             'عفواً',
-                            'حدث خطأ ما، قد يكون المنتج موجوداً بالفعل',
+                            'حدث خطأ ما، قد يكون العينية موجوداً بالفعل',
                             'error'
                         );
                     }
@@ -427,7 +427,7 @@
                 success: function(response) {
                     if (response.status == "success") {
                         $('#create_product_modal').modal('show');
-                        $('#exampleModalLabel').text('اضافة منتج');
+                        $('#exampleModalLabel').text('اضافة عينية');
                         $('#create_product_modal .row').html(response.modal);
                     } else {
                         Swal.fire(
@@ -458,7 +458,7 @@
                 success: function(response) {
                     if (response.status == "success") {
                         $('#create_product_modal').modal('show');
-                        $('#exampleModalLabel').text('تعديل منتج');
+                        $('#exampleModalLabel').text('تعديل عينية');
                         $('#create_product_modal .row').html(response.modal);
                     } else {
                         Swal.fire(

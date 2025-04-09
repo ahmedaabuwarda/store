@@ -1,8 +1,8 @@
 FROM php:7.4-fpm as php
 
 RUN apt-get update -y
-RUN apt-get install -y unzip libpq-dev libcurl4-gnutls-dev
-RUN docker-php-ext-install pdo pdo_mysql bcmath
+RUN apt-get install -y unzip libgd-dev libpq-dev libcurl4-gnutls-dev git
+RUN docker-php-ext-install pdo pdo_mysql bcmath gd zip
 
 WORKDIR /var/www
 COPY . .

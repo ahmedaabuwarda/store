@@ -26,6 +26,7 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن سند صرف">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
+              <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><i class="fa fa-plus"></i> سند صرف </a>
             </div>
@@ -78,10 +79,11 @@
         </button>
       </div>
       <form id="create_sanadat_sarf_form">
+
         <div class="modal-body">
           @csrf
           <div class="row">
-            <div class="col-xl-4 col-md-12">
+            <div class="col-xl-3 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">اختار التاريخ</label>
@@ -98,7 +100,7 @@
 
             </div>
 
-            <div class="col-xl-4 col-md-12">
+            <div class="col-xl-3 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">رقم السند</label>
@@ -115,7 +117,7 @@
 
             </div>
 
-            <div class="col-xl-4 col-md-12">
+            <div class="col-xl-3 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">المبلغ</label>
@@ -123,7 +125,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-book text-danger"></i></span>
                   </div>
-                  <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" step="0.0001" autocomplete="balance" required>
+                  <input type="number" class="form-control @error('balance') is-invalid @enderror" name="balance" placeholder="المبلغ" value="{{ old('balance') }}" step="0.0001" autocomplete="balance">
                 </div>
                 @error('balance')
                 <span class="text-danger">{{ $message }}</span>
@@ -132,8 +134,7 @@
 
             </div>
 
-
-            <div class="col-xl-4 col-md-12">
+            <div class="col-xl-3 col-md-12">
 
               <div class="form-group">
                 <label class="form-control-label">الصندوق</label>
@@ -156,7 +157,7 @@
 
             </div>
 
-            <div class="col-xl-6 col-md-12 mt-5 text-center">
+            <div class="col-xl-4 col-md-12 mt-5 text-center">
 
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" checked>
@@ -216,6 +217,20 @@
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
+            </div>
+
+            <div class="col-xl-4 col-md-12">
+              <!-- Add input here to attach a file -->
+              <div class="form-group">
+                <label class="form-control-label">ملف المستفيدون</label>
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input @error('file_attachment') is-invalid @enderror" name="file_attachment" accept=".xls,.xlsx">
+                  <label class="custom-file-label" for="file_attachment">اختر ملفاً...</label>
+                </div>
+                @error('file_attachment')
+                <span class="text-danger d-block mt-2">{{ $message }}</span>
+                @enderror
+              </div>
 
             </div>
 
@@ -270,6 +285,8 @@
 
 <!-- Modal::sanadat sarf to pdf -->
 @include('includes.from_to')
+
+@include('includes.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -333,7 +350,7 @@
     let _token = $('input[name="_token"]').val();
     $.ajax({
       url: "/sanadat_sarf/to_pdf",
-      type: "POST",
+      type: "GET",
       data: {
         from: from,
         to: to,
@@ -345,6 +362,30 @@
     });
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
+  });
+  $('.from_to_xlsx_button').click(function(e) {
+    $('#from_to_xlsx_modal').modal('show');
+  });
+  // sanadat sarf to pdf form
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/sanadat_sarf/to_xlsx",
+      type: "GET",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_xlsx_modal').modal('hide');
+      }
+    });
+    $('#from_to_xlsx_form')[0].reset();
+    $('#from_to_xlsx_modal').modal('hide');
   });
   // delete sanadat sarf form
   $("#sanadat_sarf_table").on("click", ".delete_sanadat_sarf_button", function(e) {

@@ -48,7 +48,7 @@
         <thead>
             <tr>
                 <th class="text-center">الرقم</th>
-                <th class="text-center">اسم المنتج</th>
+                <th class="text-center">اسم العينية</th>
                 <th class="text-center">الكمية</th>
                 <th class="text-center">السعر</th>
                 <th class="text-center">الاجمالي</th>

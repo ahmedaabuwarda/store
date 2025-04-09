@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SellBill extends Model
+class ExportAiniat extends Model
 {
     use HasFactory;
     
-    protected $table = 'sell_bills';
+    protected $table = 'export_ainiats';
     protected $fillable = ['id', 'total_profit', 'discount', 'created_at', 'updated_at'];
     
     public function provider()

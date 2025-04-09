@@ -22,8 +22,8 @@ class Provider extends Model
     {
         return $this->hasMany('App\Models\BuyBill');
     }
-    public function sell_bill()
+    public function export_ainiat()
     {
-        return $this->hasMany('App\Models\SellBill');
+        return $this->hasMany('App\Models\ExportAiniat');
     }
 }

@@ -7,7 +7,7 @@ use Exception;
 
 use App\Models\Quantity;
 use App\Models\Worker;
-use App\Models\User;
+use App\Models\Box;
 use App\Models\BuyBill;
 use App\Models\Product;
 use App\Models\Customer;
@@ -44,12 +44,15 @@ class BuyBillController extends Controller
     $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
     $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
     $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
-    return view('admin.buy_bill.create', compact('providers', 'customers', 'workers', 'products'));
+    $boxes = Box::select('id', 'name')->get();
+
+    return view('admin.buy_bill.create', compact('providers', 'customers', 'workers', 'products', 'boxes'));
   }
 
   public function store(Request $request)
   {
-
+    $user_id = Auth::user()->id;
+    $box_id = $request['box_id'];
     DB::beginTransaction();
     try {
 
@@ -154,7 +157,7 @@ class BuyBillController extends Controller
       //       WHERE box.id IN(1, 6);', [$paid_balance, $paid_balance + abs($remaining_balance)]);
 
       $date = date($request['date_created'] . ' H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created) VALUES (?,0,?,?)', [$paid_balance, 'فاتورة عينيات واردة', $date]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$paid_balance, 'فاتورة عينيات واردة', $date, $box_id, $user_id]);
 
       DB::commit();
       return redirect('/buy_bills')->with('success', 'تم استيراد العينيات بنجاح');

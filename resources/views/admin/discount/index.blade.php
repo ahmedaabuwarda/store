@@ -29,9 +29,8 @@
             <div class="col-xl-3 col-md-12 text-right">
               <button class="btn btn-danger" data-toggle="modal" data-target="#from_to_pdf_modal"><i
                   class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_discount_modal">
-                <span class="badge text-white bg-success mr-1">{{ $box[0]->remaining }} &#8362;
-                </span> مصروف
+              <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_discount_modal"><i class="fa fa-plus"></i>
+                مصروف
               </a>
             </div>
           </div>

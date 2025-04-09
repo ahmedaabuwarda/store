@@ -16,7 +16,7 @@
         <!-- All Export Ainiat -->
         <div class="row">
             <div class="col-xl-12">
-                <div class="card" id="sell_bill_table_card">
+                <div class="card" id="export_ainiat_table_card">
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
@@ -34,7 +34,7 @@
                     </div>
                     <div class="table-responsive">
                         <!-- Projects table -->
-                        <table class="table tablee align-items-center table-flush table-hover" id="sell_bill_table">
+                        <table class="table tablee align-items-center table-flush table-hover" id="export_ainiat_table">
                             @include('admin.daily_sells.table')
                         </table>
                     </div>
@@ -89,9 +89,9 @@
             });
         });
         // create Export Ainiat
-        $('#sell_bill_table_card').on('click', '.multi_button', function() {
+        $('#export_ainiat_table_card').on('click', '.multi_button', function() {
             var movement = $(this).data('movement');
-            if (movement == 'create_sell_bill') {
+            if (movement == 'create_export_ainiat') {
                 $.ajax({
                     url: 'daily_sell/create',
                     type: 'GET',
@@ -149,13 +149,13 @@
             });
         });
         // show Export Ainiat
-        $('#sell_bill_table').on('click', '.show_button', function() {
+        $('#export_ainiat_table').on('click', '.show_button', function() {
             let id = $(this).data('dataid');
             let movement = $(this).data('movement');
             let _token = $('input[name="_token"]').val();
-            if (movement == 'show_sell_bill') {
+            if (movement == 'show_export_ainiat') {
                 $.ajax({
-                    url: 'sell_bill/show',
+                    url: 'export_ainiat/show',
                     type: 'GET',
                     data: {
                         id: id,
@@ -187,7 +187,7 @@
             let to = $('input[name="to"]').val();
             let _token = $('input[name="_token"]').val();
             $.ajax({
-                url: "/sell_bill/to_pdf",
+                url: "/export_ainiat/to_pdf",
                 type: "POST",
                 data: {
                     from: from,
@@ -207,8 +207,8 @@
                 url: 'daily_sells',
                 type: 'GET',
                 success: function(response) {
-                    $('#sell_bill_table').html('');
-                    $('#sell_bill_table').html(response.table);
+                    $('#export_ainiat_table').html('');
+                    $('#export_ainiat_table').html(response.table);
                 }
             });
         }

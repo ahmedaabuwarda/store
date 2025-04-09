@@ -104,7 +104,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" placeholder="رمز الصلاحية" value="{{ old('description') }}" autocomplete="description" required autofocus>
+                  <input type="text" class="form-control @error('description') is-invalid @enderror" name="description" placeholder="وصف الصلاحية" value="{{ old('description') }}" autocomplete="description" required autofocus>
                 </div>
                 @error('description')
                 <span class="text-danger">{{ $message }}</span>

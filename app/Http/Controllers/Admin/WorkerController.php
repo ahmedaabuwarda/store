@@ -159,7 +159,7 @@ class WorkerController extends Controller
 
         $worker_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM workers, buy_bills WHERE workers.id = buy_bills.worker_id AND workers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $worker_sell = DB::select('SELECT sell_bills.date_created, sell_bills.number, sell_bills.paid_balance, sell_bills.byan, sell_bills.remaining_balance FROM workers, sell_bills WHERE workers.id = sell_bills.worker_id AND workers.id = :id AND sell_bills.date_created >= :from AND sell_bills.date_created <= :to ORDER BY sell_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM workers, export_ainiats WHERE workers.id = export_ainiats.worker_id AND workers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $worker_salary = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = ? AND workers.id = ? AND salaries.date_created >= ? AND salaries.date_created <= ? ORDER BY salaries.date_created DESC', [$id, $id, $from, $to]);
 
@@ -271,24 +271,24 @@ class WorkerController extends Controller
           </tr>
         </thead>
         <tbody>';
-        foreach($worker_sell as $sell_bill) {
+        foreach($worker_sell as $export_ainiat) {
             $remaining = '';
-            if($sell_bill->remaining_balance > 0) {
-                $remaining = $sell_bill->remaining_balance.'<span>&#8362;&#160;</span> - دائن -';
-            } else if ($sell_bill->remaining_balance < 0) {
-                $remaining = $sell_bill->remaining_balance.'<span>&#8362;&#160;</span> - مدين -';
+            if($export_ainiat->remaining_balance > 0) {
+                $remaining = $export_ainiat->remaining_balance.'<span>&#8362;&#160;</span> - دائن -';
+            } else if ($export_ainiat->remaining_balance < 0) {
+                $remaining = $export_ainiat->remaining_balance.'<span>&#8362;&#160;</span> - مدين -';
             } else {
-                $remaining = $remaining = $sell_bill->remaining_balance.'<span>&#8362;&#160;</span>';
+                $remaining = $remaining = $export_ainiat->remaining_balance.'<span>&#8362;&#160;</span>';
             }
             $sell_table .= '<tr>
               <td width="5%">'.$i.'</td>
-              <td width="20%">'.$sell_bill->number.'</td>
-              <td width="20%">'.$sell_bill->date_created.'</td>
-              <td width="15%">'.$sell_bill->paid_balance.'<span>&#8362;&#160;</span></td>
+              <td width="20%">'.$export_ainiat->number.'</td>
+              <td width="20%">'.$export_ainiat->date_created.'</td>
+              <td width="15%">'.$export_ainiat->paid_balance.'<span>&#8362;&#160;</span></td>
               <td width="20%">'.$remaining.'</td>
-              <td width="20%">'.$sell_bill->byan.'</td>
+              <td width="20%">'.$export_ainiat->byan.'</td>
             </tr>';
-            $sell_total += $sell_bill->remaining_balance; $i++;
+            $sell_total += $export_ainiat->remaining_balance; $i++;
         }
         if ($sell_total > 0) {
             $sell_total = $sell_total.'<span>&#8362;&#160;</span> - دائن -';

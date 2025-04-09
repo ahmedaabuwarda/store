@@ -43,23 +43,20 @@ Route::post('/box/convert', [App\Http\Controllers\Admin\BoxController::class, 'c
 Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 'to_pdf']);
 Route::post('/box/store1', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
 
+// movement
+Route::get('/movements', [App\Http\Controllers\Admin\MovementController::class, 'index']);
+Route::post('/movement/store', [App\Http\Controllers\Admin\MovementController::class, 'store']);
+Route::get('/movement/edit/{id}', [App\Http\Controllers\Admin\MovementController::class, 'edit']);
+Route::post('/movement/update', [App\Http\Controllers\Admin\MovementController::class, 'update']);
+Route::post('/movement/to_pdf', [App\Http\Controllers\Admin\MovementController::class, 'to_pdf']);
+
+
 // currency
 Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index']);
-Route::get('/currency/create', [App\Http\Controllers\Admin\CurrencyController::class, 'create']);
 Route::post('/currency/store', [App\Http\Controllers\Admin\CurrencyController::class, 'store']);
-Route::get('/currency/show', [App\Http\Controllers\Admin\CurrencyController::class, 'show']);
 Route::get('/currency/edit/{id}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit']);
 Route::post('/currency/update', [App\Http\Controllers\Admin\CurrencyController::class, 'update']);
-Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\BrokenController::class, 'to_pdf']);
-
-// broken
-Route::get('/brokens', [App\Http\Controllers\Admin\BrokenController::class, 'index']);
-Route::get('/broken/create', [App\Http\Controllers\Admin\BrokenController::class, 'create']);
-Route::post('/broken/store', [App\Http\Controllers\Admin\BrokenController::class, 'store']);
-Route::get('/broken/show', [App\Http\Controllers\Admin\BrokenController::class, 'show']);
-Route::get('/broken/edit/{id}', [App\Http\Controllers\Admin\BrokenController::class, 'edit']);
-Route::post('/broken/update/{id}', [App\Http\Controllers\Admin\BrokenController::class, 'update']);
-Route::post('/broken/to_pdf', [App\Http\Controllers\Admin\BrokenController::class, 'to_pdf']);
+Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\CurrencyController::class, 'to_pdf']);
 
 // buy_bills
 Route::get('/buy_bills', [App\Http\Controllers\Admin\BuyBillController::class, 'index']);
@@ -118,23 +115,25 @@ Route::get('/sanadat_qapds', [App\Http\Controllers\Admin\SanadatQapdController::
 Route::post('/sanadat_qapd/store', [App\Http\Controllers\Admin\SanadatQapdController::class, 'store']);
 Route::post('/sanadat_qapd/delete', [App\Http\Controllers\Admin\SanadatQapdController::class, 'delete']);
 Route::post('/sanadat_qapd/to_pdf', [App\Http\Controllers\Admin\SanadatQapdController::class, 'to_pdf']);
+Route::post('/sanadat_qapd/to_xlsx', [App\Http\Controllers\Admin\SanadatQapdController::class, 'to_xlsx']);
 
 // sanadat_sarf
 Route::get('/sanadat_sarfs', [App\Http\Controllers\Admin\SanadatSarfController::class, 'index']);
 Route::post('/sanadat_sarf/store', [App\Http\Controllers\Admin\SanadatSarfController::class, 'store']);
 Route::post('/sanadat_sarf/delete', [App\Http\Controllers\Admin\SanadatSarfController::class, 'delete']);
-Route::post('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
+Route::get('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
+Route::get('/sanadat_sarf/to_xlsx', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_xlsx']);
 
-// sell_bills
-Route::get('/sell_bills', [App\Http\Controllers\Admin\SellBillController::class, 'index']);
-Route::get('/sell_bill/create', [App\Http\Controllers\Admin\SellBillController::class, 'create']);
-Route::post('/sell_bill/store', [App\Http\Controllers\Admin\SellBillController::class, 'store']);
-Route::get('/sell_bill/show', [App\Http\Controllers\Admin\SellBillController::class, 'show']);
-Route::get('/sell_bill/edit/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'edit']);
-Route::post('/sell_bill/update/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'update']);
-Route::post('/sell_bill/delete', [App\Http\Controllers\Admin\SellBillController::class, 'delete']);
-Route::post('/sell_bill/delete_product/{id}', [App\Http\Controllers\Admin\SellBillController::class, 'delete_product']);
-Route::post('/sell_bill/to_pdf', [App\Http\Controllers\Admin\SellBillController::class, 'to_pdf']);
+// export_ainiats
+Route::get('/export_ainiats', [App\Http\Controllers\Admin\ExportAiniatController::class, 'index']);
+Route::get('/export_ainiat/create', [App\Http\Controllers\Admin\ExportAiniatController::class, 'create']);
+Route::post('/export_ainiat/store', [App\Http\Controllers\Admin\ExportAiniatController::class, 'store']);
+Route::get('/export_ainiat/show', [App\Http\Controllers\Admin\ExportAiniatController::class, 'show']);
+Route::get('/export_ainiat/edit/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'edit']);
+Route::post('/export_ainiat/update/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'update']);
+Route::post('/export_ainiat/delete', [App\Http\Controllers\Admin\ExportAiniatController::class, 'delete']);
+Route::post('/export_ainiat/delete_product/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'delete_product']);
+Route::post('/export_ainiat/to_pdf', [App\Http\Controllers\Admin\ExportAiniatController::class, 'to_pdf']);
 
 // workers
 Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);

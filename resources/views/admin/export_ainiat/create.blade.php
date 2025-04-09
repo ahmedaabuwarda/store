@@ -36,7 +36,7 @@
             <!-- Card body -->
             <div class="card-body bg-secondary">
 
-              <form action="{{ URL('/sell_bill/store/') }}" method="POST" id="daily_sell_update_form">
+              <form action="{{ URL('/export_ainiat/store/') }}" method="POST" id="daily_sell_update_form">
                 @csrf
                 <div class="row">
                   <div class="col-xl-6 col-md-12">
@@ -78,8 +78,8 @@
                     <thead>
                       <tr>
                         <th class="text-center">الرقم</th>
-                        <th class="text-center">رقم المنتج</th>
-                        <th class="text-center">اسم المنتج</th>
+                        <th class="text-center">رقم العينية</th>
+                        <th class="text-center">اسم العينية</th>
                         <th class="text-center">الكمية</th>
                         <th class="text-center">سعر البيع</th>
                         <th class="text-center">الاجمالي</th>
@@ -333,13 +333,13 @@
 
                   <div class="m-auto">
                     <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>تحديث</button>
-                    <a href="{{ URL('/sell_bills') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+                    <a href="{{ URL('/export_ainiats') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
                   </div>
 
                 </div>
               </form>
 
-              <form action="{{ URL('/sell_bill/delete_product/') }}" method="POST" id="delete_product_form">@csrf</form>
+              <form action="{{ URL('/export_ainiat/delete_product/') }}" method="POST" id="delete_product_form">@csrf</form>
 
             </div>
           </div>

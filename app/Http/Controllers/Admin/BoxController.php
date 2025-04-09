@@ -9,7 +9,7 @@ use App\Models\Box;
 use App\Http\Controllers\Controller;
 use App\Models\Currency;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BoxController extends Controller
@@ -43,7 +43,6 @@ class BoxController extends Controller
     $request->validate([
       'name' => 'required|string|max:255',
       'currency_id' => 'required|exists:currencies,id',
-      // 'balance' => 'required|numeric|min:0'
     ]);
 
     DB::beginTransaction();
@@ -94,19 +93,23 @@ class BoxController extends Controller
   }
 
   // convert
-  public function convert(Request $request) {
+  public function convert(Request $request)
+  {
     // dd($request);
     $request->validate([
       'box_from' => 'required',
       'box_to' => 'required',
       'balance' => 'required|min:0',
       'convert_price' => 'required|min:0',
+      'operation' => 'required',
     ]);
 
     $box_from = $request->box_from;
     $box_to = $request->box_to;
     $balance = $request->balance;
     $convert_price = $request->convert_price;
+    $operation = $request->operation;
+    $user_id = Auth::user()->id;
 
     DB::beginTransaction();
     try {
@@ -120,10 +123,19 @@ class BoxController extends Controller
       $box_from->update([
         'balance' => $box_from->balance - $balance,
       ]);
-      $balance = $balance * $convert_price;
+      $original_balance = $balance;
+      if ($operation == '*') {
+        $balance = $balance * $convert_price;
+      } else {
+        $balance = $balance / $convert_price;
+      }
       $box_to->update([
         'balance' => $box_to->balance + $balance,
       ]);
+
+      $date = date('Y-m-d H:i:s');
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$original_balance, 'تحويل من صندوق - '.$box_from->name, $date, $box_from->id, $user_id]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,1,?,?,?,?)', [$balance, 'تحويل الى صندوق - '.$box_to->name, $date, $box_to->id, $user_id]);
 
       DB::commit();
       return response()->json(['status' => 'success']);
