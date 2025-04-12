@@ -30,10 +30,11 @@ class CustomerExport implements FromCollection
           return [
             $item->id,
             $item->created_at,
-            $item->name,
             $item->identity,
+            $item->name,
             $item->phone,
             $item->family_number,
+            $item->mosque->name,
             $item->notes,
           ];
         })
