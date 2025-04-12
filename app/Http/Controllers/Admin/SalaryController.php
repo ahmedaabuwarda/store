@@ -7,6 +7,7 @@ use Exception;
 
 use App\Models\Salary;
 use App\Models\Worker;
+use App\Models\Box;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,40 +37,39 @@ class SalaryController extends Controller
   public function store(Request $request)
   {
     $user_id = Auth::user()->id;
-    $box_id = $request['box_id'];
+    $box_id = $request->box_id;
+    $worker_id = $request['worker_id'];
+    $net_balance = $request['net_balance'];
+    $balance = $request['balance'];
+    $date_created = $request['date_created'];
+    $notes = $request['notes'];
+
     DB::beginTransaction();
     try {
       $balance = abs($request->balance);
       $net_balance = abs($request->net_balance);
       $worker = new Salary;
-      $worker->worker_id = $request['worker_id'];
-      $worker->remaining_balance = $request['net_balance'] - $balance;
-      $worker->balance = $request['balance'];
+      $worker->worker_id = $worker_id;
+      $worker->remaining_balance = $net_balance - $balance;
+      $worker->balance = $balance;
       $worker->net_balance = $net_balance;
-      $worker->date_created = $request['date_created'];
-      if ($request['notes'] == null) {
-        $worker->notes = 'لا يوجد';
-      } else {
-        $worker->notes = $request['notes'];
-      }
+      $worker->user_id = $user_id;
+      $worker->box_id = $box_id;
+      $worker->date_created = $date_created;
+      $worker->notes = $notes ?? 'لا يوجد';
       $worker->save();
-      if ($request['net_balance'] >= 0) {
-        Worker::where('id', $request['worker_id'])->update(['balance' => 0]);
+      if ($net_balance >= 0) {
+        Worker::where('id', $worker_id)->update(['balance' => 0]);
       } else {
-        Worker::where('id', $request['worker_id'])->update(['balance' => $request['net_balance']]);
+        Worker::where('id', $worker_id)->update(['balance' => $net_balance]);
       }
 
-      DB::statement('UPDATE box SET box.remaining = CASE box.id 
-                WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
-                WHEN 8 THEN (SELECT remaining FROM box WHERE box.id = 8)+?
-                ELSE box.remaining
-                END,
-            box.counter = CASE box.id 
-                WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-                WHEN 8 THEN (SELECT counter FROM box WHERE box.id = 8)+1 
-                ELSE box.counter
-                END
-            WHERE box.id IN(1, 8);', [$net_balance, $balance]);
+      $box = Box::select('id', 'balance', 'counter')->where('id', $box_id)->first();
+
+      $box->update([
+        'balance' => $box->balance - $balance,
+        'counter' => $box->counter + 1,
+      ]);
 
       $date = date($request['date_created'] . ' H:i:s');
       DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'راتب', $date, $box_id, $user_id]);

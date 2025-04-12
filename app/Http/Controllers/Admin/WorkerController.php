@@ -6,6 +6,7 @@ use PDF;
 use Exception;
 
 use App\Models\Worker;
+use App\Models\Box;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,6 +26,7 @@ class WorkerController extends Controller
     public function index(Request $request)
     {
         $page = config('app.page');
+        $boxes = Box::select('id', 'name', 'balance')->get();
         // if the request is ajax
         if($request->ajax()){
             $workers = Worker::select('id', 'name', 'balance', 'notes', 'status')->orderBy('created_at', 'DESC')->paginate($page);
@@ -40,7 +42,7 @@ class WorkerController extends Controller
             $salaries = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = workers.id ORDER BY salaries.date_created DESC LIMIT 20');
             $pages = ceil(Worker::count()/$page);
 
-            return view('admin.worker.index', compact('workers', 'salaries', 'pages'));
+            return view('admin.worker.index', compact('workers', 'salaries', 'pages', 'boxes'));
         }
     }
 

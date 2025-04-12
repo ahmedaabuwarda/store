@@ -23,6 +23,8 @@ Auth::routes([
 Route::get('/', function () { return redirect('/home'); });
 Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index']);
 Route::get('/search', [App\Http\Controllers\Admin\HomeController::class, 'search']);
+Route::get('/settings', [App\Http\Controllers\Admin\HomeController::class, 'settings']);
+Route::post('/user/update', [App\Http\Controllers\Admin\HomeController::class, 'update_user']);
 
 // permission
 Route::get('/permissions', [App\Http\Controllers\Admin\PermissionController::class, 'index']);
@@ -35,21 +37,17 @@ Route::post('/permission/grant', [App\Http\Controllers\Admin\PermissionControlle
 
 // box
 Route::get('/boxes', [App\Http\Controllers\Admin\BoxController::class, 'index']);
-Route::get('/box/create', [App\Http\Controllers\Admin\BoxController::class, 'create']);
 Route::post('/box/store', [App\Http\Controllers\Admin\BoxController::class, 'store']);
 Route::get('/box/edit/{id}', [App\Http\Controllers\Admin\BoxController::class, 'edit']);
 Route::post('/box/update', [App\Http\Controllers\Admin\BoxController::class, 'update']);
 Route::post('/box/convert', [App\Http\Controllers\Admin\BoxController::class, 'convert']);
-Route::post('/box/to_pdf', [App\Http\Controllers\Admin\HomeController::class, 'to_pdf']);
-Route::post('/box/store1', [App\Http\Controllers\Admin\HomeController::class, 'box_store']);
+Route::post('/box/to_pdf', [App\Http\Controllers\Admin\BoxController::class, 'to_pdf']);
+Route::post('/box/to_xlsx', [App\Http\Controllers\Admin\BoxController::class, 'to_xlsx']);
 
 // movement
 Route::get('/movements', [App\Http\Controllers\Admin\MovementController::class, 'index']);
-Route::post('/movement/store', [App\Http\Controllers\Admin\MovementController::class, 'store']);
-Route::get('/movement/edit/{id}', [App\Http\Controllers\Admin\MovementController::class, 'edit']);
-Route::post('/movement/update', [App\Http\Controllers\Admin\MovementController::class, 'update']);
 Route::post('/movement/to_pdf', [App\Http\Controllers\Admin\MovementController::class, 'to_pdf']);
-
+Route::post('/movement/to_xlsx', [App\Http\Controllers\Admin\MovementController::class, 'to_xlsx']);
 
 // currency
 Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index']);
@@ -81,8 +79,21 @@ Route::post('/daily_sell/to_pdf', [App\Http\Controllers\Admin\DailySellsControll
 // customers
 Route::get('/customers', [App\Http\Controllers\Admin\CustomerController::class, 'index']);
 Route::post('/customer/store', [App\Http\Controllers\Admin\CustomerController::class, 'store']);
+Route::get('/customer/edit/{id}', [App\Http\Controllers\Admin\CustomerController::class, 'edit']);
+Route::post('/customer/update', [App\Http\Controllers\Admin\CustomerController::class, 'update']);
 Route::post('/customer/to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'to_pdf']);
 Route::post('/customer/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'kashf_to_pdf']);
+Route::post('/customer/to_xlsx', [App\Http\Controllers\Admin\CustomerController::class, 'to_xlsx']);
+
+// selectives
+Route::get('/selectives', [App\Http\Controllers\Admin\MosqueController1::class, 'index']);
+Route::post('/selective/store', [App\Http\Controllers\Admin\SelectiveController::class, 'store']);
+Route::get('/selective/edit/{id}', [App\Http\Controllers\Admin\CustomerController::class, 'edit']);
+Route::post('/selective/update', [App\Http\Controllers\Admin\CustomerController::class, 'update']);
+Route::post('/selective/to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'to_pdf']);
+Route::post('/selective/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'kashf_to_pdf']);
+Route::post('/selective/to_xlsx', [App\Http\Controllers\Admin\CustomerController::class, 'to_xlsx']);
+
 
 // discounts
 Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);

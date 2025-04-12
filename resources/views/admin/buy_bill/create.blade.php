@@ -333,7 +333,7 @@
                   </div>
 
                   <div class="m-auto">
-                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>اضافة</button>
+                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
                     <a href="{{ URL('/buy_bills') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
                   </div>
 

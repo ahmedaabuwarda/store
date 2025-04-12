@@ -2,7 +2,9 @@
     <tr>
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">البيان</th>
-        <th scope="col" class="text-center">الرصيد</th>
+        <th scope="col" class="text-center">بواسطة</th>
+        <th scope="col" class="text-center">الصندوق</th>
+        <th scope="col" class="text-center">المبلغ</th>
         <th scope="col" class="text-center">المستهلك</th>
         <th scope="col" class="text-center">تاريخ الانشاء</th>
         <th scope="col" class="text-center">رقم السند</th>
@@ -24,6 +26,8 @@
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->byan }}</td>
+                <td class="display-3 text-center">{{ $sanadat_sarf->user->name }}</td>
+                <td class="display-3 text-center">{{ $sanadat_sarf->box->name }}</td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->box->currency->symbol }} {{ $sanadat_sarf->balance }}</td>
                 <td class="display-3 text-center">
                     @if ($sanadat_sarf->worker_id > 0)

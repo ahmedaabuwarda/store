@@ -11,10 +11,10 @@ use App\Models\ExportAiniat;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
 class HomeController extends Controller
@@ -61,6 +61,35 @@ class HomeController extends Controller
     }
   }
 
+  // settings
+  public function settings(Request $request)
+  {
+    $user = Auth::user();
+    return view('admin.user.edit', compact('user'));
+  }
+
+  // updateUser
+  public function update_user(Request $request)
+  {
+
+    $name = $request->name;
+    $email = $request->email;
+    $password = $request->password;
+
+    if ($name == null || $email == null || $password == null) {
+      return redirect()->with('error', 'بعض الحقول مفقودة!');
+    }
+
+    $user = User::find(Auth::user()->id);
+    $user->update([
+      'name' => $name,
+      'email' => $email,
+      'password' => Hash::make($password)
+    ]);
+
+    return redirect('/home')->with('success', 'تم نحديث البيانات بنجاح');
+  }
+
   public function search(Request $request)
   {
 
@@ -74,7 +103,7 @@ class HomeController extends Controller
     if ($target == 'providers') {
       $result = Provider::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     } else if ($target == 'customers') {
-      $result = Customer::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+      $result = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'balance', 'notes', 'status', 'created_at')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     } else if ($target == 'products') {
       $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     } else if ($target == 'export_ainiats') {
@@ -82,113 +111,5 @@ class HomeController extends Controller
     }
     $pages = ceil(count($result) / $page);
     return view('website.search', compact('result', 'pages', 'target'));
-  }
-
-  public function box_store(Request $request)
-  {
-
-    $balance = abs($request->balance);
-    $movement = $request->movement;
-    $user_id = Auth::user()->id;
-    $box_id = $request['box_id'];
-
-    DB::beginTransaction();
-    try {
-
-      if ($movement == 1) {
-
-        DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
-
-        DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,?,?,?,?,?)', [$balance, true, 'دخل الصندوق', date('Y-m-d H:i:s'), $box_id, $user_id]);
-      } else if ($movement == 2) {
-
-        DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)+?, counter = (SELECT counter FROM box WHERE id = 1)+1 WHERE id = 1;', [$balance]);
-        DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 9)+? WHERE id = 9;', [$balance]);
-
-        DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,?,?,?,?,?)', [$balance, true, 'مربح مباشر', date('Y-m-d H:i:s'), $box_id, $user_id]);
-      } else if ($movement == 0) {
-
-        DB::update('UPDATE box SET remaining = (SELECT remaining FROM box WHERE id = 1)-?, counter = (SELECT counter FROM box WHERE id = 1)-1 WHERE id = 1;', [$balance]);
-
-        DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,?,?,?,?,?)', [$balance, false, 'خرج من الصندوق', date('Y-m-d H:i:s'), $box_id, $user_id]);
-      }
-
-      DB::commit();
-      return response(['status' => 'success']);
-    } catch (\Exception $e) {
-      DB::rollBack();
-      return response(['status' => 'error']);
-    }
-  }
-
-  public function to_pdf(Request $request)
-  {
-    $from = date($request['from'] . ' H:i:s');
-    $to = date($request['to'] . ' H:i:s');
-
-    $movements = DB::select('SELECT movements.balance, movements.type, movements.from, movements.date_created FROM movements WHERE movements.date_created >= :from AND movements.date_created <= :to ORDER BY movements.id DESC', ['from' => $from, 'to' => $to]);
-
-    $i = 1;
-    $total = 0;
-    $time = date('H:i:s');
-    $date = date('Y-m-d');
-    $by = Auth::user()->name;
-    $company = config('app.company');
-
-    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">' . $company . '</h3><h1 align="center">كشف كل حركات الصندوق</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
-    $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
-        <thead>
-          <tr>
-            <th width="25%" bgcolor="#eee">الرقم</th>
-            <th width="25%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="25%" bgcolor="#eee">المبلغ</th>
-            <th width="25%" bgcolor="#eee">من</th>
-          </tr>
-        </thead>
-        <tbody>';
-    foreach ($movements as $movement) {
-      $balance = '';
-      if ($movement->type == 0) {
-        $balance = $movement->balance . '<span>&#8362;&#160;</span> - خارج';
-        $total -= $movement->balance;
-      } else {
-        $balance = $movement->balance . '<span>&#8362;&#160;</span> - داخل';
-        $total += $movement->balance;
-      }
-
-      $table_content .= '<tr>
-              <td width="25%">' . $i . '</td>
-              <td width="25%">' . $movement->date_created . '</td>
-              <td width="25%">' . $balance . '</td>
-              <td width="25%">' . $movement->from . '</td>
-            </tr>';
-      $i++;
-    }
-    $table_content .= '</tbody></table>';
-    PDF::SetTitle('كل حركات الصندوق');
-    PDF::SetAuthor('اياد الهسي');
-    // set some language dependent data:
-    $lg = array();
-    $lg['a_meta_charset'] = 'UTF-8';
-    $lg['a_meta_dir'] = 'rtl';
-    $lg['a_meta_language'] = 'ar';
-    $lg['w_page'] = 'page';
-    // set some language-dependent strings (optional)
-    PDF::setLanguageArray($lg);
-    // set font
-    PDF::SetFont('aealarabiya', '', 11);
-    // set margins
-    PDF::SetMargins(PDF_MARGIN_LEFT, /*PDF_MARGIN_TOP,*/ PDF_MARGIN_RIGHT);
-    PDF::SetHeaderMargin(PDF_MARGIN_HEADER);
-    PDF::SetFooterMargin(PDF_MARGIN_FOOTER);
-
-    PDF::AddPage();
-    PDF::writeHTML($content);
-    PDF::SetFont('freeserif', '', 11);
-    PDF::writeHTML($table_content);
-
-    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
-    PDF::Output('all_box_movements_' . date('ymdhis') . '.pdf', 'I');
-    return response()->json(['status' => 'success']);
   }
 }

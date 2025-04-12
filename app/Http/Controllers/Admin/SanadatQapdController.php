@@ -32,7 +32,16 @@ class SanadatQapdController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->orderBy('date_created', 'DESC')->paginate($page);
+    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
+      ->with([
+        'worker:id,name',
+        'customer:id,name',
+        'provider:id,name',
+        'box:id,name,currency_id',
+        'user:id,name',
+      ])
+      ->orderBy('date_created', 'DESC')
+      ->paginate($page);
 
     $boxes = Box::select('id', 'name')->get();
 
@@ -72,19 +81,15 @@ class SanadatQapdController extends Controller
       $sanadat_qapd->date_created = $request['date_created'];
       $sanadat_qapd->balance = $balance;
       $sanadat_qapd->box_id = $box_id;
-
-      if ($request['byan'] == null) {
-        $sanadat_qapd->byan = 'لا يوجد';
-      } else {
-        $sanadat_qapd->byan = $request['byan'];
-      }
+      $sanadat_qapd->user_id = $user_id;
+      $sanadat_qapd->byan = $request['byan'] ?? 'لا يوجد';
 
       if ($request['target'] == 'customers') {
         $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
         if ($customer != null) {
           Customer::where('id', $customer_id)->update(['balance' => $customer->balance + $balance]);
           $sanadat_qapd->customer_id = $customer_id;
-          $target = $customer->balance;
+          $target = $customer->name;
         } else {
           DB::rollback();
           return response()->json(['status' => 'error']);
@@ -95,7 +100,7 @@ class SanadatQapdController extends Controller
         if ($provider != null) {
           Provider::where('id', $provider_id)->update(['balance' => $provider->balance + $balance]);
           $sanadat_qapd->provider_id = $provider_id;
-          $target = $provider->balance;
+          $target = $provider->name;
         } else {
           DB::rollback();
           return response()->json(['status' => 'error']);
@@ -106,7 +111,7 @@ class SanadatQapdController extends Controller
         if ($worker != null) {
           Worker::where('id', $worker_id)->update(['balance' => $worker->balance + $balance]);
           $sanadat_qapd->worker_id = $worker_id;
-          $target = $worker->balance;
+          $target = $worker->name;
         } else {
           DB::rollback();
           return response()->json(['status' => 'error']);
@@ -122,7 +127,7 @@ class SanadatQapdController extends Controller
       ]);
 
       $date = date($request['date_created'] . ' H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,1,?,?,?,?)', [$balance, 'سند قبض', $date, $box_id, $user_id]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,1,?,?,?,?)', [$balance, 'سند قبض - ' . $target, $date, $box_id, $user_id]);
 
       DB::commit();
       return response()->json(['status' => 'success']);
@@ -182,7 +187,7 @@ class SanadatQapdController extends Controller
       ]);
 
       $date = date('Y-m-d H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'سند قبض', $date, $box_id, $user_id]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'حذف سند قبض', $date, $box_id, $user_id]);
 
       $sadat_qapd->delete();
       DB::commit();
@@ -197,24 +202,36 @@ class SanadatQapdController extends Controller
   {
     $from = $request['from'];
     $to = $request['to'];
-    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id')->with('user:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
+    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
+      ->with([
+        'user:id,name',
+        'box:id,name,currency_id',
+        'box.currency:id,symbol',
+        'customer:id,name',
+        'provider:id,name',
+        'worker:id,name'
+      ])
+      ->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])
+      ->orderBy('id', 'DESC')
+      ->get();
 
     $i = 1;
     $total = 0;
     $time = date('H:i:s');
     $date = date('Y-m-d');
     $by = Auth::user()->name;
-    $company = config('app.company');
 
-    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h3 align="center">' . $company . '</h3><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '</p><p align="right">من: ' . $from . ' - الى: ' . $to . '</p></br>';
+    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل سندات القبض</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
     $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="10%" bgcolor="#eee">الرقم</th>
-            <th width="20%" bgcolor="#eee">رقم السند</th>
-            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="20%" bgcolor="#eee">المستهلك</th>
-            <th width="10%" bgcolor="#eee">الرصيد</th>
+            <th width="5%" bgcolor="#eee">الرقم</th>
+            <th width="15%" bgcolor="#eee">رقم السند</th>
+            <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="15%" bgcolor="#eee">المستهلك</th>
+            <th width="10%" bgcolor="#eee">المبلغ</th>
+            <th width="10%" bgcolor="#eee">الصندوق</th>
+            <th width="10%" bgcolor="#eee">بواسطة</th>
             <th width="20%" bgcolor="#eee">البيان</th>
           </tr>
         </thead>
@@ -229,11 +246,13 @@ class SanadatQapdController extends Controller
         $target = $sanadat_qapd->worker->name . ' - موظف';
       }
       $table_content .= '<tr>
-              <td width="10%">' . $i . '</td>
-              <td width="20%">' . $sanadat_qapd->number . '</td>
-              <td width="20%">' . $sanadat_qapd->date_created . '</td>
-              <td width="20%">' . $target . '</td>
-              <td width="10%">' . $sanadat_qapd->balance . '<span>&#8362;&#160;</span></td>
+              <td width="5%">' . $i . '</td>
+              <td width="15%">' . $sanadat_qapd->number . '</td>
+              <td width="15%">' . $sanadat_qapd->date_created . '</td>
+              <td width="15%">' . $target . '</td>
+              <td width="10%">' . $sanadat_qapd->balance . ' ' . $sanadat_qapd->box->currency->symbol . '</td>
+              <td width="10%">' . $sanadat_qapd->box->name . '</td>
+              <td width="10%">' . $sanadat_qapd->user->name . '</td>
               <td width="20%">' . $sanadat_qapd->byan . '</td>
             </tr>';
       $total += $sanadat_qapd->balance;
@@ -241,13 +260,14 @@ class SanadatQapdController extends Controller
     }
     $table_content .= '</tbody></table>';
     PDF::SetTitle('كل سندات القبض');
-    PDF::SetAuthor('اياد الهسي');
+    PDF::SetAuthor($by);
     // set some language dependent data:
     $lg = array();
     $lg['a_meta_charset'] = 'UTF-8';
     $lg['a_meta_dir'] = 'rtl';
     $lg['a_meta_language'] = 'ar';
     $lg['w_page'] = 'page';
+    PDF::SetPageOrientation('L', 'P');
     // set some language-dependent strings (optional)
     PDF::setLanguageArray($lg);
     // set font
@@ -262,9 +282,9 @@ class SanadatQapdController extends Controller
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
 
-    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+    // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
     // Ensure the directory exists before saving the file
-    $directoryPath = storage_path('app/public/pdf/sanadat_qapd');
+    $directoryPath = storage_path('app/public/pdf/سندات القبض');
     // $directoryPath = '/media/ahmed/Downloads';
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
@@ -282,21 +302,21 @@ class SanadatQapdController extends Controller
     // return response()->json(['status' => 'success']);
   }
 
-  public function to_xlsx(Request $request) {
+  public function to_xlsx(Request $request)
+  {
 
     $fileName = 'كشف سندات القبض_' . date('Y-m-d_His') . '.xlsx';
 
     // Ensure the directory exists
-    $directoryPath = public_path('storage/xlsx/sanadat_qapd');
+    $directoryPath = public_path('storage/xlsx/سندات القبض');
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the specified path
-    Excel::store(new \App\Exports\SanadatSarfExport(), 'xlsx/sanadat_qapd/' . $fileName, 'public');
+    Excel::store(new \App\Exports\SanadatQapdExport(), 'xlsx/سندات القبض/' . $fileName, 'public');
 
     // Return the file path for download
     return response()->json(['status' => 'success', 'file' => asset('storage/xlsx/' . $fileName)]);
   }
-
 }

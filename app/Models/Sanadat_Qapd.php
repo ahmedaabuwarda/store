@@ -16,6 +16,7 @@ class Sanadat_Qapd extends Model
     'customer_id',
     'provider_id',
     'box_id',
+    'user_id',
     'date_created',
     'number',
     'balance',

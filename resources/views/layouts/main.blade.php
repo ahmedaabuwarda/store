@@ -349,6 +349,10 @@
                                         <h6 class="text-overflow m-0">مرحبا!</h6>
                                     </div>
                                     <div class="dropdown-divider"></div>
+                                    <a href="{{ url('/settings') }}" class="dropdown-item">
+                                        <i class="fa fa-box text-success"></i>
+                                        <span>Settings | الاعدادات</span>
+                                    </a>
                                     <a href="{{ url('/permissions') }}" class="dropdown-item">
                                         <i class="fa fa-edit text-dark"></i>
                                         <span>Permissions | الصلاحيات</span>

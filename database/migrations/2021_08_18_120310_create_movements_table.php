@@ -20,7 +20,7 @@ class CreateMovementsTable extends Migration
             $table->timestamp('date_created');
             $table->string('from', 40);
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('box_id');
+            $table->unsignedBigInteger('box_id')->nullable();
             $table->timestamps();
         });
     }

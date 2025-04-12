@@ -21,9 +21,9 @@
     <td class="display-3 text-center">{{ $movement->user->name }}</td>
     <td class="display-3 text-center">
       @if($movement->type)
-      <span class="badge-pill badge-success badge-sm">داخل</span>
+      <span class="badge-pill badge-success badge-sm">ايداع</span>
       @else
-      <span class="badge-pill badge-danger badge-sm">طالع</span>
+      <span class="badge-pill badge-danger badge-sm">سحب</span>
       @endif
     </td>
     <td class="display-3 text-center">{{ $movement->box->name }}</td>

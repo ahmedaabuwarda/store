@@ -166,7 +166,7 @@ class ExportAiniatController extends Controller
       //       WHERE box.id IN(1, 3, 7);', [$paid_balance, $total_profit, $export_ainiat->total_balance]);
 
       $date = date($request['date_created'] . ' H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created, movements.box_id, movements.user_id) VALUES (?,1,?,?,?,?)', [$paid_balance, 'فاتورة عينيات صادرة', $date, $box_id, $user_id]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created, movements.box_id, movements.user_id) VALUES (?,0,?,?,?,?)', [$paid_balance, 'فاتورة عينيات صادرة', $date, $box_id, $user_id]);
 
       DB::commit();
       return redirect('/export_ainiat/edit/' . $export_ainiat->id)->with('success', 'تم تصدير العينيات بنجاح');

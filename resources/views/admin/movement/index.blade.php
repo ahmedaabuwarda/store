@@ -84,5 +84,53 @@
       });
     });
   });
+  // show movement from to pdf modal
+  $('.from_to_pdf_button').click(function(e) {
+    $('#from_to_pdf_modal').modal('show');
+  });
+  $('#from_to_pdf_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/movement/to_pdf",
+      type: "POST",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_pdf_modal').modal('hide');
+      }
+    });
+    $('#from_to_pdf_form')[0].reset();
+    $('#from_to_pdf_modal').modal('hide');
+  });
+  // show movement from to xlsx modal
+  $('.from_to_xlsx_button').click(function(e) {
+    $('#from_to_xlsx_modal').modal('show');
+  });
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/movement/to_xlsx",
+      type: "POST",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_xlsx_modal').modal('hide');
+      }
+    });
+    $('#from_to_xlsx_form')[0].reset();
+    $('#from_to_xlsx_modal').modal('hide');
+  });
 </script>
 @endsection

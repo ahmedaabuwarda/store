@@ -118,7 +118,7 @@
 
         <div class="modal-footer justify-content-center mt--3">
           <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-door-open mr-1"></i>الغاء</button>
-          <button type="submit" class="btn btn-primary"><i class="fa fa-plus mr-1"></i>اضافة</button>
+          <button type="submit" class="btn btn-primary"><i class="fa fa-plus mr-1"></i>حفظ</button>
         </div>
       </form>
     </div>

@@ -117,7 +117,7 @@ class DiscountAndExpensesController extends Controller
               <td width="10%">' . $i . '</td>
               <td width="30%">' . $discount->date_created . '</td>
               <td width="20%">' . $discount->done_by . '</td>
-              <td width="10%">' . $discount->balance . '<span>&#8362;&#160;</span></td>
+              <td width="10%">' . $discount->balance . '</td>
               <td width="30%">' . $discount->notes . '</td>
             </tr>';
       $total += $discount->balance;
@@ -146,8 +146,25 @@ class DiscountAndExpensesController extends Controller
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
 
-    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%"></td><td width="40%">المجموع</td><td width="10%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
-    PDF::Output('all_discounts.pdf', 'I');
+    // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%"></td><td width="40%">المجموع</td><td width="10%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+    // PDF::Output('all_discounts.pdf', 'I');
+    // return response()->json(['status' => 'success']);
+    // Ensure the directory exists before saving the file
+    $directoryPath = storage_path('app/public/pdf/المصاريف' . '/' . date('Y-m-d'));
+    // $directoryPath = '/media/ahmed/Downloads';
+    if (!file_exists($directoryPath)) {
+      mkdir($directoryPath, 0755, true);
+    }
+
+    // Save the file to the storage folder
+    $filePath = $directoryPath . '/' . 'كشف مصاريف' . '_' . date('Y-m-d-his') . '.pdf';
+    PDF::Output($filePath, 'F');
+    // dd($filePath);
+    // Ensure the symbolic link exists for the storage folder
+    if (!file_exists(public_path('storage'))) {
+      symlink(storage_path('app/public'), public_path('storage'));
+    }
+    // PDF::Output('provider_kashf_hisab_' . date('ymdhis') . '.pdf', 'D');
     return response()->json(['status' => 'success']);
   }
 }

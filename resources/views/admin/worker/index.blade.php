@@ -259,6 +259,28 @@
             <div class="col-xl-6 col-md-12">
 
               <div class="form-group">
+                <label class="form-control-label">الصندوق</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i
+                        class="fa fa-heart text-info"></i></span>
+                  </div>
+                  <select class="form-control selectpicker" name="box_id">
+                    @foreach($boxes as $box)
+                    <option value="{{ $box->id }}">{{ $box->name }} ({{ $box->balance }})</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('box_id')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+            </div>
+
+            <div class="col-xl-12 col-md-12">
+
+              <div class="form-group">
                 <label class="form-control-label">ملاحظات</label>
                 <div class="input-group">
                   <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="(في حال كان فارغ : لايوجد) ملاحظات" autocomplete="notes" rows="3">{{ old('notes') }}</textarea>
