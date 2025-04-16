@@ -11,11 +11,11 @@ else
     echo "env file exists."
 fi
 
-php artisan route:cache
-php artisan route:clear
-php artisan config:cache
-php artisan config:clear
+# php artisan route:cache
+# php artisan route:clear
+# php artisan config:cache
+# php artisan config:clear
 php artisan optimize:clear
-#php artisan migrate
+php artisan migrate --seed
 php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
 exec docker-php-entrypoint "$@"

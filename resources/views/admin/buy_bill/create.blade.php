@@ -280,9 +280,9 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-yellow"></i></span>
                         </div>
-                        <input type="number" id="discount" class="form-control @error('discount') is-invalid @enderror" name="discount" placeholder="خصم" value="{{ old('discount') }}" autocomplete="discount" step="0.0001" required>
+                        <input type="number" id="expense" class="form-control @error('expense') is-invalid @enderror" name="expense" placeholder="خصم" value="{{ old('expense') }}" autocomplete="expense" step="0.0001" required>
                       </div>
-                      @error('discount')
+                      @error('expense')
                       <span class="text-danger">{{ $message }}</span>
                       @enderror
                     </div>
@@ -359,7 +359,7 @@
   $(document).ready(function() {
     $('#remaining_balance').val(0);
     $('#paid_balance').val(0);
-    $('#discount').val(0);
+    $('#expense').val(0);
     $('#updateButton').click(function() {
       if ($("#productname").val() != null && $("#productname").val() != '' && $("#quantity").val() != ' ' && $("#quantity").val() != null && $("#price").val() != null && $("#price").val() != '') {
         var tota = $("#quantity").val() * $("#price").val();
@@ -382,10 +382,10 @@
       }
     });
     $('#paid_balance').keyup(function() {
-      $('#remaining_balance').val((total - $('#discount').val()) - $('#paid_balance').val());
+      $('#remaining_balance').val((total - $('#expense').val()) - $('#paid_balance').val());
     });
     $('#paid_balance').ready(function() {
-      $('#remaining_balance').val((total - $('#discount').val()) - $('#paid_balance').val());
+      $('#remaining_balance').val((total - $('#expense').val()) - $('#paid_balance').val());
     });
   });
   $(document).ready(function() {

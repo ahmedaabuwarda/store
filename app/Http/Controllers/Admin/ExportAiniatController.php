@@ -16,7 +16,7 @@ use App\Models\Quantity;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Models\Selective;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,7 +68,7 @@ class ExportAiniatController extends Controller
       $box_id = $request['box_id'];
       $user_id = Auth::user()->id;
 
-      $export_ainiat = new ExportAiniat;
+      $export_ainiat = new ExportAiniat();
       $export_ainiat->number = $request['number'];
       $export_ainiat->date_created = $request['date_created'];
       if ($request['target'] == 'customers') {
@@ -102,7 +102,7 @@ class ExportAiniatController extends Controller
 
       $export_ainiat->paid_balance = $paid_balance;
       $export_ainiat->remaining_balance = $remaining_balance;
-      $export_ainiat->discount = $request['discount'];
+      $export_ainiat->expense = $request['expense'];
       $export_ainiat->total_balance = abs($remaining_balance) + $paid_balance;
       $export_ainiat->byan = $request['byan'] ?? 'لا يوجد';
 
@@ -119,7 +119,6 @@ class ExportAiniatController extends Controller
 
         if ($quantity->quantity - $tblArray[$i * 5 + 1] < 0) {
           return redirect('/export_ainiats')->with('error', '1');
-
         } else if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
 
           Product::where('id', $tblArray[$i * 5 + 0])->update([
@@ -148,22 +147,21 @@ class ExportAiniatController extends Controller
         $sold_product->export_ainiat_id = $export_ainiat->id;
         $total_profit += $profit;
         $sold_product->save();
+
+        Selective::where('customer_id', $customer_id)
+          ->where('product_id', $tblArray[$i * 5 + 0])
+          ->where('status', 0)
+          ->update([
+            'status' => 1,
+          ]);
+
+        $selective = Selective::where('customer_id', $customer_id)->where('status', 0)->get();
+        if ($selective->count() == 0) {
+          Customer::where('id', $customer_id)->update(['status' => 1]);
+        }
       }
 
       ExportAiniat::where('id', $export_ainiat->id)->update(['total_profit' => $total_profit]);
-
-      // DB::statement('UPDATE box SET box.remaining = CASE box.id
-      //           WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
-      //           WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)+?
-      //           WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)+?
-      //           ELSE box.remaining
-      //           END,
-      //       box.counter = CASE box.id
-      //           WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-      //           WHEN 7 THEN (SELECT counter FROM box WHERE box.id = 7)+1
-      //           ELSE box.counter
-      //           END
-      //       WHERE box.id IN(1, 3, 7);', [$paid_balance, $total_profit, $export_ainiat->total_balance]);
 
       $date = date($request['date_created'] . ' H:i:s');
       DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created, movements.box_id, movements.user_id) VALUES (?,0,?,?,?,?)', [$paid_balance, 'فاتورة عينيات صادرة', $date, $box_id, $user_id]);
@@ -180,7 +178,7 @@ class ExportAiniatController extends Controller
   public function show(Request $request)
   {
     $id = $request['id'];
-    $bill = ExportAiniat::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan', 'total_profit')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,export_ainiat_id')->with('sold_product.product:id,name')->where('id', $id)->first();
+    $bill = ExportAiniat::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'expense', 'byan', 'total_profit')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,export_ainiat_id')->with('sold_product.product:id,name')->where('id', $id)->first();
     if ($bill != null) {
       $bill_data = view('includes.bill_data', compact('bill'))->render();
       return response()->json(['bill_data' => $bill_data]);
@@ -191,7 +189,7 @@ class ExportAiniatController extends Controller
 
   public function edit($id)
   {
-    $export_ainiat = ExportAiniat::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'total_profit', 'discount', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,export_ainiat_id')->where('id', $id)->first();
+    $export_ainiat = ExportAiniat::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'total_balance', 'paid_balance', 'remaining_balance', 'total_profit', 'expense', 'byan')->with('sold_product:id,product_id,quantity,sell_price,total_price,profit,export_ainiat_id')->where('id', $id)->first();
     $products = DB::select('SELECT id, name, original_price, taqseet_price, quantity FROM products ORDER BY id DESC');
     return view('admin.export_ainiat.edit', compact('export_ainiat', 'products'));
   }
@@ -201,6 +199,7 @@ class ExportAiniatController extends Controller
 
     $paid_balance = abs($request->paid_balance);
     $remaining_balance = $request->remaining_balance;
+    $customer_id = $request['customer_id'];
 
     $export_ainiat = ExportAiniat::where('id', $id)->first();
 
@@ -248,20 +247,20 @@ class ExportAiniatController extends Controller
             $sold_product->export_ainiat_id = $id;
             $total_profit += $profit;
             $sold_product->save();
+
+            Selective::where('customer_id', $customer_id)
+              ->where('product_id', $tblArray[$i * 5 + 0])
+              ->where('status', 0)
+              ->update([
+                'status' => 1,
+              ]);
+
+            $selective = Selective::where('customer_id', $customer_id)->where('status', 0)->get();
+            if ($selective->count() == 0) {
+              Customer::where('id', $customer_id)->update(['status' => 1]);
+            }
           }
         }
-
-        // DB::statement('UPDATE box SET box.remaining = CASE box.id
-        //             WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)+?
-        //             WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)+?
-        //             WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)+?
-        //             ELSE box.remaining
-        //             END,
-        //         box.counter = CASE box.id
-        //             WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-        //             ELSE box.counter
-        //             END
-        //         WHERE box.id IN(1, 3, 7);', [$paid_balance - $export_ainiat->paid_balance, $total_profit, ((abs($remaining_balance) + abs($paid_balance)) - $export_ainiat->total_balance)]);
 
         ExportAiniat::where('id', $id)->update([
           'paid_balance' => $paid_balance,
@@ -302,18 +301,6 @@ class ExportAiniatController extends Controller
       $quantity = Quantity::where('product_id', $sold_product->product_id)->where('buy_price', $sold_product->buy_price)->first();
 
       $profit = ($sold_product->sell_price * $sold_product->quantity) - ($sold_product->buy_price * $sold_product->quantity);
-
-      // DB::statement('UPDATE box SET box.remaining = CASE box.id
-      //           WHEN 1 THEN (SELECT remaining FROM box WHERE box.id = 1)-?
-      //           WHEN 3 THEN (SELECT remaining FROM box WHERE box.id = 3)-?
-      //           WHEN 7 THEN (SELECT remaining FROM box WHERE box.id = 7)-?
-      //           ELSE box.remaining
-      //           END,
-      //       box.counter = CASE box.id
-      //           WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
-      //           ELSE box.counter
-      //           END
-      //       WHERE box.id IN(1, 3, 7);', [$sold_product->total_price, $profit, $sold_product->total_price]);
 
       $export_ainiat = ExportAiniat::where('id', $sold_product->export_ainiat_id)->update([
         'total_balance' => $sold_product->export_ainiat->total_balance - $sold_product->total_price,
@@ -356,8 +343,8 @@ class ExportAiniatController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = $request['from'];
-    $to = $request['to'];
+    $from = date($request['from'] . ' 00:00:00');
+    $to = date($request['to'] . ' 23:59:59');
     $export_ainiats = ExportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
     $i = 1;

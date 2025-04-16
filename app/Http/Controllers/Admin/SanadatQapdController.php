@@ -43,7 +43,7 @@ class SanadatQapdController extends Controller
       ->orderBy('date_created', 'DESC')
       ->paginate($page);
 
-    $boxes = Box::select('id', 'name')->get();
+    $boxes = Box::select('id', 'name', 'balance')->get();
 
     // if the request is ajax
     if ($request->ajax()) {
@@ -200,8 +200,8 @@ class SanadatQapdController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = $request['from'];
-    $to = $request['to'];
+    $from = date($request['from'] . ' 00:00:00');
+    $to = date($request['to'] . ' 23:59:59');
     $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'user:id,name',
@@ -284,7 +284,7 @@ class SanadatQapdController extends Controller
 
     // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
     // Ensure the directory exists before saving the file
-    $directoryPath = storage_path('app/public/pdf/سندات القبض');
+    $directoryPath = storage_path('app/public/pdf/سندات القبض' . '/' . date('Y-m-d'));
     // $directoryPath = '/media/ahmed/Downloads';
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
@@ -308,13 +308,13 @@ class SanadatQapdController extends Controller
     $fileName = 'كشف سندات القبض_' . date('Y-m-d_His') . '.xlsx';
 
     // Ensure the directory exists
-    $directoryPath = public_path('storage/xlsx/سندات القبض');
+    $directoryPath = public_path('storage/xlsx/سندات القبض' . '/' . date('Y-m-d'));
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the specified path
-    Excel::store(new \App\Exports\SanadatQapdExport(), 'xlsx/سندات القبض/' . $fileName, 'public');
+    Excel::store(new \App\Exports\SanadatQapdExport(), 'xlsx/سندات القبض/' . '/' . date('Y-m-d') . '/' . $fileName, 'public');
 
     // Return the file path for download
     return response()->json(['status' => 'success', 'file' => asset('storage/xlsx/' . $fileName)]);

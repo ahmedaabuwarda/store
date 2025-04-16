@@ -1,0 +1,70 @@
+@extends('layouts.main')
+@section('content')
+<!-- Header -->
+<div class="header pb-6" style="background-color:#222222;">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-5">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--8">
+
+  <!-- All mosques -->
+  <div class="row">
+    <div class="col-6 m-auto">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">تعديل مسجد ({{ $mosque->name }})</h3>
+            </div>
+          </div>
+        </div>
+        <form action="{{ URL('/mosque/update') }}" method="POST">
+          @csrf
+          <div class="col-12">
+
+            <div class="form-group">
+              <label class="form-control-label">اسم المسجد</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
+                </div>
+                <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم المسجد" value="{{ $mosque->name }}" autocomplete="name" required autofocus>
+                <input type="hidden" name="id" value="{{ $mosque->id }}" required>
+              </div>
+              @error('name')
+              <span class="text-danger">{{ $message }}</span>
+              @enderror
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">ملاحظات</label>
+                <div class="input-group">
+                  <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="(في حال كان فارغ : لايوجد) ملاحظات" autocomplete="notes" rows="3">{{ $mosque->notes }}</textarea>
+                </div>
+                @error('notes')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+            <div class="modal-footer justify-content-center mt--3">
+              <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
+              <a href="{{ URL('/mosques') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  @include('includes.footer')
+
+</div>
+
+@endsection

@@ -14,20 +14,6 @@
 </div>
 <div class="col-xl-12 col-md-12">
   <div class="form-group">
-    <label class="form-control-label">سعر التقسيط</label>
-    <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="basic-addon1"><i class="fa fa-box"></i></span>
-      </div>
-      <input type="text" class="form-control @error('taqseet_price') is-invalid @enderror" name="taqseet_price" placeholder="سعر التقسيط" value="{{ old('taqseet_price') }}" autocomplete="taqseet_price" autofocus>
-    </div>
-    @error('taqseet_price')
-    <span class="text-danger">{{ $message }}</span>
-    @enderror
-  </div>
-</div>
-<div class="col-xl-12 col-md-12">
-  <div class="form-group">
     <label class="form-control-label">النوع</label>
     <div class="input-group">
       <div class="input-group-prepend">
@@ -43,6 +29,20 @@
     </div>
     @error('type')
     <span class="text-danger">{{ $message }}</span>
+    @enderror
+  </div>
+</div>
+
+<div class="col-xl-12 col-md-12">
+  <!-- Add input here to attach a file -->
+  <div class="form-group">
+    <label class="form-control-label">استيراد عينيات</label>
+    <div class="custom-file">
+      <input type="file" class="custom-file-input @error('file_attachment') is-invalid @enderror" name="file_attachment" accept=".xls,.xlsx">
+      <label class="custom-file-label" for="file_attachment">اختر ملفاً...</label>
+    </div>
+    @error('file_attachment')
+    <span class="text-danger d-block mt-2">{{ $message }}</span>
     @enderror
   </div>
 </div>

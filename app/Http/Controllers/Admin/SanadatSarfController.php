@@ -267,8 +267,8 @@ class SanadatSarfController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = $request['from'];
-    $to = $request['to'];
+    $from = date($request['from'] . ' 00:00:00');
+    $to = date($request['to'] . ' 23:59:59');
     $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'user:id,name',
@@ -349,9 +349,8 @@ class SanadatSarfController extends Controller
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
 
-    // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#DB2E39">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
     // Ensure the directory exists before saving the file
-    $directoryPath = storage_path('app/public/pdf/سندات الصرف');
+    $directoryPath = storage_path('app/public/pdf/سندات الصرف' . '/' . date('Y-m-d'));
     // $directoryPath = '/media/ahmed/Downloads';
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
@@ -365,11 +364,7 @@ class SanadatSarfController extends Controller
     if (!file_exists(public_path('storage'))) {
       symlink(storage_path('app/public'), public_path('storage'));
     }
-
-    // Return the file as a download response
-    // return redirect($filePath);
-    // PDF::Output('all_sanadat_sarfs_' . date('ymdhis') . '.pdf', 'D');
-    // return response()->json(['status' => 'success']);
+    return response()->json(['status' => 'success']);
   }
 
   public function to_xlsx(Request $request)
@@ -378,13 +373,13 @@ class SanadatSarfController extends Controller
     $fileName = 'كشف سندات الصرف_' . date('Y-m-d_His') . '.xlsx';
 
     // Ensure the directory exists
-    $directoryPath = public_path('storage/xlsx/سندات الصرف');
+    $directoryPath = public_path('storage/xlsx/سندات الصرف' . '/' . date('Y-m-d'));
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the specified path
-    Excel::store(new \App\Exports\SanadatSarfExport(), 'xlsx/سندات الصرف/' . $fileName, 'public');
+    Excel::store(new \App\Exports\SanadatSarfExport(), 'xlsx/سندات الصرف/' . '/' . date('Y-m-d') . '/' . $fileName, 'public');
 
     // Return the file path for download
     return response()->json(['status' => 'success', 'file' => asset('storage/xlsx/' . $fileName)]);

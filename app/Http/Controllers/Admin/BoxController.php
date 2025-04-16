@@ -154,8 +154,8 @@ class BoxController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = date($request->from . ' H:i:s');
-    $to = date($request->to . ' H:i:s');
+    $from = date($request->from . ' 00:00:00');
+    $to = date($request->to . ' 23:59:59');
     $box_id = $request->box_id;
 
     if ($box_id == "all") {

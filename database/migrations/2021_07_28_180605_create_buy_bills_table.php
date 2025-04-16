@@ -23,7 +23,7 @@ class CreateBuyBillsTable extends Migration
             $table->double('original_balance', 15, 4);
             $table->double('paid_balance', 15, 4);
             $table->double('remaining_balance', 15, 4);
-            $table->double('discount', 15, 4);
+            $table->double('expense', 15, 4);
             $table->string('byan');
             $table->timestamps();
         });

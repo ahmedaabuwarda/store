@@ -275,7 +275,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-yellow"></i></span>
                         </div>
-                        <input type="number" id="discount" class="form-control" placeholder="خصم" value="{{ $export_ainiat->discount }}" step="0.0001" disabled>
+                        <input type="number" id="expense" class="form-control" placeholder="خصم" value="{{ $export_ainiat->expense }}" step="0.0001" disabled>
                       </div>
                     </div>
 

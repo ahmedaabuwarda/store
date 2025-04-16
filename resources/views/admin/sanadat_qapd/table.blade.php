@@ -14,7 +14,7 @@
 <tbody>
     @if ($sanadat_qapds->count() == 0)
         <tr>
-            <td colspan="7" class="text-center">لا يوجد بيانات</td>
+            <td colspan="10" class="text-center">لا يوجد بيانات</td>
         </tr>
     @else
         @php $i=1; @endphp

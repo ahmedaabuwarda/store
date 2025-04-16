@@ -27,6 +27,7 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن عملة">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_currency_modal"><i class="fa fa-plus"></i> اضافة عملة</a>
             </div>
@@ -90,7 +91,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم العملة" value="{{ old('name') }}" autocomplete="name" required autofocus>
+                  <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم العملة" value="{{ old('name') }}" autocomplete="name" autofocus>
                 </div>
                 @error('name')
                 <span class="text-danger">{{ $message }}</span>
@@ -103,10 +104,22 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" class="form-control @error('symbol') is-invalid @enderror" name="symbol" placeholder="رمز العملة" value="{{ old('symbol') }}" autocomplete="symbol" required autofocus>
+                  <input type="text" class="form-control @error('symbol') is-invalid @enderror" name="symbol" placeholder="رمز العملة" value="{{ old('symbol') }}" autocomplete="symbol" autofocus>
                 </div>
                 @error('symbol')
                 <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+
+              <!-- Add input here to attach a file -->
+              <div class="form-group">
+                <label class="form-control-label">استيراد عملات</label>
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input @error('file_attachment') is-invalid @enderror" name="file_attachment" accept=".xls,.xlsx">
+                  <label class="custom-file-label" for="file_attachment">اختر ملفاً...</label>
+                </div>
+                @error('file_attachment')
+                <span class="text-danger d-block mt-2">{{ $message }}</span>
                 @enderror
               </div>
 
@@ -126,6 +139,8 @@
 
 <!-- Modal::customer to pdf -->
 @include('includes.from_to')
+
+@include('includes.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -206,6 +221,56 @@
         );
       }
     });
+  });
+  // currency to pdf modal
+  $('.from_to_pdf_button').click(function(e) {
+    $('#from_to_pdf_modal').modal('show');
+  });
+  // currency to pdf form
+  $('#from_to_pdf_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/currency/to_pdf",
+      type: "POST",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_pdf_modal').modal('hide');
+      }
+    });
+    $('#from_to_pdf_form')[0].reset();
+    $('#from_to_pdf_modal').modal('hide');
+  });
+  // currency to xlsx modal
+  $('.from_to_xlsx_button').click(function(e) {
+    $('#from_to_xlsx_modal').modal('show');
+  });
+  // currency to xlsx form
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/currency/to_xlsx",
+      type: "POST",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_xlsx_modal').modal('hide');
+      }
+    });
+    $('#from_to_xlsx_form')[0].reset();
+    $('#from_to_xlsx_modal').modal('hide');
   });
   // get all customers
   function get_curencies() {

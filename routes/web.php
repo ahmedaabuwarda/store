@@ -55,6 +55,7 @@ Route::post('/currency/store', [App\Http\Controllers\Admin\CurrencyController::c
 Route::get('/currency/edit/{id}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit']);
 Route::post('/currency/update', [App\Http\Controllers\Admin\CurrencyController::class, 'update']);
 Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\CurrencyController::class, 'to_pdf']);
+Route::post('/currency/to_xlsx', [App\Http\Controllers\Admin\CurrencyController::class, 'to_xlsx']);
 
 // buy_bills
 Route::get('/buy_bills', [App\Http\Controllers\Admin\BuyBillController::class, 'index']);
@@ -67,15 +68,6 @@ Route::post('/buy_bill/delete', [App\Http\Controllers\Admin\BuyBillController::c
 Route::post('/buy_bill/delete_product/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'delete_product']);
 Route::post('/buy_bill/to_pdf', [App\Http\Controllers\Admin\BuyBillController::class, 'to_pdf']);
 
-Route::get('/daily_sells', [App\Http\Controllers\Admin\DailySellsController::class, 'index']);
-Route::get('/daily_sell/create', [App\Http\Controllers\Admin\DailySellsController::class, 'create']);
-Route::post('/daily_sell/store', [App\Http\Controllers\Admin\DailySellsController::class, 'store']);
-Route::get('/daily_sell/show', [App\Http\Controllers\Admin\DailySellsController::class, 'show']);
-Route::get('/daily_sell/edit/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'edit']);
-Route::post('/daily_sell/update/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'update']);
-Route::post('/daily_sell/delete_product/{id}', [App\Http\Controllers\Admin\DailySellsController::class, 'delete_product']);
-Route::post('/daily_sell/to_pdf', [App\Http\Controllers\Admin\DailySellsController::class, 'to_pdf']);
-
 // customers
 Route::get('/customers', [App\Http\Controllers\Admin\CustomerController::class, 'index']);
 Route::post('/customer/store', [App\Http\Controllers\Admin\CustomerController::class, 'store']);
@@ -86,19 +78,26 @@ Route::post('/customer/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerContro
 Route::post('/customer/to_xlsx', [App\Http\Controllers\Admin\CustomerController::class, 'to_xlsx']);
 
 // selectives
-Route::get('/selectives', [App\Http\Controllers\Admin\MosqueController1::class, 'index']);
+Route::get('/selectives', [App\Http\Controllers\Admin\SelectiveController::class, 'index']);
 Route::post('/selective/store', [App\Http\Controllers\Admin\SelectiveController::class, 'store']);
-Route::get('/selective/edit/{id}', [App\Http\Controllers\Admin\CustomerController::class, 'edit']);
-Route::post('/selective/update', [App\Http\Controllers\Admin\CustomerController::class, 'update']);
-Route::post('/selective/to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'to_pdf']);
-Route::post('/selective/kashf_to_pdf', [App\Http\Controllers\Admin\CustomerController::class, 'kashf_to_pdf']);
-Route::post('/selective/to_xlsx', [App\Http\Controllers\Admin\CustomerController::class, 'to_xlsx']);
+Route::get('/selective/edit/{id}', [App\Http\Controllers\Admin\SelectiveController::class, 'edit']);
+Route::post('/selective/update', [App\Http\Controllers\Admin\SelectiveController::class, 'update']);
+Route::post('/selective/to_pdf', [App\Http\Controllers\Admin\SelectiveController::class, 'to_pdf']);
+Route::post('/selective/to_xlsx', [App\Http\Controllers\Admin\SelectiveController::class, 'to_xlsx']);
 
+// mosques
+Route::get('/mosques', [App\Http\Controllers\Admin\MosqueController::class, 'index']);
+Route::post('/mosque/store', [App\Http\Controllers\Admin\MosqueController::class, 'store']);
+Route::get('/mosque/edit/{id}', [App\Http\Controllers\Admin\MosqueController::class, 'edit']);
+Route::post('/mosque/update', [App\Http\Controllers\Admin\MosqueController::class, 'update']);
+Route::post('/mosque/to_pdf', [App\Http\Controllers\Admin\MosqueController::class, 'to_pdf']);
+Route::post('/mosque/to_xlsx', [App\Http\Controllers\Admin\MosqueController::class, 'to_xlsx']);
 
-// discounts
-Route::get('/discounts', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'index']);
-Route::post('/discount/store', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'store']);
-Route::post('/discount/to_pdf', [App\Http\Controllers\Admin\DiscountAndExpensesController::class, 'to_pdf']);
+// expenses
+Route::get('/expenses', [App\Http\Controllers\Admin\ExpensesController::class, 'index']);
+Route::post('/expense/store', [App\Http\Controllers\Admin\ExpensesController::class, 'store']);
+Route::post('/expense/to_pdf', [App\Http\Controllers\Admin\ExpensesController::class, 'to_pdf']);
+Route::post('/expense/to_xlsx', [App\Http\Controllers\Admin\ExpensesController::class, 'to_xlsx']);
 
 // products
 Route::get('/product/create', [App\Http\Controllers\Admin\ProductController::class, 'create']);
@@ -108,6 +107,8 @@ Route::post('/product/update', [App\Http\Controllers\Admin\ProductController::cl
 Route::post('/product/delete', [App\Http\Controllers\Admin\ProductController::class, 'delete']);
 Route::post('/product/jard_to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'jard_to_pdf']);
 Route::post('/product/to_pdf', [App\Http\Controllers\Admin\ProductController::class, 'to_pdf']);
+Route::post('/product/to_xlsx', [App\Http\Controllers\Admin\ProductController::class, 'to_xlsx']);
+Route::post('/product/jard_to_xlsx', [App\Http\Controllers\Admin\ProductController::class, 'jard_to_xlsx']);
 Route::get('/product/price/{id}', [App\Http\Controllers\Admin\ProductController::class, 'price']);
 
 // providers

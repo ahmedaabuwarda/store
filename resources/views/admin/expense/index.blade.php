@@ -13,7 +13,7 @@
 <!-- Page content -->
 <div class="container-fluid mt--8">
 
-  <!-- All discounts -->
+  <!-- All expenses -->
   <div class="row">
     <div class="col-xl-12">
       <div class="card">
@@ -27,9 +27,11 @@
                 placeholder="...ابحث عن خصم او مصروف">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              <button class="btn btn-success" data-toggle="modal" data-target="#from_to_xlsx_modal"><i
+                  class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger" data-toggle="modal" data-target="#from_to_pdf_modal"><i
                   class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_discount_modal"><i class="fa fa-plus"></i>
+              <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_expense_modal"><i class="fa fa-plus"></i>
                 مصروف
               </a>
             </div>
@@ -37,8 +39,8 @@
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
-          <table class="table tablee align-items-center table-flush table-hover" id="discount_table">
-            @include('admin.discount.table')
+          <table class="table tablee align-items-center table-flush table-hover" id="expense_table">
+            @include('admin.expense.table')
           </table>
         </div>
       </div>
@@ -55,8 +57,8 @@
         </a>
       </li>
       @for ($p = 1; $p <= $pages; $p++)
-        <li class="page-item @if (Request::fullUrl() == URL('/discounts?page=' . $p)) active @endif"><a class="page-link"
-          href="{{ URL('/discounts?page=' . $p) }}">{{ $p }}</a></li>
+        <li class="page-item @if (Request::fullUrl() == URL('/expenses?page=' . $p)) active @endif"><a class="page-link"
+          href="{{ URL('/expenses?page=' . $p) }}">{{ $p }}</a></li>
         @endfor
         <li class="page-item">
           <a class="page-link" href="{{ Request::fullUrl() }}">
@@ -72,8 +74,8 @@
 
 </div>
 
-<!-- Modal::create discount -->
-<div class="modal fade" id="create_discount_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<!-- Modal::create expense -->
+<div class="modal fade" id="create_expense_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -83,7 +85,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="create_discount_form">
+      <form id="create_expense_form">
         <div class="modal-body">
           @csrf
           <div class="row">
@@ -136,13 +138,13 @@
                     <span class="input-group-text" id="basic-addon1"><i
                         class="fa fa-heart text-info"></i></span>
                   </div>
-                  <select class="form-control selectpicker" name="done_by">
+                  <select class="form-control selectpicker" name="user_id">
                     @foreach($users as $user)
-                    <option value="{{ $user->name }}">{{ $user->name }}</option>
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                   </select>
                 </div>
-                @error('done_by')
+                @error('user_id')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>
@@ -201,8 +203,10 @@
   </div>
 </div>
 
-<!-- Modal::discount to pdf -->
-@include('admin.discount.from_to')
+<!-- Modal::expense to pdf -->
+@include('admin.expense.from_to_pdf')
+<!-- Modal::expense to xlsx -->
+@include('admin.expense.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -214,12 +218,12 @@
       });
     });
   });
-  // create discount form
-  $('#create_discount_form').submit(function(e) {
+  // create expense form
+  $('#create_expense_form').submit(function(e) {
     e.preventDefault();
     let data = new FormData(this);
     $.ajax({
-      url: "/discount/store",
+      url: "/expense/store",
       type: "POST",
       data: data,
       processData: false,
@@ -228,9 +232,9 @@
       success: function(response) {
         if (response.status == "success") {
           // refresh the table
-          get_discounts();
-          $('#create_discount_form')[0].reset();
-          $('#create_discount_modal').modal('hide');
+          get_expenses();
+          $('#create_expense_form')[0].reset();
+          $('#create_expense_modal').modal('hide');
           Swal.fire(
             'تم!',
             response.message,
@@ -253,22 +257,18 @@
       }
     });
   });
-  // create discount to pdf form
+  // create expense to pdf form
   $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let done_by = $('#done_by').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
+    // let _token = $('input[name="_token"]').val();
     $.ajax({
-      url: "/discount/to_pdf",
+      url: "/expense/to_pdf",
       type: "POST",
-      data: {
-        from: from,
-        to: to,
-        done_by: done_by,
-        _token: _token
-      },
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_pdf_modal').modal('hide');
       }
@@ -276,14 +276,33 @@
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
   });
-  // get all discounts
-  function get_discounts() {
+  // create expense to pdf form
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let data = new FormData(this);
+    // let _token = $('input[name="_token"]').val();
     $.ajax({
-      url: "/discounts",
+      url: "/expense/to_xlsx",
+      type: "POST",
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
+      success: function(response) {
+        $('#from_to_xlsx_modal').modal('hide');
+      }
+    });
+    $('#from_to_xlsx_form')[0].reset();
+    $('#from_to_xlsx_modal').modal('hide');
+  });
+  // get all expenses
+  function get_expenses() {
+    $.ajax({
+      url: "/expenses",
       type: "GET",
       success: function(response) {
-        $('#discount_table').html('');
-        $('#discount_table').append(response.table);
+        $('#expense_table').html('');
+        $('#expense_table').append(response.table);
       },
       error: function(response) {
         Swal.fire(

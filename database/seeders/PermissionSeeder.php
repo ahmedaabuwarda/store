@@ -18,14 +18,17 @@ class PermissionSeeder extends Seeder
     Permission::create(['name' => 'show_boxes', 'description' => 'عرض الصناديق']);
     Permission::create(['name' => 'add_currencies', 'description' => 'إضافة عملات']);
     Permission::create(['name' => 'show_currencies', 'description' => 'عرض العملات']);
-    Permission::create(['name' => 'add_buy_bills', 'description' => 'إضافة فواتير شراء']);
-    Permission::create(['name' => 'show_buy_bills', 'description' => 'عرض فواتير شراء']);
+    Permission::create(['name' => 'add_buy_bills', 'description' => 'إضافة عينيات واردة']);
+    Permission::create(['name' => 'show_buy_bills', 'description' => 'عرض عينيات واردة']);
     Permission::create(['name' => 'add_customers', 'description' => 'إضافة مستفيدين']);
     Permission::create(['name' => 'show_customers', 'description' => 'عرض مستفيدين']);
-    Permission::create(['name' => 'add_discounts', 'description' => 'إضافة خصومات']);
-    Permission::create(['name' => 'show_discounts', 'description' => 'عرض خصومات']);
-    Permission::create(['name' => 'add_products', 'description' => 'إضافة عينيةات']);
-    Permission::create(['name' => 'show_products', 'description' => 'عرض عينيةات']);
+    Permission::create(['name' => 'add_mosques', 'description' => 'اضافة مسجد']);
+    Permission::create(['name' => 'show_mosques', 'description' => 'عرض المساجد']);
+    Permission::create(['name' => 'add_expenses', 'description' => 'إضافة مصاريف']);
+    Permission::create(['name' => 'show_expenses', 'description' => 'عرض مصاريف']);
+    Permission::create(['name' => 'add_products', 'description' => 'إضافة عينيات']);
+    Permission::create(['name' => 'show_products', 'description' => 'عرض عينيات']);
+    Permission::create(['name' => 'edit_products', 'description' => 'تعديل عينيات']);
     Permission::create(['name' => 'add_providers', 'description' => 'إضافة داعمون']);
     Permission::create(['name' => 'show_providers', 'description' => 'عرض داعمون']);
     Permission::create(['name' => 'add_salaries', 'description' => 'إضافة رواتب']);
@@ -34,9 +37,11 @@ class PermissionSeeder extends Seeder
     Permission::create(['name' => 'show_sanadat_qapds', 'description' => 'عرض سندات قبض']);
     Permission::create(['name' => 'add_sanadat_sarfs', 'description' => 'إضافة سندات صرف']);
     Permission::create(['name' => 'show_sanadat_sarfs', 'description' => 'عرض سندات صرف']);
-    Permission::create(['name' => 'add_export_ainiats', 'description' => 'إضافة فواتير بيع']);
-    Permission::create(['name' => 'show_export_ainiats', 'description' => 'عرض فواتير بيع']);
+    Permission::create(['name' => 'add_export_ainiats', 'description' => 'إضافة عينيات صادرة']);
+    Permission::create(['name' => 'show_export_ainiats', 'description' => 'عرض عينيات صادرة']);
     Permission::create(['name' => 'add_workers', 'description' => 'إضافة موظفين']);
     Permission::create(['name' => 'show_workers', 'description' => 'عرض موظفين']);
+    Permission::create(['name' => 'add_selectives', 'description' => 'اضافة مرشحين']);
+    Permission::create(['name' => 'show_selectives', 'description' => 'عرض مرشحين']);
   }
 }

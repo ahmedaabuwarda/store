@@ -4,13 +4,14 @@
         <th scope="col" class="text-center">الحالة</th>
         <th scope="col" class="text-center">ملاحظات</th>
         <th scope="col" class="text-center">الاسم</th>
+        <th scope="col" class="text-center">التاريخ</th>
         <th scope="col" class="text-center">#</th>
     </tr>
 </thead>
 <tbody>
     @if ($providers->count() == 0)
         <tr>
-            <td colspan="6" class="text-center">لا يوجد بيانات</td>
+            <td colspan="7" class="text-center">لا يوجد بيانات</td>
         </tr>
     @else
         @php $i=1; @endphp
@@ -29,6 +30,7 @@
                 </td>
                 <td class="display-3 text-center">{{ $provider->notes }}</td>
                 <td class="display-3 text-center">{{ $provider->name }}</td>
+                <td class="display-3 text-center">{{ $provider->created_at }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>
             @php $i++; @endphp

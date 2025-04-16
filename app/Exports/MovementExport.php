@@ -14,15 +14,23 @@ class MovementExport implements FromCollection
   public function collection()
   {
     return collect([
-      ['الرقم', 'تاريخ الانشاء', 'الحركة', 'المبلغ', 'الصندوق', 'نوع الحركة', 'بواسطة']
+      [
+        'الرقم',
+        'تاريخ الانشاء',
+        'الحركة',
+        'المبلغ',
+        'الصندوق',
+        'نوع الحركة',
+        'بواسطة'
+      ]
     ])->merge(
       Movement::with([
         'user:id,name',
         'box:id,name,currency_id',
         'box.currency:id,name'
       ])
-      ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' H:i:s')])
-      ->get()
+        ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
+        ->get()
         ->map(function ($item) {
           return [
             $item->id,

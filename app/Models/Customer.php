@@ -28,6 +28,10 @@ class Customer extends Model
   {
     return $this->hasMany('App\Models\ExportAiniat');
   }
+  public function selective()
+  {
+    return $this->hasMany('App\Models\Selective');
+  }
   // has one mosque
   public function mosque()
   {

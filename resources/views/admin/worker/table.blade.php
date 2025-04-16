@@ -5,13 +5,14 @@
 		<th scope="col" class="text-center">ملاحظات</th>
 		<th scope="col" class="text-center">الرصيد</th>
 		<th scope="col" class="text-center">الاسم</th>
+		<th scope="col" class="text-center">التاريخ</th>
 		<th scope="col" class="text-center">الرقم</th>
 	</tr>
 </thead>
 <tbody>
   @if ($workers->isEmpty())
   <tr>
-    <td colspan="6" class="text-center">لا يوجد بيانات</td>
+    <td colspan="7" class="text-center">لا يوجد بيانات</td>
   </tr>
   @else
     @php $i=1; @endphp
@@ -31,12 +32,13 @@
     <td class="display-3 text-center">{{ $worker->notes }}</td>
     <td class="display-3 text-center">&#8362;{{ $worker->balance }}
       @if($worker->balance < 0)
-        - مدين - 
+        - مدين -
       @elseif($worker->balance > 0)
-        - دائن - 
+        - دائن -
       @endif
       </td>
     <td class="display-3 text-center">{{ $worker->name }}</td>
+    <td class="display-3 text-center">{{ $worker->created_at }}</td>
       <th class="display-3 text-center">{{ $i }}</th>
     </tr>
     @php $i++; @endphp

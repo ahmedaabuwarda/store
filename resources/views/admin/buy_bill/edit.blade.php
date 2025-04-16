@@ -263,7 +263,7 @@
                         <div class="input-group-prepend">
                           <span class="input-group-text" id="basic-addon1"><i class="fa fa-shekel-sign text-yellow"></i></span>
                         </div>
-                        <input type="number" id="discount" step="0.0001" class="form-control" placeholder="خصم" value="{{ $buy_bill->discount }}" disabled>
+                        <input type="number" id="expense" step="0.0001" class="form-control" placeholder="خصم" value="{{ $buy_bill->expense }}" disabled>
                       </div>
                     </div>
 

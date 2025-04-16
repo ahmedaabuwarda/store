@@ -147,7 +147,7 @@
                     <span class="input-group-text" id="basic-addon1"><i
                             class="fa fa-shekel-sign text-yellow"></i></span>
                 </div>
-                <input type="number" class="form-control" step="0.0001" placeholder="خصم" value="{{ $bill->discount }}" disabled>
+                <input type="number" class="form-control" step="0.0001" placeholder="خصم" value="{{ $bill->expense }}" disabled>
             </div>
         </div>
 

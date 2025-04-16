@@ -7,5 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class Selective extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $table = 'selectives';
+  protected $fillable = [
+    'id',
+    'user_id',
+    'customer_id',
+    'product_id',
+    'status',
+    'create_at',
+    'updated_at',
+  ];
+
+  public function user()
+  {
+    return $this->belongsTo('App\Models\User');
+  }
+
+  public function customer()
+  {
+    return $this->belongsTo('App\Models\Customer');
+  }
+
+  public function product()
+  {
+    return $this->belongsTo('App\Models\Product');
+  }
 }

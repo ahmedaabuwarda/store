@@ -273,11 +273,11 @@
                           <span class="input-group-text" id="basic-addon1"><i
                               class="fa fa-shekel-sign text-yellow"></i></span>
                         </div>
-                        <input type="number" id="discount" class="form-control @error('discount') is-invalid @enderror"
-                          name="discount" placeholder="خصم" value="0" autocomplete="discount"
+                        <input type="number" id="expense" class="form-control @error('expense') is-invalid @enderror"
+                          name="expense" placeholder="خصم" value="0" autocomplete="expense"
                           step="0.0001" required>
                       </div>
-                      @error('discount')
+                      @error('expense')
                       <span class="text-danger">{{ $message }}</span>
                       @enderror
                     </div>

@@ -19,7 +19,7 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
-              <h3 class="mb-0">تعديل مستفيد</h3>
+              <h3 class="mb-0">تعديل مستفيد ({{ $customer->name }})</h3>
             </div>
           </div>
         </div>
@@ -93,6 +93,25 @@
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="form-group">
+                <label class="form-control-label">المساجد</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-mosque text-primary"></i></span>
+                  </div>
+                  <select class="form-control @error('mosque_id') is-invalid @enderror" name="mosque_id" id="mosque_id" required>
+                    <option value="">اختر المسجد</option>
+                    @foreach($mosques as $mosque)
+                    <option value="{{ $mosque->id }}" @if(!$customer->mosque) @elseif($mosque->id == $customer->mosque->id) selected @endif>{{ $mosque->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('mosque')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
                 <label class="form-control-label">حالة الاستفادة</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -111,6 +130,25 @@
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="form-group">
+                <label class="form-control-label">العينيات</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-primary"></i></span>
+                  </div>
+                  <select class="form-control @error('product_id') is-invalid @enderror" name="product_id" id="product_id" required>
+                    <option value="">اختر العينية</option>
+                    @foreach($products as $product)
+                    <option value="{{ $product->id }}">{{ $product->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('product')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
                 <label class="form-control-label">ملاحظات + العنوان</label>
                 <div class="input-group">
                   <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="ملاحظات + العنوان" autocomplete="notes">{{ $customer->notes }}</textarea>
@@ -121,10 +159,6 @@
               </div>
             </div>
 
-            <!-- <div class="modal-footer justify-content-center mt--3">
-              <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
-              <a href="{{ URL('/customers') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
-            </div> -->
           </div>
           <div class="modal-footer justify-content-center mt--3">
             <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>

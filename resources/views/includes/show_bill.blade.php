@@ -35,7 +35,7 @@
             var profit = 0;
             $('#remaining_balance').val(0);
             $('#paid_balance').val(0);
-            $('#discount').val(0);
+            $('#expense').val(0);
             $('#updateButton').click(function() {
                 if ($("#productname").val() != null && $("#productname").val() !=
                     '' && $("#quantity")
@@ -75,11 +75,11 @@
             });
             $('#paid_balance').keyup(function() {
                 $('#remaining_balance').val($('#paid_balance').val() - (total - $(
-                    '#discount').val()));
+                    '#expense').val()));
             });
             $('#paid_balance').ready(function() {
                 $('#remaining_balance').val($('#paid_balance').val() - (total - $(
-                    '#discount').val()));
+                    '#expense').val()));
             });
 
 

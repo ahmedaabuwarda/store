@@ -38,8 +38,8 @@ class MovementController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = date($request->from . ' H:i:s');
-    $to = date($request->to . ' H:i:s');
+    $from = date($request->from . ' 00:00:00');
+    $to = date($request->to . ' 23:59:59');
     // $movements = DB::select('SELECT name, balance, notes, status FROM customers WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
     $movements = Movement::with([
       'user:id,name',

@@ -84,8 +84,8 @@ class SalaryController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = $request['from'];
-    $to = $request['to'];
+    $from = date($request['from'] . ' 00:00:00');
+    $to = date($request['to'] . ' 23:59:59');
 
     $salaries = DB::select('SELECT salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = workers.id AND salaries.date_created >= :from AND salaries.date_created <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 

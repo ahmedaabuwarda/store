@@ -32,6 +32,8 @@
                 placeholder="...ابحث عن عينية">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top"
+                title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                 title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               @can('add_products')
@@ -93,51 +95,7 @@
         <div class="modal-body">
           @csrf
           <div class="row">
-            <div class="col-xl-12 col-md-12">
 
-              <div class="form-group">
-                <label class="form-control-label">اسم العينية</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><i
-                        class="fa fa-box"></i></span>
-                  </div>
-                  <input type="text" class="form-control @error('name') is-invalid @enderror"
-                    name="name" placeholder="اسم العينية" value="{{ old('name') }}"
-                    autocomplete="name" required autofocus>
-                </div>
-                @error('name')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
-
-            </div>
-
-            <div class="col-xl-12 col-md-12">
-
-              <div class="form-group">
-                <label class="form-control-label">النوع</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><i
-                        class="fa fa-heart"></i></span>
-                  </div>
-                  <select class="form-control selectpicker" name="type" required>
-                    <option value="وحدة">وحدة</option>
-                    <option value="غرام">غرام</option>
-                    <option value="كيلو">كيلو</option>
-                    <option value="ملم">ملم</option>
-                    <option value="لتر">لتر</option>
-                    <option value="متر">متر</option>
-                    <option value="شيكل">شيكل</option>
-                  </select>
-                </div>
-                @error('type')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
-
-            </div>
 
           </div>
         </div>
@@ -153,10 +111,10 @@
   </div>
 </div>
 
-@include('includes.multi_modal')
-
 <!-- Modal::product to pdf -->
 @include('includes.from_to')
+
+@include('includes.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -168,33 +126,22 @@
       });
     });
   });
-
-  // create box form
-  $('#add_box_form').submit(function(e) {
+  // add product modal
+  $('.create_product_button').on('click', function(e) {
     e.preventDefault();
-    let data = new FormData(this);
+    let movement = $(this).data('movement');
     $.ajax({
-      url: "/box/store",
-      type: "POST",
-      data: data,
-      processData: false,
-      contentType: false,
-      cache: false,
+      url: "/product/create",
+      type: "GET",
       success: function(response) {
         if (response.status == "success") {
-          Swal.fire(
-            'تم!',
-            'تم اضافة المبلغ بنجاح',
-            'success'
-          );
-          // refresh the table
-          get_products();
-          $('#add_box_form')[0].reset();
-          $('#add_box_modal').modal('hide');
+          $('#create_product_modal').modal('show');
+          $('#exampleModalLabel').text('اضافة عينية');
+          $('#create_product_modal .row').html(response.modal);
         } else {
           Swal.fire(
             'عفواً',
-            'حدث خطأ ما، اثناء عملية الاضافة',
+            'حدث خطأ ما',
             'error'
           );
         }
@@ -202,13 +149,12 @@
       error: function(response) {
         Swal.fire(
           'عفواً',
-          'حدث خطأ ما، اثناء عملية الاضافة',
+          'حدث خطأ ما',
           'error'
         );
       }
     });
   });
-
   // create new product form
   $('#create_product_form').submit(function(e) {
     e.preventDefault();
@@ -287,43 +233,6 @@
     }
   });
 
-  // show product to pdf modal
-  $('#product_table').on('click', '.from_to_pdf_button', function(e) {
-    let from_to = $(this).data('fromto');
-    $('#from_to_pdf_modal').modal('show');
-    $('#from_to').val(from_to);
-  });
-
-  // add product modal
-  $('.create_product_button').on('click', function(e) {
-    e.preventDefault();
-    let movement = $(this).data('movement');
-    $.ajax({
-      url: "/product/create",
-      type: "GET",
-      success: function(response) {
-        if (response.status == "success") {
-          $('#create_product_modal').modal('show');
-          $('#exampleModalLabel').text('اضافة عينية');
-          $('#create_product_modal .row').html(response.modal);
-        } else {
-          Swal.fire(
-            'عفواً',
-            'حدث خطأ ما',
-            'error'
-          );
-        }
-      },
-      error: function(response) {
-        Swal.fire(
-          'عفواً',
-          'حدث خطأ ما',
-          'error'
-        );
-      }
-    });
-  });
-
   // edit product modal
   $('#product_table').on('click', '.edit_product_button', function(e) {
     e.preventDefault();
@@ -356,7 +265,6 @@
       }
     });
   });
-
   $("#product_table").on("click", ".delete_product_button", function(e) {
     e.preventDefault();
     let id = $(this).data('id');
@@ -409,12 +317,17 @@
   });
 
   // show product to pdf modal
+  $('#product_table').on('click', '.table_from_to_pdf_button', function(e) {
+    let from_to = $(this).data('fromto');
+    $('#from_to_pdf_modal').modal('show');
+    $('#from_to').val(from_to);
+  });
+  // show product to pdf modal
   $('.from_to_pdf_button').click(function(e) {
     let from_to = $(this).data('fromto');
     $('#from_to_pdf_modal').modal('show');
     $('#from_to').val(from_to);
   });
-
   // create product to pdf form
   $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
@@ -423,21 +336,7 @@
     let from_to = $('#from_to').val();
     let _token = $('input[name="_token"]').val();
     // from to == -1 means: all box movements
-    if (from_to == '-1') {
-      $.ajax({
-        url: "/box/to_pdf",
-        type: "POST",
-        data: {
-          from: from,
-          to: to,
-          _token: _token
-        },
-        success: function(response) {
-          $('#from_to_pdf_modal').modal('hide');
-        }
-      });
-      // from to == 0 means all products
-    } else if (from_to == '0') {
+    if (from_to == '0') {
       $.ajax({
         url: "/product/to_pdf",
         type: "POST",
@@ -467,6 +366,52 @@
     }
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
+  });
+
+  // show product to xlsx modal
+  $('#product_table').on('click', '.table_from_to_xlsx_button', function(e) {
+    let from_to = $(this).data('fromtoxlsx');
+    $('#from_to_xlsx_modal').modal('show');
+    $('#from_to_xlsx_modal #from_to').val(from_to);
+  });
+  // show product to xlsx modal
+  $('.from_to_xlsx_button').click(function(e) {
+    $('#from_to_xlsx_modal').modal('show');
+    $('#from_to_xlsx_modal #from_to').val(0);
+  });
+  // create product to xlsx form
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let data = new FormData(this);
+    if (data.get('from_to') == '0') {
+      $.ajax({
+        url: "/product/to_xlsx",
+        type: "POST",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(response) {
+          $('#from_to_xlsx_modal').modal('hide');
+        }
+      });
+      $('#from_to_xlsx_form')[0].reset();
+      $('#from_to_xlsx_modal').modal('hide');
+    } else {
+      $.ajax({
+        url: "/product/jard_to_xlsx",
+        type: "POST",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(response) {
+          $('#from_to_xlsx_modal').modal('hide');
+        }
+      });
+      $('#from_to_xlsx_form')[0].reset();
+      $('#from_to_xlsx_modal').modal('hide');
+    }
   });
   // get all product
   function get_products() {

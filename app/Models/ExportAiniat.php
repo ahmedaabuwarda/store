@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ExportAiniat extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'export_ainiats';
-    protected $fillable = ['id', 'total_profit', 'discount', 'created_at', 'updated_at'];
-    
+    protected $fillable = ['id', 'total_profit', 'expense', 'created_at', 'updated_at'];
+
     public function provider()
     {
         return $this->belongsTo('App\Models\Provider');

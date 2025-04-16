@@ -27,9 +27,10 @@ class WorkerController extends Controller
     {
         $page = config('app.page');
         $boxes = Box::select('id', 'name', 'balance')->get();
+        $workers = Worker::select('id', 'name', 'balance', 'notes', 'status', 'created_at')->orderBy('created_at', 'DESC')->paginate($page);
+
         // if the request is ajax
         if($request->ajax()){
-            $workers = Worker::select('id', 'name', 'balance', 'notes', 'status')->orderBy('created_at', 'DESC')->paginate($page);
             $salaries = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = workers.id ORDER BY salaries.date_created DESC LIMIT 20');
 
             $table = view('admin.worker.table', compact('workers'))->render();
@@ -38,7 +39,7 @@ class WorkerController extends Controller
             return response()->json(['table' => $table, 'salaries_table' => $salaries_table]);
         // if the request is not ajax
         } else {
-            $workers = Worker::select('id', 'name', 'balance', 'notes', 'status')->orderBy('created_at', 'DESC')->paginate($page);
+            // $workers = Worker::select('id', 'name', 'balance', 'notes', 'status', 'created_at')->orderBy('created_at', 'DESC')->paginate($page);
             $salaries = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = workers.id ORDER BY salaries.date_created DESC LIMIT 20');
             $pages = ceil(Worker::count()/$page);
 
@@ -70,8 +71,8 @@ class WorkerController extends Controller
 
     public function to_pdf(Request $request)
     {
-        $from = $request['from'];
-        $to = $request['to'];
+        $from = date($request['from'] . ' 00:00:00');
+        $to = date($request['to'] . ' 23:59:59');
         $workers = DB::select('SELECT name, balance, notes, status FROM workers WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
         $i = 1; $total = 0; $time = date('H:i:s'); $date = date('Y-m-d'); $by = Auth::user()->name;
@@ -150,8 +151,8 @@ class WorkerController extends Controller
 
     public function kashf_to_pdf(Request $request)
     {
-        $from = $request->from;
-        $to = $request->to;
+        $from = date($request->from . ' 00:00:00');
+        $to = date($request->to . ' 23:59:59');
         $id = $request->id;
 
         $worker = DB::select('SELECT name, balance FROM workers WHERE id = :id', ['id' => $id]);

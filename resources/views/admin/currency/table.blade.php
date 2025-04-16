@@ -3,6 +3,7 @@
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">الرمز</th>
         <th scope="col" class="text-center">الاسم</th>
+        <th scope="col" class="text-center">تاريخ الانشاء</th>
         <th scope="col" class="text-center">#</th>
     </tr>
 </thead>
@@ -20,6 +21,7 @@
                 </td>
                 <td class="display-3 text-center">{{ $currency->symbol }}</td>
                 <td class="display-3 text-center">{{ $currency->name }}</td>
+                <td class="display-3 text-center">{{ $currency->created_at }}</td>
                 <th class="display-3 text-center">{{ $i }}</th>
             </tr>
             @php $i++; @endphp

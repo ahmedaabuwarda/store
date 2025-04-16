@@ -14,7 +14,19 @@ class SanadatQapdExport implements FromCollection
   public function collection()
   {
     return collect([
-      ['الرقم', 'رقم السند', 'تاريخ الانشاء', 'العمال', 'المستفيدون', 'الموردون', 'المبلغ', 'العملة', 'الصندوق', 'بواسطة', 'البيان']
+      [
+        'الرقم',
+        'رقم السند',
+        'تاريخ الانشاء',
+        'العمال',
+        'المستفيدون',
+        'الموردون',
+        'المبلغ',
+        'العملة',
+        'الصندوق',
+        'بواسطة',
+        'البيان'
+      ]
     ])->merge(
       Sanadat_Qapd::with([
         'worker:id,name',
@@ -24,7 +36,7 @@ class SanadatQapdExport implements FromCollection
         'box:id,name,balance,currency_id',
         'box.currency:id,name'
       ])
-        ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' H:i:s')])
+        ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
         ->get()
         ->map(function ($item) {
           return [

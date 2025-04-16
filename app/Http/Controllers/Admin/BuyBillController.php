@@ -94,7 +94,7 @@ class BuyBillController extends Controller
 
       $buy_bill->paid_balance = $paid_balance;
       $buy_bill->remaining_balance = $remaining_balance;
-      $buy_bill->discount = $request['discount'];
+      $buy_bill->expense = $request['expense'];
       $buy_bill->original_balance = abs($remaining_balance) + $paid_balance;
 
       $buy_bill->byan = $request['byan'] ?? 'لا يوجد';
@@ -170,7 +170,7 @@ class BuyBillController extends Controller
   public function show(Request $request)
   {
     $id = $request['id'];
-    $bill = BuyBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'original_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('buyed_product:id,product_id,quantity,buy_price,total_price,buy_bill_id')->with('buyed_product.product:id,name')->where('id', $id)->first();
+    $bill = BuyBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'original_balance', 'paid_balance', 'remaining_balance', 'expense', 'byan')->with('buyed_product:id,product_id,quantity,buy_price,total_price,buy_bill_id')->with('buyed_product.product:id,name')->where('id', $id)->first();
     if ($bill != null) {
       $bill_data = view('includes.bill_data', compact('bill'))->render();
       return response()->json(['bill_data' => $bill_data]);
@@ -181,7 +181,7 @@ class BuyBillController extends Controller
 
   public function edit($id)
   {
-    $buy_bill = BuyBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'original_balance', 'paid_balance', 'remaining_balance', 'discount', 'byan')->with('buyed_product:id,product_id,quantity,buy_price,total_price,buy_bill_id')->where('id', $id)->first();
+    $buy_bill = BuyBill::select('id', 'number', 'date_created', 'provider_id', 'customer_id', 'worker_id', 'original_balance', 'paid_balance', 'remaining_balance', 'expense', 'byan')->with('buyed_product:id,product_id,quantity,buy_price,total_price,buy_bill_id')->where('id', $id)->first();
     $products = DB::select('SELECT id, name, original_price, quantity FROM products ORDER BY id DESC');
     return view('admin.buy_bill.edit', compact('buy_bill', 'products'));
   }
@@ -325,12 +325,12 @@ class BuyBillController extends Controller
                 WHEN 1 THEN (SELECT counter FROM box WHERE box.id = 1)+1
                 ELSE box.counter
                 END
-            WHERE box.id IN(1, 6, 7);', [$buyed_product->total_price - $buy_bill->discount, $buyed_product->total_price - $buy_bill->discount]);
+            WHERE box.id IN(1, 6, 7);', [$buyed_product->total_price - $buy_bill->expense, $buyed_product->total_price - $buy_bill->expense]);
 
       $buy_bill = BuyBill::where('id', $buyed_product->buy_bill_id)->update([
-        'original_balance' => $buyed_product->buy_bill->original_balance - ($buyed_product->total_price - $buy_bill->discount),
-        'paid_balance' => $buyed_product->buy_bill->paid_balance - ($buyed_product->total_price - $buy_bill->discount),
-        'discount' => 0
+        'original_balance' => $buyed_product->buy_bill->original_balance - ($buyed_product->total_price - $buy_bill->expense),
+        'paid_balance' => $buyed_product->buy_bill->paid_balance - ($buyed_product->total_price - $buy_bill->expense),
+        'expense' => 0
       ]);
       if (($product->quantity - $buyed_product->quantity) == 0) {
         Product::where('id', $buyed_product->product_id)->update([
@@ -378,8 +378,8 @@ class BuyBillController extends Controller
 
   public function to_pdf(Request $request)
   {
-    $from = $request['from'];
-    $to = $request['to'];
+    $from = date($request['from'] . ' 00:00:00');
+    $to = date($request['to'] . ' 23:59:59');
     $buy_bills = BuyBill::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
     $i = 1;

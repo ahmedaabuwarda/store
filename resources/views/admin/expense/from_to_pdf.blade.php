@@ -43,7 +43,7 @@
                         class="fa fa-calendar text-success"></i></span>
                   </div>
                   <input class="form-control datepicker @error('to') is-invalid @enderror"
-                    placeholder="الى" type="text" name="to" value="{{ date('Y-m-30') }}" required>
+                    placeholder="الى" type="text" name="to" value="{{ date('Y-m-d') }}" required>
                 </div>
                 @error('to')
                 <span class="text-danger">{{ $message }}</span>
@@ -61,13 +61,14 @@
                     <span class="input-group-text" id="basic-addon1"><i
                         class="fa fa-heart text-info"></i></span>
                   </div>
-                  <select class="form-control selectpicker" name="done_by">
+                  <select class="form-control selectpicker" name="user_id">
+                    <option value="all">كل المصاريف</option>
                     @foreach($users as $user)
-                    <option value="{{ $user->name }}">{{ $user->name }}</option>
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
                     @endforeach
                   </select>
                 </div>
-                @error('done_by')
+                @error('user_id')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>

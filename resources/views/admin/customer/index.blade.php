@@ -22,13 +22,12 @@
             <div class="col-2">
               <h3 class="mb-0">المستفيدون</h3>
             </div>
-            <div class="col-xl-5 col-md-12 text-center">
+            <div class="col-xl-6 col-md-12 text-center">
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن مستفيد">
             </div>
-            <div class="col-xl-5 col-md-12 text-right">
+            <div class="col-xl-4 col-md-12 text-right">
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <button class="btn btn-info selective_button" data-toggle="tooltip" data-placement="top" title="ترشيح مستفيد" data-fromto="0"><i class="fas fa-arrow-up fa-lg mr-1"></i>ترشيح</button>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_customer_modal"><i class="fa fa-plus"></i> اضافة مستفيد</a>
             </div>
           </div>
@@ -142,6 +141,25 @@
                   <input type="text" maxlength='2' class="form-control @error('family_number') is-invalid @enderror" name="family_number" placeholder="عدد افراد الاسرة" value="{{ old('family_number') }}" autocomplete="family_number" autofocus>
                 </div>
                 @error('family_number')
+                <span class="text-danger">{{ $message }}</span>
+                @enderror
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="form-group">
+                <label class="form-control-label">المساجد</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-mosque text-primary"></i></span>
+                  </div>
+                  <select class="form-control @error('mosque_id') is-invalid @enderror" name="mosque_id" id="mosque_id" required>
+                    <option value="">اختر المسجد</option>
+                    @foreach($mosques as $mosque)
+                    <option value="{{ $mosque->id }}">{{ $mosque->name }}</option>
+                    @endforeach
+                  </select>
+                </div>
+                @error('mosque')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>

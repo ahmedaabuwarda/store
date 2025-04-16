@@ -16,15 +16,23 @@ class BoxExport implements FromCollection
   {
     if (request()->box_id != 'all') {
       return collect([
-        ['الرقم', 'تاريخ الانشاء', 'الحركة', 'المبلغ', 'الصندوق', 'نوع الحركة', 'بواسطة']
+        [
+          'الرقم',
+          'تاريخ الانشاء',
+          'الحركة',
+          'المبلغ',
+          'الصندوق',
+          'نوع الحركة',
+          'بواسطة'
+        ]
       ])->merge(
         Movement::with([
           'user:id,name',
           'box:id,name,currency_id',
           'box.currency:id,name'
         ])
-        ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' H:i:s')])
-        ->where('box_id', request()->box_id)
+          ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
+          ->where('box_id', request()->box_id)
           ->get()
           ->map(function ($item) {
             return [
@@ -41,9 +49,15 @@ class BoxExport implements FromCollection
       );
     }
     return collect([
-      ['الرقم', 'تاريخ الانشاء', 'الاسم', 'العملة', 'الرصيد']
+      [
+        'الرقم',
+        'تاريخ الانشاء',
+        'الاسم',
+        'العملة',
+        'الرصيد'
+      ]
     ])->merge(
-      Box::whereBetween('created_at', [date(request()->from . ' 00:00:00'), date(request()->to . ' H:i:s')])
+      Box::whereBetween('created_at', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
         ->get()
         ->map(function ($item) {
           return [

@@ -95,12 +95,12 @@
       <div class="row align-items-center justify-content-xl-between">
         <div class="col-xl-12">
           <div class="copyright text-center text-xl-center text-white">
-            &copy;2021<a href="https://www.facebook.com/" class="font-weight-bold ml-1 text-white" target="_blank">AhmedAbuwarda</a>
-            <a class="ml-4 text-white nav-link-icon" href="https://www.facebook.com/ahmed.abuwarda98" target="_blank" data-toggle="tooltip" data-original-title="Like us on Facebook">
+            &copy;{{date('Y')}}<a href="https://www.facebook.com/" class="font-weight-bold ml-1 text-white" target="_blank">AhmedAbuwarda</a>
+            <a class="ml-4 text-white nav-link-icon" href="https://www.facebook.com/ahmedaabuwarda" target="_blank" data-toggle="tooltip" data-original-title="Like us on Facebook">
               <i class="fab fa-facebook-square"></i>
               <span class="nav-link-inner--text d-lg-none">Facebook</span>
             </a>
-            <a class="ml-3 text-white nav-link-icon" href="https://www.instagram.com/ahmed_el_salam_" target="_blank" data-toggle="tooltip" data-original-title="Follow us on Instagram">
+            <a class="ml-3 text-white nav-link-icon" href="https://www.instagram.com/ahmedaabuwarda" target="_blank" data-toggle="tooltip" data-original-title="Follow us on Instagram">
               <i class="fab fa-instagram"></i>
               <span class="nav-link-inner--text d-lg-none">Instagram</span>
             </a>

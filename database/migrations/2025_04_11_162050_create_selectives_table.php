@@ -15,6 +15,11 @@ class CreateSelectivesTable extends Migration
     {
         Schema::create('selectives', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('product_id');
+            $table->boolean('status')->default(false)->comment('0: مرشح, 1: مستفيد');
+            // $table->unique(['customer_id', 'product_id']);
             $table->timestamps();
         });
     }

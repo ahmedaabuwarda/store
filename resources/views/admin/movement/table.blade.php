@@ -12,7 +12,7 @@
 <tbody>
   @if ($movements->count() == 0)
   <tr>
-    <td colspan="6" class="text-center">لا يوجد بيانات</td>
+    <td colspan="9" class="text-center">لا يوجد بيانات</td>
   </tr>
   @else
   @php $i=1; @endphp

@@ -38,7 +38,7 @@
             @if($target == 'providers')
               @php $providers = $result; @endphp
               @include('admin.provider.table')
-            @elseif($target == 'customers')
+            @elseif($target == 'customers' || $target == 'selectives')
               @php $customers = $result; @endphp
               @include('admin.customer.table')
             @elseif($target == 'products')
