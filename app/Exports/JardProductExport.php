@@ -18,7 +18,6 @@ class JardProductExport implements FromCollection
         'اسم العينية',
         'تاريخ الترشيح',
         'تاريخ الاستفادة',
-        'رقم الفاتورة',
         'اسم المستفيد',
         'بواسطة',
         'الحالة',
@@ -28,8 +27,7 @@ class JardProductExport implements FromCollection
         ->with([
           'user:id,name',
           'customer:id,name',
-          'product:id,name,status,type,export_ainiat_id',
-          'product.export_ainiat:id,number,created_at',
+          'product:id,name,status,type',
         ])
         ->whereBetween('created_at', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
         ->orderBy('id', 'desc')
@@ -39,8 +37,7 @@ class JardProductExport implements FromCollection
             $item->id,
             $item->product->name,
             $item->created_at,
-            $item->status == 1 ? $item->product->export_ainiat->created_at : "",
-            $item->status == 1 ? $item->product->export_ainiat->number : "",
+            $item->status == 1 ? $item->updated_at : "",
             $item->customer->name,
             $item->user->name,
             $item->status == 1 ? 'مستفيد' : 'مرشح',

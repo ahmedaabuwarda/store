@@ -160,19 +160,17 @@
             <div class="col-xl-4 col-md-12 mt-5 text-center">
 
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
-                <input name="target" class="custom-control-input" id="customRadio1" type="radio" value="providers" checked>
-                <label class="custom-control-label" for="customRadio1">الداعمون</label>
+                <input name="target" class="custom-control-input" id="customRadio11" type="radio" value="providers" checked>
+                <label class="custom-control-label" for="customRadio11">الداعمون</label>
               </div>
-              @if(Auth::user()->id == 1)
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
-                <input name="target" class="custom-control-input" id="customRadio2" type="radio" value="customers">
-                <label class="custom-control-label" for="customRadio2">المستفيدون</label>
+                <input name="target" class="custom-control-input" id="customRadio22" type="radio" value="customers">
+                <label class="custom-control-label" for="customRadio22">المستفيدون</label>
               </div>
               <div class="custom-control custom-radio mb-3 d-inline">
                 <input name="target" class="custom-control-input" id="customRadio33" type="radio" value="workers">
                 <label class="custom-control-label" for="customRadio33">الموظفون</label>
               </div>
-              @endif
 
             </div>
 
@@ -284,9 +282,9 @@
 </div>
 
 <!-- Modal::sanadat sarf to pdf -->
-@include('includes.from_to_pdf')
+@include('admin.sanadat_sarf.from_to_pdf')
 
-@include('includes.from_to_xlsx')
+@include('admin.sanadat_sarf.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -345,17 +343,14 @@
   // sanadat sarf to pdf form
   $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
     $.ajax({
       url: "/sanadat_sarf/to_pdf",
-      type: "GET",
-      data: {
-        from: from,
-        to: to,
-        _token: _token
-      },
+      type: "POST",
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_pdf_modal').modal('hide');
       }
@@ -369,17 +364,14 @@
   // sanadat sarf to pdf form
   $('#from_to_xlsx_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
     $.ajax({
       url: "/sanadat_sarf/to_xlsx",
-      type: "GET",
-      data: {
-        from: from,
-        to: to,
-        _token: _token
-      },
+      type: "POST",
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_xlsx_modal').modal('hide');
       }

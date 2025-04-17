@@ -83,7 +83,6 @@ class ImportAiniatController extends Controller
         Product::where('id', $tblArray[$i * 2 + 0])->update([
           'quantity' => $product->quantity + $tblArray[$i * 2 + 1],
           'original_quantity' => $product->original_quantity + $tblArray[$i * 2 + 1],
-          'import_ainiat_id' => $import_ainiat->id,
           'status' => true
         ]);
       }
@@ -146,7 +145,6 @@ class ImportAiniatController extends Controller
             Product::where('id', $tblArray[$i * 2 + 0])->update([
               'quantity' => $product->quantity + $tblArray[$i * 2 + 1],
               'original_quantity' => $product->original_quantity + $tblArray[$i * 2 + 1],
-              'import_ainiat_id' => $id,
               'status' => true
             ]);
           }

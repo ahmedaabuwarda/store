@@ -160,8 +160,8 @@ class CustomerController extends Controller
         $selective = Selective::where('product_id', $product_id)
           ->where('customer_id', $customer_id)
           ->where('status', 0)
-          ->get();
-        if ($selective->count() == 0) {
+          ->first();
+        if ($selective == null) {
           $selective = new Selective();
           $selective->user_id = $user_id;
           $selective->customer_id = $customer_id;
@@ -169,28 +169,48 @@ class CustomerController extends Controller
           $selective->status = 0;
           $selective->save();
         }
-      } else if ($product_id != null) {
-        $selective = new Selective();
-        $selective->user_id = $user_id;
-        $selective->customer_id = $customer_id;
-        $selective->product_id = $product_id;
-        $selective->status = 1;
-        $selective->save();
+      } else if ($status == 1 && $product_id != null) {
+        $selective = Selective::where('product_id', $product_id)
+          ->where('customer_id', $customer_id)
+          ->where('status', 0)
+          ->first();
+        if ($selective != null) {
+          $selective->update([
+            'status' => 1,
+          ]);
+        } else {
+          $selective = new Selective();
+          $selective->user_id = $user_id;
+          $selective->customer_id = $customer_id;
+          $selective->product_id = $product_id;
+          $selective->status = 1;
+          $selective->save();
+        }
 
         $product = Product::where('id', $product_id)->first();
+        if ($product->quantity == 0) {
+          DB::rollBack();
+          return redirect('/customer/edit/' . $customer_id)->with('error', 'حدث خطا لا يوجد عينيات!');
+        }
         $product->update([
           'quantity' => $product->quantity - 1,
         ]);
       }
 
-      Customer::where('id', $customer_id)->update([
+      $selective = Selective::where('status', 0)
+        ->where('customer_id', $customer_id)
+        ->get();
+
+      $customer = Customer::where('id', $customer_id)->first();
+
+      $customer->update([
         'name' => $name,
         'phone' => $phone,
         'identity' => $identity,
         'family_number' => $family_number,
         'mosque_id' => $mosque_id,
         'notes' => $notes,
-        'status' => $status,
+        'status' => $selective->count() == 0 ? 1 : 0,
       ]);
 
       DB::commit();
@@ -419,9 +439,10 @@ class CustomerController extends Controller
     $ainiat_table = '<h2>العينيات</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="20%" bgcolor="#eee">#</th>
-            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="20%" bgcolor="#eee">الاسم</th>
+            <th width="10%" bgcolor="#eee">#</th>
+            <th width="20%" bgcolor="#eee">تاريخ الترشيح</th>
+            <th width="20%" bgcolor="#eee">تاريخ الاستفادة</th>
+            <th width="10%" bgcolor="#eee">الاسم</th>
             <th width="20%" bgcolor="#eee">بواسطة</th>
             <th width="20%" bgcolor="#eee">الحالة</th>
           </tr>
@@ -430,9 +451,10 @@ class CustomerController extends Controller
     foreach ($customer_ainiat->selective as $selective) {
       $status = $selective->status == 0 ? 'مرشج' : 'مستفيد';
       $ainiat_table .= '<tr>
-              <td width="20%">' . $i . '</td>
+              <td width="10%">' . $i . '</td>
               <td width="20%">' . $selective->created_at . '</td>
-              <td width="20%">' . $selective->product->name . '</td>
+              <td width="20%">' . ($selective->status == 0 ? '-' : $selective->updated_at) . '</td>
+              <td width="10%">' . $selective->product->name . '</td>
               <td width="20%">' . $selective->user->name . '</td>
               <td width="20%">' . $status . '</td>
             </tr>';

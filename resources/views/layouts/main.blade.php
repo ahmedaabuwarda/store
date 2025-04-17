@@ -32,6 +32,16 @@
                       id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    @can('add_import_ainiats')
+                      <a class="dropdown-item" href="#">
+                        <div class="custom-control custom-radio">
+                          <input name="target" class="custom-control-input" id="customRadio2"
+                            type="radio" value="import_ainiats">
+                          <label class="custom-control-label"
+                            for="customRadio2">عينيات واردة</label>
+                        </div>
+                      </a>
+                      @endcan
                       @can('add_export_ainiats')
                       <a class="dropdown-item" href="#">
                         <div class="custom-control custom-radio">

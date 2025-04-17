@@ -269,6 +269,9 @@ class SanadatSarfController extends Controller
   {
     $from = date($request['from'] . ' 00:00:00');
     $to = date($request['to'] . ' 23:59:59');
+    $box_id = $request->box_id;
+    // dd($request->toArray());
+
     $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'user:id,name',
@@ -278,9 +281,11 @@ class SanadatSarfController extends Controller
         'provider:id,name',
         'worker:id,name'
       ])
+      ->where('box_id', $box_id != null ? '=' : '!=', $box_id != null ? $box_id : null)
       ->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])
       ->orderBy('id', 'DESC')
       ->get();
+      // dd($sanadat_sarf);
 
     $i = 1;
     $total = 0;
@@ -351,7 +356,6 @@ class SanadatSarfController extends Controller
 
     // Ensure the directory exists before saving the file
     $directoryPath = storage_path('app/public/pdf/سندات الصرف' . '/' . date('Y-m-d'));
-    // $directoryPath = '/media/ahmed/Downloads';
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
@@ -359,7 +363,6 @@ class SanadatSarfController extends Controller
     // Save the file to the storage folder
     $filePath = $directoryPath . '/كشف سندات الصرف_' . date('Y-m-d-his') . '.pdf';
     PDF::Output($filePath, 'F');
-    // dd($filePath);
     // Ensure the symbolic link exists for the storage folder
     if (!file_exists(public_path('storage'))) {
       symlink(storage_path('app/public'), public_path('storage'));

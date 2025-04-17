@@ -135,8 +135,8 @@ Route::post('/sanadat_qapd/to_xlsx', [App\Http\Controllers\Admin\SanadatQapdCont
 Route::get('/sanadat_sarfs', [App\Http\Controllers\Admin\SanadatSarfController::class, 'index']);
 Route::post('/sanadat_sarf/store', [App\Http\Controllers\Admin\SanadatSarfController::class, 'store']);
 Route::post('/sanadat_sarf/delete', [App\Http\Controllers\Admin\SanadatSarfController::class, 'delete']);
-Route::get('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
-Route::get('/sanadat_sarf/to_xlsx', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_xlsx']);
+Route::post('/sanadat_sarf/to_pdf', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_pdf']);
+Route::post('/sanadat_sarf/to_xlsx', [App\Http\Controllers\Admin\SanadatSarfController::class, 'to_xlsx']);
 
 // export_ainiats
 Route::get('/export_ainiats', [App\Http\Controllers\Admin\ExportAiniatController::class, 'index']);

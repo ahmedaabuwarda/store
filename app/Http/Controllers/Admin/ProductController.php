@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\JardProductExport;
-use App\Exports\ProductExport;
 use PDF;
 use Exception;
 
 use App\Models\Product;
-use App\Models\Quantity;
+use App\Models\Selective;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Imports\ProductImport;
-use App\Models\Selective;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
+use App\Exports\ProductExport;
+use App\Exports\JardProductExport;
+use App\Imports\ProductImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
@@ -65,11 +65,6 @@ class ProductController extends Controller
             } else {
               $product = new Product();
               $product->name = $row[1];
-              $product->quantity = 0;
-              $product->original_quantity = 0;
-              $product->export_ainiat_id = 0;
-              $product->import_ainiat_id = 0;
-              $product->status = false;
               $product->type = $row[2];
               $product->save();
             }
@@ -82,7 +77,6 @@ class ProductController extends Controller
       } catch (Exception $e) {
         // Rollback the transaction in case of error
         DB::rollback();
-        // return dd($e->getMessage());  // For debugging
         // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
@@ -91,11 +85,6 @@ class ProductController extends Controller
     try {
       $product = new Product;
       $product->name = $request->name;
-      $product->quantity = 0;
-      $product->original_quantity = 0;
-      $product->export_ainiat_id = 0;
-      $product->import_ainiat_id = 0;
-      $product->status = false;
       $product->type = $request->type;
       $product->save();
 
@@ -112,7 +101,7 @@ class ProductController extends Controller
   // edit
   public function edit(Request $request)
   {
-    $product = Product::where('id', $request->id)->select('id', 'name', 'quantity')->first();
+    $product = Product::where('id', $request->id)->select('id', 'name', 'type')->first();
     $modal = view('admin.product.edit', compact('product'))->render();
     return response()->json(['status' => 'success', 'modal' => $modal]);
   }
@@ -123,6 +112,7 @@ class ProductController extends Controller
 
     $product_id = $request->product_id;
     $name = $request->name;
+    $type = $request->type;
 
     DB::beginTransaction();
     try {
@@ -131,13 +121,13 @@ class ProductController extends Controller
 
       $product->update([
         'name' => $name,
+        'type' => $type,
       ]);
 
       DB::commit();
       return response()->json(['status' => 'success', 'message' => 'تم تحديث العينية بنجاح!']);
     } catch (Exception $e) {
       DB::rollBack();
-      // return $e->getMessage();
       // return response()->json(['status' => 'error', 'message' => 'حدث خطا اثناء عملية التحديث!']);
       return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
     }
@@ -171,36 +161,33 @@ class ProductController extends Controller
       ->with([
         'user:id,name',
         'customer:id,name',
-        'product:id,name,status,type,export_ainiat_id',
-        'product.export_ainiat:id,number,created_at',
+        'product:id,name,status,type,quantity',
       ])
       ->whereBetween('created_at', [$from, $to])
       ->orderBy('id', 'desc')
       ->get();
-    dd($selectives->toArray());
+    // dd($selectives->toArray());
 
     $i = 1;
     $time = date('H:i:s');
     $date = date('Y-m-d');
     $by = Auth::user()->name;
 
-    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل العينيات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
+    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">جرد عينية</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
     $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="10%" bgcolor="#eee">#</th>
-            <th width="15%" bgcolor="#eee">تاريخ الترشيح</th>
-            <th width="15%" bgcolor="#eee">تاريخ الاستفادة</th>
-            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="20%" bgcolor="#eee">تاريخ الترشيح</th>
+            <th width="20%" bgcolor="#eee">تاريخ الاستفادة</th>
             <th width="20%" bgcolor="#eee">اسم المستفيد</th>
-            <th width="15%" bgcolor="#eee">بواسطة</th>
+            <th width="20%" bgcolor="#eee">بواسطة</th>
             <th width="10%" bgcolor="#eee">الحالة</th>
           </tr>
         </thead>
         <tbody>';
     foreach ($selectives as $selective) {
       $status = 'مرشح';
-      $number = '-';
       $product_status = 'خلص';
       $up_date = '-';
       if ($selective->product->status) {
@@ -208,16 +195,14 @@ class ProductController extends Controller
       }
       if ($selective->status == 1) {
         $status = 'مستفيد';
-        $number = $selective->product->export_ainiat->number;
         $up_date = $selective->updated_at;
       }
       $table_content .= '<tr>
             <td width="10%">' . $i . '</td>
-            <td width="15%">' . $selective->created_at . '</td>
-            <td width="15%">' . $up_date . '</td>
-            <td width="15%">' . $number . '</td>
+            <td width="20%">' . $selective->created_at . '</td>
+            <td width="20%">' . $up_date . '</td>
             <td width="20%">' . $selective->customer->name . '</td>
-            <td width="15%">' . $selective->user->name . '</td>
+            <td width="20%">' . $selective->user->name . '</td>
             <td width="10%">' . $status . '</td>
           </tr>';
       $i++;
@@ -251,20 +236,12 @@ class ProductController extends Controller
         <tr>
             <td width="10%">#</td>
             <td width="30%">' . $selective->product->name . '</td>
-            <td width="30%">' . $selective->product->type . '</td>
+            <td width="30%">' . $selective->product->quantity . ' - ' . $selective->product->type . '</td>
             <td width="30%" color="#fff" bgcolor="#003B36">' . $product_status . '</td>
         </tr>
         </tbody></table>');
 
     PDF::writeHTML($table_content);
-
-    // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center">
-    //     <tbody>
-    //     <tr>
-    //         <td width="10%">#</td>
-    //         <td width="60%">المجموع</td>
-    //     </tr>
-    //     </tbody></table>');
 
     // Ensure the directory exists before saving the file
     $directoryPath = storage_path('app/public/pdf/العينيات' . '/' . date('Y-m-d'));
@@ -290,13 +267,12 @@ class ProductController extends Controller
     $products = DB::select('SELECT id, name, quantity, original_quantity, created_at, status, type FROM products WHERE created_at >= :from AND created_at <= :to ORDER BY id DESC', ['from' => $from, 'to' => $to]);
 
     $i = 1;
-    $total = 0;
     $available_total = 0;
     $time = date('H:i:s');
     $date = date('Y-m-d');
     $by = Auth::user()->name;
 
-    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل العينيةات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
+    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل العينيات</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
     $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>

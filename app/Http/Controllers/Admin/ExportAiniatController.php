@@ -34,12 +34,11 @@ class ExportAiniatController extends Controller
     $export_ainiats = ExportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
 
     $pages = ceil(ExportAiniat::count() / $page);
-    $box = DB::select('SELECT remaining from box where id IN (3,7);');
     if ($request->ajax()) {
       $table = view('admin.export_ainiat.table', compact('export_ainiats'))->render();
       return response()->json(['status' => 'success', 'table' => $table]);
     } else {
-      return view('admin.export_ainiat.index', compact('export_ainiats', 'pages', 'box'));
+      return view('admin.export_ainiat.index', compact('export_ainiats', 'pages'));
     }
   }
 

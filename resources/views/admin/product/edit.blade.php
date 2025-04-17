@@ -11,3 +11,25 @@
     </div>
   </div>
 </div>
+</div>
+<div class="col-xl-12 col-md-12">
+  <div class="form-group">
+    <label class="form-control-label">النوع</label>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1"><i class="fa fa-heart"></i></span>
+      </div>
+      <select class="form-control" name="type">
+        <option value="{{ $product->type }}">{{ $product->type }}</option>
+        <option value="وحدة">وحدة</option>
+        <option value="غرام">غرام</option>
+        <option value="ملم">ملم</option>
+        <option value="متر">متر</option>
+        <option value="شيكل">شيكل</option>
+      </select>
+    </div>
+    @error('type')
+    <span class="text-danger">{{ $message }}</span>
+    @enderror
+  </div>
+</div>

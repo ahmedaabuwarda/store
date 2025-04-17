@@ -13,6 +13,7 @@ class SanadatSarfExport implements FromCollection
    */
   public function collection()
   {
+    $box_id = request()->box_id;
     // get all sanadat sarfs from date to date
     return collect([
       [
@@ -38,6 +39,7 @@ class SanadatSarfExport implements FromCollection
         'box.currency:id,name'
       ])
         ->whereBetween('date_created', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
+        ->where('box_id', $box_id != null ? '=' : '!=', $box_id != null ? $box_id : null)
         ->get()
         ->map(function ($item) {
           return [

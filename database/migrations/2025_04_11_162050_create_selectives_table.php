@@ -15,7 +15,6 @@ class CreateSelectivesTable extends Migration
     {
         Schema::create('selectives', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('number')->unique();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('product_id');
