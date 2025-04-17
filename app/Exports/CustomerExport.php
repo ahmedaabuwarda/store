@@ -12,6 +12,10 @@ class CustomerExport implements FromCollection
    */
   public function collection()
   {
+    $from = request()->from;
+    $to = request()->to;
+    $mosque_id = request()->mosque_id;
+
     return collect([
       [
         'الرقم',
@@ -22,11 +26,13 @@ class CustomerExport implements FromCollection
         'عدد افراد الاسرة',
         'المسجد',
         'الحالة',
-        'البيان',
+        'الملاحظات',
       ]
     ])->merge(
-      Customer::whereBetween('created_at', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])
+      Customer::whereBetween('created_at', [date($from . ' 00:00:00'), date($to . ' 23:59:59')])
         ->with('mosque')
+        ->where('mosque_id', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : $mosque_id)
+        ->where('status', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : 1)
         ->get()
         ->map(function ($item) {
           return [

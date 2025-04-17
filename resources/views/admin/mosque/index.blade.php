@@ -135,7 +135,7 @@
 </div>
 
 <!-- Modal::customer to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 @include('includes.from_to_xlsx')
 
@@ -226,17 +226,17 @@
   // mosque to pdf form
   $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
+    // let from = $('input[name="from"]').val();
+    // let to = $('input[name="to"]').val();
+    // let _token = $('input[name="_token"]').val();
     $.ajax({
       url: "/mosque/to_pdf",
       type: "POST",
-      data: {
-        from: from,
-        to: to,
-        _token: _token
-      },
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_pdf_modal').modal('hide');
       }
@@ -251,17 +251,17 @@
   // mosque to xlsx form
   $('#from_to_xlsx_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
+    // let from = $('input[name="from"]').val();
+    // let to = $('input[name="to"]').val();
+    // let _token = $('input[name="_token"]').val();
     $.ajax({
       url: "/mosque/to_xlsx",
       type: "POST",
-      data: {
-        from: from,
-        to: to,
-        _token: _token
-      },
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_xlsx_modal').modal('hide');
       }

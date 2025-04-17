@@ -22,20 +22,21 @@
             <div class="col-xl-2 col-md-12 text-md-center text-xl-left">
               <h3 class="mb-0">عينيات واردة</h3>
             </div>
-            <div class="col-xl-7 col-md-12 text-xl-left text-md-center">
+            <div class="col-xl-6 col-md-12 text-xl-left text-md-center">
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة عينيات واردة">
             </div>
-            <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
+            <div class="col-xl-4 col-md-12 text-xl-right text-md-center">
+            <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a href="{{ URL('/buy_bill/create') }}" class="btn btn-dark text-white">
+              <a href="{{ URL('/import_ainiat/create') }}" class="btn btn-dark text-white">
                 <i class="fa fa-plus"></i> فاتورة عينيات واردة</a>
             </div>
           </div>
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
-          <table class="table tablee align-items-center table-flush table-hover" id="buy_bill_table">
-            @include('admin.buy_bill.table')
+          <table class="table tablee align-items-center table-flush table-hover" id="import_ainiat_table">
+            @include('admin.import_ainiat.table')
           </table>
         </div>
       </div>
@@ -52,7 +53,7 @@
         </a>
       </li>
       @for($p = 1; $p <= $pages; $p++)
-        <li class="page-item @if(Request::fullUrl() == URL('/buy_bills?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/buy_bills?page=' . $p) }}">{{ $p }}</a></li>
+        <li class="page-item @if(Request::fullUrl() == URL('/import_ainiats?page=' . $p)) active @endif"><a class="page-link" href="{{ URL('/import_ainiats?page=' . $p) }}">{{ $p }}</a></li>
         @endfor
         <li class="page-item">
           <a class="page-link" href="{{ Request::fullUrl(); }}">
@@ -72,7 +73,9 @@
 @include('includes.show_bill')
 
 <!-- Modal::bill to pdf-->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
+<!-- Modal::bill to xlsx-->
+@include('includes.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -89,7 +92,7 @@
     let id = $(this).data('dataid');
     let _token = $('input[name="_token"]').val();
     $.ajax({
-      url: 'buy_bill/show',
+      url: 'import_ainiat/show',
       type: 'GET',
       data: {
         id: id,
@@ -102,7 +105,7 @@
     });
   });
 
-  $("#buy_bill_table").on("click", ".delete_buy_bill_button", function(e) {
+  $("#import_ainiat_table").on("click", ".delete_import_ainiat_button", function(e) {
     e.preventDefault();
     let id = $(this).data('id');
     Swal.fire({
@@ -118,7 +121,7 @@
       if (result.isConfirmed) {
         let _token = $('input[name=_token]').val();
         $.ajax({
-          url: "/buy_bill/delete",
+          url: "/import_ainiat/delete",
           type: "POST",
           data: {
             id: id,
@@ -165,7 +168,7 @@
     let to = $('input[name="to"]').val();
     let _token = $('input[name="_token"]').val();
     $.ajax({
-      url: "/buy_bill/to_pdf",
+      url: "/import_ainiat/to_pdf",
       type: "POST",
       data: {
         from: from,
@@ -178,6 +181,33 @@
     });
     $('#from_to_pdf_form')[0].reset();
     $('#from_to_pdf_modal').modal('hide');
+  });
+
+  // show bill to pdf modal
+  $('.from_to_xlsx_button').click(function(e) {
+    $('#from_to_xlsx_modal').modal('show');
+  });
+
+  // sanadat qapd to pdf form
+  $('#from_to_xlsx_form').submit(function(e) {
+    e.preventDefault();
+    let from = $('input[name="from"]').val();
+    let to = $('input[name="to"]').val();
+    let _token = $('input[name="_token"]').val();
+    $.ajax({
+      url: "/import_ainiat/to_xlsx",
+      type: "POST",
+      data: {
+        from: from,
+        to: to,
+        _token: _token
+      },
+      success: function(response) {
+        $('#from_to_xlsx_modal').modal('hide');
+      }
+    });
+    $('#from_to_xlsx_form')[0].reset();
+    $('#from_to_xlsx_modal').modal('hide');
   });
 </script>
 @endsection

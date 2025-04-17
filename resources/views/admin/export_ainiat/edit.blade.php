@@ -256,9 +256,9 @@
                     @endif
 
                     <div class="form-group">
-                      <label class="form-control-label">البيان</label>
+                      <label class="form-control-label">الملاحظات</label>
                       <div class="input-group">
-                        <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان" autocomplete="byan" rows="2">{{ $export_ainiat->byan }}</textarea>
+                        <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="الملاحظات" autocomplete="byan" rows="2">{{ $export_ainiat->byan }}</textarea>
                       </div>
                       @error('byan')
                       <span class="text-danger">{{ $message }}</span>

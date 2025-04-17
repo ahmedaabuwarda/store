@@ -305,7 +305,7 @@
 </div>
 
 <!-- Modal::from to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -483,14 +483,14 @@
           $('#create_salary_modal').modal('hide');
           Swal.fire(
             '!تم',
-            '! تم اضافة الراتب بنجاح',
+            response.message,
             'success'
           );
           get_workers();
         } else {
           Swal.fire(
             '!عفواً',
-            '!حدث خطأ ما',
+            response.message,
             'error'
           );
         }
@@ -498,7 +498,7 @@
       error: function(response) {
         Swal.fire(
           '!عفواً',
-          '!حدث خطأ ما',
+          response.message,
           'error'
         );
       }
@@ -520,7 +520,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب البيانات',
+          'حدث خطأ أثناء جلب الملاحظاتات',
           'error'
         );
       }
@@ -528,4 +528,3 @@
   }
 </script>
 @endsection
-      

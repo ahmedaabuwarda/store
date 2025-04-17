@@ -19,10 +19,8 @@ class CreateProductsTable extends Migration
             $table->string('name')->unique();
             $table->integer('quantity')->default(0);
             $table->integer('original_quantity')->default(0);
-            $table->double('original_price', 15, 4)->default(0);
-            $table->double('taqseet_price', 15, 4)->default(0);
             $table->unsignedBigInteger('export_ainiat_id');
-            $table->unsignedBigInteger('buy_bill_id');
+            $table->unsignedBigInteger('import_ainiat_id');
             $table->boolean('status')->default(true);
             $table->string('type');
             $table->timestamps();

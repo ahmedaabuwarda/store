@@ -18,7 +18,7 @@ class CreateMovementsTable extends Migration
             $table->double('balance', 15, 4);
             $table->boolean('type');
             $table->timestamp('date_created');
-            $table->string('from', 40);
+            $table->string('from', 60);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('box_id')->nullable();
             $table->timestamps();

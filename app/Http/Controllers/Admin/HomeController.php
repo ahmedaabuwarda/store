@@ -75,7 +75,7 @@ class HomeController extends Controller
       'password' => Hash::make($password)
     ]);
 
-    return redirect('/home')->with('success', 'تم نحديث البيانات بنجاح');
+    return redirect('/home')->with('success', 'تم نحديث الملاحظاتات بنجاح');
   }
 
   public function search(Request $request)

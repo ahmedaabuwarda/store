@@ -5,7 +5,7 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1"><i class="fa fa-box"></i></span>
       </div>
-      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم العينية" value="{{ old('name') }}" autocomplete="name" required autofocus>
+      <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم العينية" value="{{ old('name') }}" autocomplete="name" autofocus>
     </div>
     @error('name')
     <span class="text-danger">{{ $message }}</span>
@@ -19,7 +19,7 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="basic-addon1"><i class="fa fa-heart"></i></span>
       </div>
-      <select class="form-control" name="type" required>
+      <select class="form-control" name="type">
         <option value="وحدة">وحدة</option>
         <option value="غرام">غرام</option>
         <option value="ملم">ملم</option>

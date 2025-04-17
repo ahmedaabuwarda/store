@@ -116,7 +116,7 @@
                         <select class="form-control selectpicker" name="product_id" data-live-search="true" id="productname">
                           @foreach($products as $product)
                           @if($product->quantity > 0)
-                          <option value="{{ $product->id }}" data-original="{{ $product->original_price }}" title="{{ $product->name }} - {{ $product->taqseet_price }}">{{ $product->name }} - {{ $product->taqseet_price }}</option>
+                          <option value="{{ $product->id }}" title="{{ $product->name }}">{{ $product->name }}</option>
                           @endif
                           @endforeach
                         </select>
@@ -320,9 +320,9 @@
 
                   <div class="col-xl-12">
                     <div class="form-group">
-                      <label class="form-control-label">البيان</label>
+                      <label class="form-control-label">الملاحظات</label>
                       <div class="input-group">
-                        <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان" autocomplete="byan" rows="2">{{ old('byan') }}</textarea>
+                        <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="الملاحظات" autocomplete="byan" rows="2">{{ old('byan') }}</textarea>
                       </div>
                     </div>
                   </div>

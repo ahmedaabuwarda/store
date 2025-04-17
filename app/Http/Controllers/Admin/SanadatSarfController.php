@@ -295,11 +295,11 @@ class SanadatSarfController extends Controller
             <th width="5%" bgcolor="#eee">الرقم</th>
             <th width="15%" bgcolor="#eee">رقم السند</th>
             <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">المستهلك</th>
+            <th width="15%" bgcolor="#eee">المستفيد</th>
             <th width="10%" bgcolor="#eee">المبلغ</th>
             <th width="10%" bgcolor="#eee">الصندوق</th>
             <th width="10%" bgcolor="#eee">بواسطة</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';

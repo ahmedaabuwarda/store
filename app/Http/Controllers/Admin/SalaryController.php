@@ -58,10 +58,12 @@ class SalaryController extends Controller
       $worker->date_created = $date_created;
       $worker->notes = $notes ?? 'لا يوجد';
       $worker->save();
+
+      $worker = Worker::where('id', $worker_id)->first();
       if ($net_balance >= 0) {
-        Worker::where('id', $worker_id)->update(['balance' => 0]);
+        $worker->update(['balance' => 0]);
       } else {
-        Worker::where('id', $worker_id)->update(['balance' => $net_balance]);
+        $worker->update(['balance' => $net_balance]);
       }
 
       $box = Box::select('id', 'balance', 'counter')->where('id', $box_id)->first();
@@ -72,13 +74,14 @@ class SalaryController extends Controller
       ]);
 
       $date = date($request['date_created'] . ' H:i:s');
-      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'راتب', $date, $box_id, $user_id]);
+      DB::insert('INSERT INTO movements (movements.balance, movements.type, movements.from, movements.date_created,movements.box_id,movements.user_id) VALUES (?,0,?,?,?,?)', [$balance, 'راتب - ' . $worker->name, $date, $box_id, $user_id]);
 
       DB::commit();
-      return response()->json(['status' => 'success']);
+      return response()->json(['status' => 'success', 'message' => '! تم اضافة الراتب بنجاح']);
     } catch (Exception $e) {
       DB::rollBack();
-      return response()->json(['status' => 'error']);
+      // return response()->json(['status' => 'error']);
+      return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
     }
   }
 
@@ -102,7 +105,7 @@ class SalaryController extends Controller
           <tr>
             <th width="10%" bgcolor="#eee">الرقم</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="20%" bgcolor="#eee">المستفيد</th>
             <th width="10%" bgcolor="#eee">رصيد متبقي</th>
             <th width="10%" bgcolor="#eee">راتب اساسي</th>
             <th width="10%" bgcolor="#eee">صافي الراتب</th>

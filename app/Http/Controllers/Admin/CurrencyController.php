@@ -64,9 +64,9 @@ class CurrencyController extends Controller
           $row = $sheetData[$i];
           // Ensure the row is valid (not empty)
           if ($row[0] != null) {
-            $mosque = Currency::where('name', $row[1])->first();
-            if ($mosque) {
-              $mosque->update([
+            $currency = Currency::where('name', $row[1])->first();
+            if ($currency) {
+              $currency->update([
                 'name' => $row[1],
                 'symbol' => $row[2],
               ]);

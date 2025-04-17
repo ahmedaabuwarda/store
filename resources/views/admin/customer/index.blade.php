@@ -152,7 +152,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-mosque text-primary"></i></span>
                   </div>
-                  <select class="form-control @error('mosque_id') is-invalid @enderror" name="mosque_id" id="mosque_id" required>
+                  <select class="form-control @error('mosque_id') is-invalid @enderror" name="mosque_id" id="mosque_id">
                     <option value="">اختر المسجد</option>
                     @foreach($mosques as $mosque)
                     <option value="{{ $mosque->id }}">{{ $mosque->name }}</option>
@@ -201,9 +201,9 @@
 </div>
 
 <!-- Modal::customer to pdf -->
-@include('includes.from_to')
+@include('admin.customer.from_to_pdf')
 
-@include('includes.from_to_xlsx')
+@include('admin.customer.from_to_xlsx')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -269,19 +269,15 @@
   // create customer to pdf form
   $('#from_to_pdf_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let from_to = $('#from_to').val();
-    let _token = $('input[name="_token"]').val();
-    if (from_to == '0') {
+    let data = new FormData(this);
+    if (data.get('from_to') == '0') {
       $.ajax({
         url: "/customer/to_pdf",
         type: "POST",
-        data: {
-          from: from,
-          to: to,
-          _token: _token
-        },
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
         success: function(response) {
           $('#from_to_pdf_modal').modal('hide');
         }
@@ -290,12 +286,10 @@
       $.ajax({
         url: "/customer/kashf_to_pdf",
         type: "POST",
-        data: {
-          from: from,
-          to: to,
-          id: from_to,
-          _token: _token
-        },
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
         success: function(response) {
           $('#from_to_pdf_modal').modal('hide');
         }
@@ -312,17 +306,14 @@
   // create customer to xlsx form
   $('#from_to_xlsx_form').submit(function(e) {
     e.preventDefault();
-    let from = $('input[name="from"]').val();
-    let to = $('input[name="to"]').val();
-    let _token = $('input[name="_token"]').val();
+    let data = new FormData(this);
     $.ajax({
       url: "/customer/to_xlsx",
       type: "POST",
-      data: {
-        from: from,
-        to: to,
-        _token: _token
-      },
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
       success: function(response) {
         $('#from_to_xlsx_modal').modal('hide');
       }
@@ -343,7 +334,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب البيانات',
+          'حدث خطأ أثناء جلب الملاحظاتات',
           'error'
         );
       }

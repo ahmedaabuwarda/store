@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\ExpensesExport;
 use PDF;
 
 use App\Models\Box;
-
-use App\Models\User;
 use App\Models\Expense;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\expensestoreRequest;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
+use App\Exports\ExpensesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExpensesController extends Controller
@@ -49,7 +47,7 @@ class ExpensesController extends Controller
   }
 
   // store
-  public function store(expensestoreRequest $request)
+  public function store(Request $request)
   {
     $balance = $request->balance;
     $box_id = $request->box_id;

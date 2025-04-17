@@ -25,7 +25,7 @@ class SanadatQapdExport implements FromCollection
         'العملة',
         'الصندوق',
         'بواسطة',
-        'البيان'
+        'الملاحظات'
       ]
     ])->merge(
       Sanadat_Qapd::with([

@@ -70,7 +70,7 @@
 </div>
 
 <!-- Modal::customer to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 @include('includes.from_to_xlsx')
 

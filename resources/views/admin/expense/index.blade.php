@@ -129,29 +129,7 @@
 
             </div>
 
-            <div class="col-xl-6 col-md-6">
-
-              <div class="form-group">
-                <label class="form-control-label">بواسطة</label>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1"><i
-                        class="fa fa-heart text-info"></i></span>
-                  </div>
-                  <select class="form-control selectpicker" name="user_id">
-                    @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                  </select>
-                </div>
-                @error('user_id')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-              </div>
-
-            </div>
-
-            <div class="col-xl-6 col-md-6">
+            <div class="col-xl-12 col-md-6">
 
               <div class="form-group">
                 <label class="form-control-label">الصندوق</label>
@@ -162,7 +140,7 @@
                   </div>
                   <select class="form-control selectpicker" name="box_id">
                     @foreach($boxes as $box)
-                    <option value="{{ $box->id }}">{{ $box->name }}</option>
+                    <option value="{{ $box->id }}">{{ $box->name }} ({{ $box->balance }})</option>
                     @endforeach
                   </select>
                 </div>
@@ -307,7 +285,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب البيانات',
+          'حدث خطأ أثناء جلب الملاحظاتات',
           'error'
         );
       }

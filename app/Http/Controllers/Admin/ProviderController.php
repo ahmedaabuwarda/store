@@ -148,7 +148,7 @@ class ProviderController extends Controller
 
     $provider_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM providers, sanadat_qapds WHERE providers.id = sanadat_qapds.provider_id AND providers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-    $provider_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance, buy_bills.expense FROM providers, buy_bills WHERE providers.id = buy_bills.provider_id AND providers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $provider_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.byan, import_ainiats.remaining_balance, import_ainiats.expense FROM providers, import_ainiats WHERE providers.id = import_ainiats.provider_id AND providers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
     $provider_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM providers, export_ainiats WHERE providers.id = export_ainiats.provider_id AND providers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
@@ -167,7 +167,7 @@ class ProviderController extends Controller
             <th width="25%" bgcolor="#eee">رقم السند</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="20%" bgcolor="#eee">الرصيد</th>
-            <th width="25%" bgcolor="#eee">البيان</th>
+            <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -194,7 +194,7 @@ class ProviderController extends Controller
             <th width="25%" bgcolor="#eee">رقم السند</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="20%" bgcolor="#eee">الرصيد</th>
-            <th width="25%" bgcolor="#eee">البيان</th>
+            <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -224,30 +224,30 @@ class ProviderController extends Controller
             <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
             <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
             <th width="10%" bgcolor="#eee">الخصم</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
-    foreach ($provider_buy as $buy_bill) {
+    foreach ($provider_buy as $import_ainiat) {
       $remaining = '';
-      if ($buy_bill->remaining_balance > 0) {
-        $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
-      } else if ($buy_bill->remaining_balance < 0) {
-        $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
+      if ($import_ainiat->remaining_balance > 0) {
+        $remaining = $import_ainiat->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
+      } else if ($import_ainiat->remaining_balance < 0) {
+        $remaining = $import_ainiat->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
       } else {
-        $remaining = $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span>';
+        $remaining = $remaining = $import_ainiat->remaining_balance . '<span>&#8362;&#160;</span>';
       }
       $buy_table .= '<tr>
               <td width="5%">' . $i . '</td>
-              <td width="20%">' . $buy_bill->number . '</td>
-              <td width="20%">' . $buy_bill->date_created . '</td>
-              <td width="15%">' . $buy_bill->paid_balance . '<span>&#8362;&#160;</span></td>
+              <td width="20%">' . $import_ainiat->number . '</td>
+              <td width="20%">' . $import_ainiat->date_created . '</td>
+              <td width="15%">' . $import_ainiat->paid_balance . '<span>&#8362;&#160;</span></td>
               <td width="10%">' . $remaining . '</td>
-              <td width="10%">' . $buy_bill->expense . '<span>&#8362;&#160;</span></td>
-              <td width="20%">' . $buy_bill->byan . '</td>
+              <td width="10%">' . $import_ainiat->expense . '<span>&#8362;&#160;</span></td>
+              <td width="20%">' . $import_ainiat->byan . '</td>
             </tr>';
-      $buy_total += $buy_bill->remaining_balance;
-      $expense_total += $buy_bill->expense;
+      $buy_total += $import_ainiat->remaining_balance;
+      $expense_total += $import_ainiat->expense;
       $i++;
     }
     if ($buy_total > 0) {
@@ -270,7 +270,7 @@ class ProviderController extends Controller
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
             <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -368,7 +368,19 @@ class ProviderController extends Controller
 
     PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">الرصيد</td><td width="20%">' . $balance . '</td></tr></tbody></table>');
 
-    PDF::Output('provider_kashf_hisab_' . date('ymdhis') . '.pdf', 'D');
+    // Ensure the directory exists before saving the file
+    $directoryPath = storage_path('app/public/pdf/الداعمون' . '/' . date('Y-m-d'));
+    if (!file_exists($directoryPath)) {
+      mkdir($directoryPath, 0755, true);
+    }
+
+    // Save the file to the storage folder
+    $filePath = $directoryPath . '/كشف داعم_' . $provider[0]->name . '_' . date('Y-m-d-his') . '.pdf';
+    PDF::Output($filePath, 'F');
+    // Ensure the symbolic link exists for the storage folder
+    if (!file_exists(public_path('storage'))) {
+      symlink(storage_path('app/public'), public_path('storage'));
+    }
     return response()->json(['status' => 'success']);
   }
 }

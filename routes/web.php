@@ -57,16 +57,17 @@ Route::post('/currency/update', [App\Http\Controllers\Admin\CurrencyController::
 Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\CurrencyController::class, 'to_pdf']);
 Route::post('/currency/to_xlsx', [App\Http\Controllers\Admin\CurrencyController::class, 'to_xlsx']);
 
-// buy_bills
-Route::get('/buy_bills', [App\Http\Controllers\Admin\BuyBillController::class, 'index']);
-Route::get('/buy_bill/create', [App\Http\Controllers\Admin\BuyBillController::class, 'create']);
-Route::post('/buy_bill/store', [App\Http\Controllers\Admin\BuyBillController::class, 'store']);
-Route::get('/buy_bill/show', [App\Http\Controllers\Admin\BuyBillController::class, 'show']);
-Route::get('/buy_bill/edit/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'edit']);
-Route::post('/buy_bill/update/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'update']);
-Route::post('/buy_bill/delete', [App\Http\Controllers\Admin\BuyBillController::class, 'delete']);
-Route::post('/buy_bill/delete_product/{id}', [App\Http\Controllers\Admin\BuyBillController::class, 'delete_product']);
-Route::post('/buy_bill/to_pdf', [App\Http\Controllers\Admin\BuyBillController::class, 'to_pdf']);
+// import_ainiats
+Route::get('/import_ainiats', [App\Http\Controllers\Admin\ImportAiniatController::class, 'index']);
+Route::get('/import_ainiat/create', [App\Http\Controllers\Admin\ImportAiniatController::class, 'create']);
+Route::post('/import_ainiat/store', [App\Http\Controllers\Admin\ImportAiniatController::class, 'store']);
+Route::get('/import_ainiat/show', [App\Http\Controllers\Admin\ImportAiniatController::class, 'show']);
+Route::get('/import_ainiat/edit/{id}', [App\Http\Controllers\Admin\ImportAiniatController::class, 'edit']);
+Route::post('/import_ainiat/update/{id}', [App\Http\Controllers\Admin\ImportAiniatController::class, 'update']);
+Route::post('/import_ainiat/delete', [App\Http\Controllers\Admin\ImportAiniatController::class, 'delete']);
+Route::post('/import_ainiat/delete_product/{id}', [App\Http\Controllers\Admin\ImportAiniatController::class, 'delete_product']);
+Route::post('/import_ainiat/to_pdf', [App\Http\Controllers\Admin\ImportAiniatController::class, 'to_pdf']);
+Route::post('/import_ainiat/to_xlsx', [App\Http\Controllers\Admin\ImportAiniatController::class, 'to_xlsx']);
 
 // customers
 Route::get('/customers', [App\Http\Controllers\Admin\CustomerController::class, 'index']);
@@ -83,6 +84,7 @@ Route::post('/selective/store', [App\Http\Controllers\Admin\SelectiveController:
 Route::get('/selective/edit/{id}', [App\Http\Controllers\Admin\SelectiveController::class, 'edit']);
 Route::post('/selective/update', [App\Http\Controllers\Admin\SelectiveController::class, 'update']);
 Route::post('/selective/to_pdf', [App\Http\Controllers\Admin\SelectiveController::class, 'to_pdf']);
+Route::post('/selective/kashf_to_pdf', [App\Http\Controllers\Admin\SelectiveController::class, 'kashf_to_pdf']);
 Route::post('/selective/to_xlsx', [App\Http\Controllers\Admin\SelectiveController::class, 'to_xlsx']);
 
 // mosques

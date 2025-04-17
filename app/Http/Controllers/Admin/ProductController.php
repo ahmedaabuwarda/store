@@ -12,6 +12,7 @@ use App\Models\Quantity;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\ProductImport;
 use App\Models\Selective;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -36,16 +37,64 @@ class ProductController extends Controller
   // store
   public function store(Request $request)
   {
+    $file_attachment = $request->file('file_attachment');
+
+    $xlsx_data = null;
+
+    if ($file_attachment != null && $request->name == null) {
+      // Read the xlsx file
+      $xlsx_data = Excel::toArray(new ProductImport, $file_attachment);
+
+      // Assuming we have only one sheet in the Excel file, so we'll take the first sheet
+      $sheetData = $xlsx_data[0];
+
+      // Start transaction
+      DB::beginTransaction();
+      try {
+        // Loop through the rows, skip the first row (headers)
+        for ($i = 1; $i < count($sheetData); $i++) {
+          $row = $sheetData[$i];
+          // Ensure the row is valid (not empty)
+          if ($row[0] != null) {
+            $product = Product::where('name', $row[1])->first();
+            if ($product) {
+              $product->update([
+                'name' => $row[1],
+                'type' => $row[2],
+              ]);
+            } else {
+              $product = new Product();
+              $product->name = $row[1];
+              $product->quantity = 0;
+              $product->original_quantity = 0;
+              $product->export_ainiat_id = 0;
+              $product->import_ainiat_id = 0;
+              $product->status = false;
+              $product->type = $row[2];
+              $product->save();
+            }
+          }
+        }
+
+        // Commit the transaction
+        DB::commit();
+        return response()->json(['status' => 'success', 'message' => 'تم اضافة المسجد بنجاح']);
+      } catch (Exception $e) {
+        // Rollback the transaction in case of error
+        DB::rollback();
+        // return dd($e->getMessage());  // For debugging
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+      }
+    }
     DB::beginTransaction();
     try {
       $product = new Product;
       $product->name = $request->name;
-      $product->original_price = 0;
-      $product->taqseet_price = $request->taqseet_price | 0;
       $product->quantity = 0;
       $product->original_quantity = 0;
       $product->export_ainiat_id = 0;
-      $product->buy_bill_id = 0;
+      $product->import_ainiat_id = 0;
       $product->status = false;
       $product->type = $request->type;
       $product->save();
@@ -63,7 +112,7 @@ class ProductController extends Controller
   // edit
   public function edit(Request $request)
   {
-    $product = Product::where('id', $request->id)->select('id', 'name', 'quantity', 'taqseet_price')->first();
+    $product = Product::where('id', $request->id)->select('id', 'name', 'quantity')->first();
     $modal = view('admin.product.edit', compact('product'))->render();
     return response()->json(['status' => 'success', 'modal' => $modal]);
   }
@@ -73,30 +122,24 @@ class ProductController extends Controller
   {
 
     $product_id = $request->product_id;
-    $quantity = $request->quantity;
+    $name = $request->name;
 
     DB::beginTransaction();
     try {
 
-      $quantities = DB::select('SELECT id, product_id, quantity FROM `quantities` WHERE product_id = ? AND quantity = (SELECT MAX(quantity) FROM quantities WHERE product_id = ?)', [$product_id, $product_id]);
-
       $product = Product::where('id', $product_id)->first();
 
-      DB::update('UPDATE quantities SET quantity = ? WHERE id = ?', [($quantity - $product->quantity) + $quantities[0]->quantity, $quantities[0]->id]);
-
       $product->update([
-        'name' => $request->name,
-        'quantity' => $quantity,
-        'taqseet_price' => $request->taqseet_price | 0,
-        'original_quantity' => ($quantity - $product->quantity) + $product->original_quantity,
+        'name' => $name,
       ]);
 
       DB::commit();
-      return response()->json(['status' => 'success']);
+      return response()->json(['status' => 'success', 'message' => 'تم تحديث العينية بنجاح!']);
     } catch (Exception $e) {
       DB::rollBack();
-      return $e->getMessage();
-      return response()->json(['status' => 'error']);
+      // return $e->getMessage();
+      // return response()->json(['status' => 'error', 'message' => 'حدث خطا اثناء عملية التحديث!']);
+      return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
     }
   }
 
@@ -109,19 +152,12 @@ class ProductController extends Controller
       Product::where('id', $request->id)->delete();
 
       DB::commit();
-      return response()->json(['status' => 'success']);
+      return response()->json(['status' => 'success', 'message' => 'تم حذف العينية بنجاح!']);
     } catch (Exception $e) {
       DB::rollBack();
-      return response()->json(['status' => 'error']);
+      // return response()->json(['status' => 'error', 'message' => 'حدث خظا اثناء عملية الحذف!']);
+      return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
     }
-  }
-
-  // price
-  public function price(Request $request, $id)
-  {
-    $quantities = Quantity::where('product_id', $id)->get();
-    $price = view('admin.product.quantity', compact('quantities'))->render();
-    return response()->json(['status' => 'success', 'price' => $price]);
   }
 
   // jard to pdf
@@ -130,8 +166,6 @@ class ProductController extends Controller
     $id = $request->id;
     $from = date($request->from . ' 00:00:00');
     $to = date($request->to . ' 23:59:59');
-
-    // $products = DB::select('SELECT sold_products.quantity, sold_products.profit, sold_products.sell_price, sold_products.total_price, sold_products.created_at, products.id, products.name, products.type, products.status, products.original_price, products.original_quantity, export_ainiats.number FROM sold_products INNER JOIN products ON sold_products.product_id = products.id INNER JOIN export_ainiats ON sold_products.export_ainiat_id = export_ainiats.id WHERE products.id = ? AND sold_products.created_at >= ? AND sold_products.created_at <= ? ORDER BY sold_products.id DESC', [$id, $from, $to]);
 
     $selectives = Selective::where('product_id', $id)
       ->with([
@@ -155,10 +189,11 @@ class ProductController extends Controller
         <thead>
           <tr>
             <th width="10%" bgcolor="#eee">#</th>
-            <th width="20%" bgcolor="#eee">تاريخ الاستفادة</th>
-            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="15%" bgcolor="#eee">تاريخ الترشيح</th>
+            <th width="15%" bgcolor="#eee">تاريخ الاستفادة</th>
+            <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
             <th width="20%" bgcolor="#eee">اسم المستفيد</th>
-            <th width="20%" bgcolor="#eee">بواسطة</th>
+            <th width="15%" bgcolor="#eee">بواسطة</th>
             <th width="10%" bgcolor="#eee">الحالة</th>
           </tr>
         </thead>
@@ -167,20 +202,23 @@ class ProductController extends Controller
       $status = 'مرشح';
       $number = '-';
       $product_status = 'خلص';
+      $up_date = '-';
       if ($selective->product->status) {
         $product_status = 'موجود';
       }
       if ($selective->status == 1) {
         $status = 'مستفيد';
         $number = $selective->product->export_ainiat->number;
+        $up_date = $selective->updated_at;
       }
       $table_content .= '<tr>
             <td width="10%">' . $i . '</td>
-            <td width="20%">' . $selective->product->export_ainiat->created_at . '</td>
-            <td width="20%">' . $number . '</td>
+            <td width="15%">' . $selective->created_at . '</td>
+            <td width="15%">' . $up_date . '</td>
+            <td width="15%">' . $number . '</td>
             <td width="20%">' . $selective->customer->name . '</td>
-            <td width="20%">' . $selective->user->name . '</td>
-            <td width="10%">' . $status . '<span>&#8362;&#160;</span></td>
+            <td width="15%">' . $selective->user->name . '</td>
+            <td width="10%">' . $status . '</td>
           </tr>';
       $i++;
     }
@@ -194,6 +232,7 @@ class ProductController extends Controller
     $lg['a_meta_dir'] = 'rtl';
     $lg['a_meta_language'] = 'ar';
     $lg['w_page'] = 'page';
+    PDF::SetPageOrientation('L', 'P');
     // set some language-dependent strings (optional)
     PDF::setLanguageArray($lg);
     // set font
@@ -203,7 +242,7 @@ class ProductController extends Controller
     PDF::SetHeaderMargin(PDF_MARGIN_HEADER);
     PDF::SetFooterMargin(PDF_MARGIN_FOOTER);
 
-    PDF::AddPage('P', 'A4');
+    PDF::AddPage();
     PDF::writeHTML($content);
     PDF::SetFont('freeserif', '', 11);
 

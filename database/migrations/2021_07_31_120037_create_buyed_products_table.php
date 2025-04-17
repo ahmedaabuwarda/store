@@ -17,9 +17,7 @@ class CreateBuyedProductsTable extends Migration
             $table->id();
             $table->integer('product_id');
             $table->integer('quantity');
-            $table->double('buy_price', 15, 4);
-            $table->double('total_price', 15, 4);
-            $table->integer('buy_bill_id');
+            $table->integer('import_ainiat_id');
             $table->timestamps();
         });
     }

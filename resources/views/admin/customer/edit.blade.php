@@ -4,7 +4,8 @@
 <div class="header pb-6" style="background-color:#222222;">
   <div class="container-fluid">
     <div class="header-body">
-      <div class="row align-items-center py-5">
+      <div class="row align-items-center py-5 m-auto">
+        @include('includes.alert')
       </div>
     </div>
   </div>
@@ -135,7 +136,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-primary"></i></span>
                   </div>
-                  <select class="form-control @error('product_id') is-invalid @enderror" name="product_id" id="product_id" required>
+                  <select class="form-control @error('product_id') is-invalid @enderror" name="product_id" id="product_id">
                     <option value="">اختر العينية</option>
                     @foreach($products as $product)
                     <option value="{{ $product->id }}">{{ $product->name }}</option>

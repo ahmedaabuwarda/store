@@ -204,7 +204,7 @@ class MosqueController extends Controller
     }
 
     // Save the file to the storage folder
-    $filePath = $directoryPath . '/كشف المساجد' . date('Y-m-d-his') . '.pdf';
+    $filePath = $directoryPath . '/كشف المساجد_' . date('Y-m-d-his') . '.pdf';
     PDF::Output($filePath, 'F');
     // dd($filePath);
     // Ensure the symbolic link exists for the storage folder

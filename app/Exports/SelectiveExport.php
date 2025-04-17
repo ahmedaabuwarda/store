@@ -22,7 +22,7 @@ class SelectiveExport implements FromCollection
         'عدد افراد الاسرة',
         'المسجد',
         'الحالة',
-        'البيان',
+        'الملاحظات',
       ]
     ])->merge(
       Customer::whereBetween('created_at', [date(request()->from . ' 00:00:00'), date(request()->to . ' 23:59:59')])

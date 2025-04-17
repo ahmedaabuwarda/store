@@ -138,7 +138,7 @@
 </div>
 
 <!-- Modal::customer to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 @include('includes.from_to_xlsx')
 
@@ -284,7 +284,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب البيانات',
+          'حدث خطأ أثناء جلب الملاحظاتات',
           'error'
         );
       }

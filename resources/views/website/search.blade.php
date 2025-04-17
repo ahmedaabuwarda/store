@@ -111,7 +111,7 @@
 </div>
 
 <!-- Modal::product to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 @if($target == 'export_ainiats')
 <!-- Modal::show bill -->

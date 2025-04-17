@@ -156,11 +156,11 @@ class CustomerController extends Controller
     DB::beginTransaction();
     try {
 
-      if ($status == 0) {
+      if ($status == 0 && $product_id != null) {
         $selective = Selective::where('product_id', $product_id)
-        ->where('status', 0)
-        ->where('customer_id', $customer_id)
-        ->get();
+          ->where('customer_id', $customer_id)
+          ->where('status', 0)
+          ->get();
         if ($selective->count() == 0) {
           $selective = new Selective();
           $selective->user_id = $user_id;
@@ -169,6 +169,18 @@ class CustomerController extends Controller
           $selective->status = 0;
           $selective->save();
         }
+      } else if ($product_id != null) {
+        $selective = new Selective();
+        $selective->user_id = $user_id;
+        $selective->customer_id = $customer_id;
+        $selective->product_id = $product_id;
+        $selective->status = 1;
+        $selective->save();
+
+        $product = Product::where('id', $product_id)->first();
+        $product->update([
+          'quantity' => $product->quantity - 1,
+        ]);
       }
 
       Customer::where('id', $customer_id)->update([
@@ -185,7 +197,8 @@ class CustomerController extends Controller
       return redirect('/customers')->with('success', 'تم تحديث المستفيد بنجاح');
     } catch (\Exception $e) {
       DB::rollback();
-      return redirect('/customers')->with('error', 'حدث خطا اثناء تحديث المستفيد!');
+      // return redirect('/customer/edit/' . $customer_id)->with('error', 'حدث خطا اثناء تحديث المستفيد!');
+      return redirect('/customer/edit/' . $customer_id)->with('error', $e->getMessage());
     }
   }
 
@@ -194,9 +207,11 @@ class CustomerController extends Controller
   {
     $from = date($request->from . ' 00:00:00');
     $to = date($request->to . ' 23:59:59');
-
+    $mosque_id = $request->mosque_id;
     $customers = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'notes', 'status', 'mosque_id', 'created_at')
       ->with('mosque:id,name')
+      ->where('mosque_id', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : $mosque_id)
+      ->where('status', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : 1)
       ->whereBetween('created_at', [$from, $to])
       ->orderBy('id', 'DESC')
       ->get();
@@ -300,9 +315,7 @@ class CustomerController extends Controller
   {
     $from = date($request->from . ' 00:00:00');
     $to = date($request->to . ' 23:59:59');
-    $id = $request->id;
-
-    // $customer = DB::select('SELECT name, balance, phone, identity, family_number FROM customers WHERE id = :id', ['id' => $id]);
+    $id = $request->from_to;
 
     $customer_sarf = Sanadat_Sarf::select('id', 'date_created', 'number', 'balance', 'byan', 'customer_id', 'box_id', 'user_id')
       ->with(['customer', 'box', 'user'])
@@ -318,16 +331,14 @@ class CustomerController extends Controller
       ->orderBy('id', 'DESC')
       ->get();
 
-    $customer_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM customers, buy_bills WHERE customers.id = buy_bills.customer_id AND customers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
-
-    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.byan FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
     $customer_ainiat = Customer::with([
       'selective.product:id,name',
       'selective.user:id,name',
       'export_ainiat:customer_id,number',
     ])
-      // ->whereBetween('date_created', [$from, $to])
+      ->whereBetween('created_at', [$from, $to])
       ->where('id', $id)
       ->first();
     // dd($customer_ainiat->toArray());
@@ -351,7 +362,7 @@ class CustomerController extends Controller
             <th width="10%" bgcolor="#eee">المبلغ</th>
             <th width="20%" bgcolor="#eee">لصنندوق</th>
             <th width="15%" bgcolor="#eee">بواسطة</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -383,7 +394,7 @@ class CustomerController extends Controller
             <th width="10%" bgcolor="#eee">المبلغ</th>
             <th width="20%" bgcolor="#eee">لصنندوق</th>
             <th width="15%" bgcolor="#eee">بواسطة</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -430,84 +441,26 @@ class CustomerController extends Controller
 
     $ainiat_table .= '</tbody></table>';
 
-    // import ainiat
-    $i = 1;
-    $buy_total = 0;
-    $buy_table = '<h2>عينيات واردة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
-        <thead>
-          <tr>
-            <th width="5%" bgcolor="#eee">#</th>
-            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
-            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
-            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
-          </tr>
-        </thead>
-        <tbody>';
-    foreach ($customer_buy as $buy_bill) {
-      $remaining = '';
-      if ($buy_bill->remaining_balance > 0) {
-        $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
-      } else if ($buy_bill->remaining_balance < 0) {
-        $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
-      } else {
-        $remaining = $remaining = $buy_bill->remaining_balance . '<span>&#8362;&#160;</span>';
-      }
-      $buy_table .= '<tr>
-              <td width="5%">' . $i . '</td>
-              <td width="20%">' . $buy_bill->number . '</td>
-              <td width="20%">' . $buy_bill->date_created . '</td>
-              <td width="15%">' . $buy_bill->paid_balance . '<span>&#8362;&#160;</span></td>
-              <td width="20%">' . $remaining . '</td>
-              <td width="20%">' . $buy_bill->byan . '</td>
-            </tr>';
-      $buy_total += $buy_bill->remaining_balance;
-      $i++;
-    }
-    if ($buy_total > 0) {
-      $buy_total = $buy_total . '<span>&#8362;&#160;</span> - دائن -';
-    } else if ($buy_total < 0) {
-      $buy_total = $buy_total . '<span>&#8362;&#160;</span> - مدين -';
-    } else {
-      $buy_total = $buy_total . '<span>&#8362;&#160;</span>';
-    }
-
-    $buy_table .= '</tbody></table>';
-
     // export ainiat
     $i = 1;
     $sell_total = 0;
     $sell_table = '<h2>عينيات صادرة</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
-            <th width="5%" bgcolor="#eee">#</th>
-            <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
-            <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
-            <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="25%" bgcolor="#eee">#</th>
+            <th width="25%" bgcolor="#eee">رقم الفاتورة</th>
+            <th width="25%" bgcolor="#eee">تاريخ الانشاء</th>
+            <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
     foreach ($customer_sell as $export_ainiat) {
-      $remaining = '';
-      if ($export_ainiat->remaining_balance > 0) {
-        $remaining = $export_ainiat->remaining_balance . '<span>&#8362;&#160;</span> - دائن -';
-      } else if ($export_ainiat->remaining_balance < 0) {
-        $remaining = $export_ainiat->remaining_balance . '<span>&#8362;&#160;</span> - مدين -';
-      } else {
-        $remaining = $remaining = $export_ainiat->remaining_balance . '<span>&#8362;&#160;</span>';
-      }
       $sell_table .= '<tr>
-              <td width="5%">' . $i . '</td>
-              <td width="20%">' . $export_ainiat->number . '</td>
-              <td width="20%">' . $export_ainiat->date_created . '</td>
-              <td width="15%">' . $export_ainiat->paid_balance . '</td>
-              <td width="20%">' . $remaining . '</td>
-              <td width="20%">' . $export_ainiat->byan . '</td>
+              <td width="25%">' . $i . '</td>
+              <td width="25%">' . $export_ainiat->number . '</td>
+              <td width="25%">' . $export_ainiat->date_created . '</td>
+              <td width="25%">' . $export_ainiat->byan . '</td>
             </tr>';
-      $sell_total += $export_ainiat->remaining_balance;
       $i++;
     }
     if ($sell_total > 0) {
@@ -521,7 +474,7 @@ class CustomerController extends Controller
     $sell_table .= '</tbody></table>';
 
     PDF::SetTitle('كشف حساب');
-    PDF::SetAuthor('اياد الهسي');
+    PDF::SetAuthor($by);
     // set some language dependent data:
     $lg = array();
     $lg['a_meta_charset'] = 'UTF-8';
@@ -548,10 +501,7 @@ class CustomerController extends Controller
     PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $qapd_total . '<span>&#8362;&#160;</span> - دائن -</td></tr></tbody></table>');
 
     PDF::writeHTML($ainiat_table);
-    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $buy_total . '</td></tr></tbody></table>');
-
-    PDF::writeHTML($buy_table);
-    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $buy_total . '</td></tr></tbody></table>');
+    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . '</td></tr></tbody></table>');
 
     PDF::writeHTML($sell_table);
     PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $sell_total . '</td></tr></tbody></table>');

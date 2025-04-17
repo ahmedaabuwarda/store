@@ -120,7 +120,7 @@
 </div>
 
 <!-- Modal::provider to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -233,7 +233,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب البيانات',
+          'حدث خطأ أثناء جلب الملاحظاتات',
           'error'
         );
       }

@@ -79,7 +79,7 @@
 @include('includes.multi_modal')
 
 <!-- Modal::bill to pdf-->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>

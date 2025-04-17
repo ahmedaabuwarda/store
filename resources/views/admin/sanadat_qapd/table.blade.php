@@ -1,11 +1,11 @@
 <thead class="thead-light">
     <tr>
         <th scope="col" class="text-center">خيارات</th>
-        <th scope="col" class="text-center">البيان</th>
+        <th scope="col" class="text-center">الملاحظات</th>
         <th scope="col" class="text-center">بواسطة</th>
         <th scope="col" class="text-center">الصندوق</th>
         <th scope="col" class="text-center">المبلغ</th>
-        <th scope="col" class="text-center">المستهلك</th>
+        <th scope="col" class="text-center">المستفيد</th>
         <th scope="col" class="text-center">تاريخ الانشاء</th>
         <th scope="col" class="text-center">رقم السند</th>
         <th scope="col" class="text-center">#</th>

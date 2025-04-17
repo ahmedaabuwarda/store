@@ -10,6 +10,15 @@ class Worker extends Model
     use HasFactory;
 
     protected $table = 'workers';
+    protected $fillable = [
+      'id',
+      'name',
+      'balance',
+      'status',
+      'notes',
+      'create_at',
+      'updated_at',
+    ];
 
     public function sanadat_sarf()
     {
@@ -23,13 +32,13 @@ class Worker extends Model
     {
         return $this->hasMany('App\Models\Salary');
     }
-    public function buy_bill()
+    public function import_ainiat()
     {
-        return $this->hasMany('App\Models\BuyBill');
+        return $this->hasMany('App\Models\ImportAiniat');
     }
     public function export_ainiat()
     {
         return $this->hasMany('App\Models\ExportAiniat');
     }
-    
+
 }

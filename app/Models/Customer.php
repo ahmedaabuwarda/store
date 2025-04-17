@@ -20,9 +20,9 @@ class Customer extends Model
   {
     return $this->hasMany('App\Models\Sanadat_Qapd');
   }
-  public function buy_bill()
+  public function import_ainiat()
   {
-    return $this->hasMany('App\Models\BuyBill');
+    return $this->hasMany('App\Models\ImportAiniat');
   }
   public function export_ainiat()
   {

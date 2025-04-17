@@ -4,7 +4,7 @@
     <th scope="col" class="text-center">صافي الراتب</th>
     <th scope="col" class="text-center">راتب اساسي</th>
     <th scope="col" class="text-center">رصيد متبقي</th>
-    <th scope="col" class="text-center">المستهلك</th>
+    <th scope="col" class="text-center">المستفيد</th>
     <th scope="col" class="text-center">تاريخ الانشاء</th>
     <th scope="col" class="text-center">الرقم</th>
   </tr>
@@ -12,7 +12,7 @@
 <tbody>
 	@php $i=1; @endphp
 	@foreach($salaries as $salary)
-	<tr>	
+	<tr>
 		<td class="display-3 text-center">{{ $salary->notes }}</td>
 		<td class="display-3 text-center">&#8362;{{ $salary->net_balance }}
 			@if($salary->net_balance < 0)

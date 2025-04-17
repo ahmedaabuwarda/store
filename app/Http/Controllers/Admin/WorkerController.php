@@ -160,7 +160,7 @@ class WorkerController extends Controller
 
         $worker_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM workers, sanadat_qapds WHERE workers.id = sanadat_qapds.worker_id AND workers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $worker_buy = DB::select('SELECT buy_bills.date_created, buy_bills.number, buy_bills.paid_balance, buy_bills.byan, buy_bills.remaining_balance FROM workers, buy_bills WHERE workers.id = buy_bills.worker_id AND workers.id = :id AND buy_bills.date_created >= :from AND buy_bills.date_created <= :to ORDER BY buy_bills.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.byan, import_ainiats.remaining_balance FROM workers, import_ainiats WHERE workers.id = import_ainiats.worker_id AND workers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $worker_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM workers, export_ainiats WHERE workers.id = export_ainiats.worker_id AND workers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
@@ -177,7 +177,7 @@ class WorkerController extends Controller
             <th width="25%" bgcolor="#eee">رقم السند</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="20%" bgcolor="#eee">الرصيد</th>
-            <th width="25%" bgcolor="#eee">البيان</th>
+            <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -202,7 +202,7 @@ class WorkerController extends Controller
             <th width="25%" bgcolor="#eee">رقم السند</th>
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="20%" bgcolor="#eee">الرصيد</th>
-            <th width="25%" bgcolor="#eee">البيان</th>
+            <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -228,28 +228,28 @@ class WorkerController extends Controller
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
             <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
-        foreach($worker_buy as $buy_bill) {
+        foreach($worker_buy as $import_ainiat) {
             $remaining = '';
-            if($buy_bill->remaining_balance > 0) {
-                $remaining = $buy_bill->remaining_balance.'<span>&#8362;&#160;</span> - دائن -';
-            } else if ($buy_bill->remaining_balance < 0) {
-                $remaining = $buy_bill->remaining_balance.'<span>&#8362;&#160;</span> - مدين -';
+            if($import_ainiat->remaining_balance > 0) {
+                $remaining = $import_ainiat->remaining_balance.'<span>&#8362;&#160;</span> - دائن -';
+            } else if ($import_ainiat->remaining_balance < 0) {
+                $remaining = $import_ainiat->remaining_balance.'<span>&#8362;&#160;</span> - مدين -';
             } else {
-                $remaining = $remaining = $buy_bill->remaining_balance.'<span>&#8362;&#160;</span>';
+                $remaining = $remaining = $import_ainiat->remaining_balance.'<span>&#8362;&#160;</span>';
             }
             $buy_table .= '<tr>
               <td width="5%">'.$i.'</td>
-              <td width="20%">'.$buy_bill->number.'</td>
-              <td width="20%">'.$buy_bill->date_created.'</td>
-              <td width="15%">'.$buy_bill->paid_balance.'<span>&#8362;&#160;</span></td>
+              <td width="20%">'.$import_ainiat->number.'</td>
+              <td width="20%">'.$import_ainiat->date_created.'</td>
+              <td width="15%">'.$import_ainiat->paid_balance.'<span>&#8362;&#160;</span></td>
               <td width="20%">'.$remaining.'</td>
-              <td width="20%">'.$buy_bill->byan.'</td>
+              <td width="20%">'.$import_ainiat->byan.'</td>
             </tr>';
-            $buy_total += $buy_bill->remaining_balance; $i++;
+            $buy_total += $import_ainiat->remaining_balance; $i++;
         }
         if ($buy_total > 0) {
             $buy_total = $buy_total.'<span>&#8362;&#160;</span> - دائن -';
@@ -270,7 +270,7 @@ class WorkerController extends Controller
             <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
             <th width="15%" bgcolor="#eee">المبلغ المدفوع</th>
             <th width="20%" bgcolor="#eee">المبلغ المتبقي</th>
-            <th width="20%" bgcolor="#eee">البيان</th>
+            <th width="20%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
@@ -309,7 +309,7 @@ class WorkerController extends Controller
             <tr>
                 <th width="5%" bgcolor="#eee">#</th>
                 <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-                <th width="20%" bgcolor="#eee">المستهلك</th>
+                <th width="20%" bgcolor="#eee">المستفيد</th>
                 <th width="20%" bgcolor="#eee">رصيد متبقي</th>
                 <th width="15%" bgcolor="#eee">راتب اساسي</th>
                 <th width="10%" bgcolor="#eee">صافي الراتب</th>

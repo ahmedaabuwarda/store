@@ -260,9 +260,9 @@
             <div class="col-xl-12 col-md-12">
 
               <div class="form-group">
-                <label class="form-control-label">البيان</label>
+                <label class="form-control-label">الملاحظات</label>
                 <div class="input-group">
-                  <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="البيان (في حال كان فارغ : لايوجد)" autocomplete="byan" rows="3">{{ old('byan') }}</textarea>
+                  <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="الملاحظات (في حال كان فارغ : لايوجد)" autocomplete="byan" rows="3">{{ old('byan') }}</textarea>
                 </div>
                 @error('byan')
                 <span class="text-danger">{{ $message }}</span>
@@ -284,7 +284,7 @@
 </div>
 
 <!-- Modal::sanadat sarf to pdf -->
-@include('includes.from_to')
+@include('includes.from_to_pdf')
 
 @include('includes.from_to_xlsx')
 

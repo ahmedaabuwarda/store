@@ -1,8 +1,8 @@
 <thead class="thead-light">
     <tr>
         <th scope="col" class="text-center">خيارات</th>
-        <th scope="col" class="text-center">البيان</th>
-        <th scope="col" class="text-center">المستهلك</th>
+        <th scope="col" class="text-center">الملاحظات</th>
+        <th scope="col" class="text-center">المستفيد</th>
         <th scope="col" class="text-center">التاريخ</th>
         <th scope="col" class="text-center">رقم الفاتورة</th>
         <th scope="col" class="text-center">#</th>
@@ -18,7 +18,7 @@
         @foreach ($export_ainiats as $export_ainiat)
             <tr>
                 <td class="display-3 text-center">
-                    @if ($export_ainiat->paid_balance == 0 && $export_ainiat->remaining_balance == 0 && Auth::user()->id == 1)
+                    @if (Auth::user()->id == 1)
                         <button class="btn btn-sm btn-danger delete_export_ainiat_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $export_ainiat->id }}"><i class="fa fa-trash"></i></button>
                     @endif
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"

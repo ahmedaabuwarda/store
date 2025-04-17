@@ -147,8 +147,8 @@
                     </div>
                   </a>
                   @endcan
-                  @can('add_buy_bills')
-                  <a href="{{ URL('/buy_bills') }}"
+                  @can('add_import_ainiats')
+                  <a href="{{ URL('/import_ainiats') }}"
                     class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
                       <div class="col-auto">

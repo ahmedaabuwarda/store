@@ -26,7 +26,7 @@ class SanadatSarfExport implements FromCollection
         'العملة',
         'الصندوق',
         'بواسطة',
-        'البيان'
+        'الملاحظات'
       ]
     ])->merge(
       Sanadat_Sarf::with([

@@ -12,7 +12,6 @@ use App\Models\Customer;
 use App\Models\Provider;
 use App\Models\ExportAiniat;
 use App\Models\SoldProduct;
-use App\Models\Quantity;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -32,7 +31,7 @@ class ExportAiniatController extends Controller
   {
 
     $page = config('app.page');
-    $export_ainiats = ExportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id', 'remaining_balance', 'paid_balance', 'total_profit')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+    $export_ainiats = ExportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id', 'customer_id', 'worker_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
 
     $pages = ceil(ExportAiniat::count() / $page);
     $box = DB::select('SELECT remaining from box where id IN (3,7);');
@@ -49,7 +48,7 @@ class ExportAiniatController extends Controller
     $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
     $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
     $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
-    $products = DB::select('SELECT id, name, original_price, taqseet_price, quantity FROM products WHERE original_price >= 0 ORDER BY id DESC');
+    $products = DB::select('SELECT id, name, quantity FROM products ORDER BY id DESC');
     $boxes = Box::select('id', 'name')->get();
 
     return view('admin.export_ainiat.create', compact('providers', 'customers', 'workers', 'products', 'boxes'));
@@ -115,11 +114,10 @@ class ExportAiniatController extends Controller
       for ($i = 0; $i < count($tblArray) / 5; $i++) {
 
         $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-        $quantity = Quantity::where('id', $request->product_pr)->first();
 
-        if ($quantity->quantity - $tblArray[$i * 5 + 1] < 0) {
+        if ($product->quantity - $tblArray[$i * 5 + 1] < 0) {
           return redirect('/export_ainiats')->with('error', '1');
-        } else if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
+        } else if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
 
           Product::where('id', $tblArray[$i * 5 + 0])->update([
             'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
@@ -132,28 +130,36 @@ class ExportAiniatController extends Controller
             'export_ainiat_id' => $export_ainiat->id
           ]);
         }
-        Quantity::where('id', $request->product_pr)->update([
-          'quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]
-        ]);
 
         $sold_product = new SoldProduct;
         $sold_product->product_id = $tblArray[$i * 5 + 0];
         $sold_product->quantity = $tblArray[$i * 5 + 1];
-        $sold_product->sell_price = $tblArray[$i * 5 + 2];
-        $sold_product->total_price = $tblArray[$i * 5 + 3];
-        $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
-        $sold_product->profit = $profit;
-        $sold_product->buy_price = $quantity->buy_price;
+        // $sold_product->sell_price = $tblArray[$i * 5 + 2];
+        // $sold_product->total_price = $tblArray[$i * 5 + 3];
+        // $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $product->original_price);
+        // $sold_product->profit = $profit;
+        // $sold_product->buy_price = $quantity->buy_price;
         $sold_product->export_ainiat_id = $export_ainiat->id;
-        $total_profit += $profit;
+        // $total_profit += $profit;
         $sold_product->save();
 
-        Selective::where('customer_id', $customer_id)
+        $s = Selective::where('customer_id', $customer_id)
           ->where('product_id', $tblArray[$i * 5 + 0])
           ->where('status', 0)
-          ->update([
+          ->first();
+
+        if ($s == null) {
+          $selective = new Selective();
+          $selective->user_id = $user_id;
+          $selective->customer_id = $customer_id;
+          $selective->product_id = $tblArray[$i * 5 + 0];
+          $selective->status = 1;
+          $selective->save();
+        } else {
+          $s->update([
             'status' => 1,
           ]);
+        }
 
         $selective = Selective::where('customer_id', $customer_id)->where('status', 0)->get();
         if ($selective->count() == 0) {
@@ -200,6 +206,7 @@ class ExportAiniatController extends Controller
     $paid_balance = abs($request->paid_balance);
     $remaining_balance = $request->remaining_balance;
     $customer_id = $request['customer_id'];
+    $user_id = Auth::user()->id;
 
     $export_ainiat = ExportAiniat::where('id', $id)->first();
 
@@ -216,22 +223,19 @@ class ExportAiniatController extends Controller
           for ($i = 0; $i < count($tblArray) / 5; $i++) {
 
             $product = Product::where('id', $tblArray[$i * 5 + 0])->first();
-            $quantity = Quantity::where('product_id', $tblArray[$i * 5 + 0])->where('id', $request->product_pr)->first();
 
-            if ($quantity->quantity - $tblArray[$i * 5 + 1] == 0) {
+            if ($product->quantity - $tblArray[$i * 5 + 1] == 0) {
               Product::where('id', $tblArray[$i * 5 + 0])->update([
                 'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                 'export_ainiat_id' => $id,
                 'status' => false
               ]);
-              Quantity::where('id', $request->product_pr)->update(['quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]]);
-            } else if ($quantity->quantity - $tblArray[$i * 5 + 1] > 0) {
+            } else if ($product->quantity - $tblArray[$i * 5 + 1] > 0) {
               Product::where('id', $tblArray[$i * 5 + 0])->update([
                 'quantity' => $product->quantity - $tblArray[$i * 5 + 1],
                 'export_ainiat_id' => $id,
                 'status' => true
               ]);
-              Quantity::where('id', $request->product_pr)->update(['quantity' => $quantity->quantity - $tblArray[$i * 5 + 1]]);
             } else {
               return redirect('/export_ainiat/edit/' . $id);
             }
@@ -241,19 +245,30 @@ class ExportAiniatController extends Controller
             $sold_product->quantity = $tblArray[$i * 5 + 1];
             $sold_product->sell_price = $tblArray[$i * 5 + 2];
             $sold_product->total_price = $tblArray[$i * 5 + 3];
-            $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $quantity->buy_price);
-            $sold_product->profit = $profit;
-            $sold_product->buy_price = $quantity->buy_price;
+            // $profit = ($tblArray[$i * 5 + 1] * $tblArray[$i * 5 + 2]) - ($tblArray[$i * 5 + 1] * $quantity->buy_price);
+            // $sold_product->profit = $profit;
+            // $sold_product->buy_price = $quantity->buy_price;
             $sold_product->export_ainiat_id = $id;
-            $total_profit += $profit;
+            // $total_profit += $profit;
             $sold_product->save();
 
-            Selective::where('customer_id', $customer_id)
+            $s = Selective::where('customer_id', $customer_id)
               ->where('product_id', $tblArray[$i * 5 + 0])
               ->where('status', 0)
-              ->update([
+              ->first();
+
+            if ($s == null) {
+              $selective = new Selective();
+              $selective->user_id = $user_id;
+              $selective->customer_id = $customer_id;
+              $selective->product_id = $tblArray[$i * 5 + 0];
+              $selective->status = 1;
+              $selective->save();
+            } else {
+              $s->update([
                 'status' => 1,
               ]);
+            }
 
             $selective = Selective::where('customer_id', $customer_id)->where('status', 0)->get();
             if ($selective->count() == 0) {
@@ -298,7 +313,6 @@ class ExportAiniatController extends Controller
 
       $sold_product = SoldProduct::where('id', $id)->with('export_ainiat')->first();
       $product = Product::where('id', $sold_product->product_id)->first();
-      $quantity = Quantity::where('product_id', $sold_product->product_id)->where('buy_price', $sold_product->buy_price)->first();
 
       $profit = ($sold_product->sell_price * $sold_product->quantity) - ($sold_product->buy_price * $sold_product->quantity);
 
@@ -311,10 +325,6 @@ class ExportAiniatController extends Controller
       Product::where('id', $sold_product->product_id)->update([
         'quantity' => $product->quantity + $sold_product->quantity,
         'status' => true
-      ]);
-
-      $quantity->update([
-        'quantity' => $quantity->quantity + $sold_product->quantity
       ]);
 
       $sold_product->delete();
@@ -363,11 +373,11 @@ class ExportAiniatController extends Controller
             <th width="5%" bgcolor="#eee">#</th>
             <th width="15%" bgcolor="#eee">رقم الفاتورة</th>
             <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="20%" bgcolor="#eee">المستهلك</th>
+            <th width="20%" bgcolor="#eee">المستفيد</th>
             <th width="10%" bgcolor="#eee">المبلغ المدفوع</th>
             <th width="10%" bgcolor="#eee">المبلغ المتبقي</th>
             <th width="10%" bgcolor="#eee">المربح</th>
-            <th width="15%" bgcolor="#eee">البيان</th>
+            <th width="15%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
         <tbody>';
