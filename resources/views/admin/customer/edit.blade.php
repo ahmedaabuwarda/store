@@ -162,8 +162,8 @@
 
           </div>
           <div class="modal-footer justify-content-center mt--3">
-            <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
             <a href="{{ URL('/customers') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+            <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
           </div>
 
         </form>

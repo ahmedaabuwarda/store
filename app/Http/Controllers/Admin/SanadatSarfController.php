@@ -32,7 +32,7 @@ class SanadatSarfController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->with('user:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->with('user:id,name')->orderBy('date_created', 'DESC')->paginate($page);
 
     $boxes = Box::select('id', 'name', 'balance')->get();
 
@@ -63,7 +63,7 @@ class SanadatSarfController extends Controller
     $worker_id = $request['worker_id'];
     $number = $request['number'];
     $date_created = $request['date_created'];
-    $byan = $request['byan'] ?? 'لا يوجد';
+    $notes = $request['notes'] ?? 'لا يوجد';
     $target = $request['target'] ?? '';
     $box_id = $request['box_id'];
 
@@ -98,7 +98,7 @@ class SanadatSarfController extends Controller
             if ($customer) {
               $customer_id = $customer->id;
               $balance = abs($row[3]);
-              $byan = $row[4];
+              $notes = $row[4];
 
               // Create a new Sanadat_Sarf record
               $sanadat_sarf = new Sanadat_Sarf;
@@ -107,7 +107,7 @@ class SanadatSarfController extends Controller
               $sanadat_sarf->balance = $balance;
               $sanadat_sarf->box_id = $box_id;
               $sanadat_sarf->user_id = $user_id;
-              $sanadat_sarf->byan = $byan;
+              $sanadat_sarf->notes = $notes;
 
               // Update customer balance
               $customer->update(['balance' => $customer->balance - $balance]);
@@ -149,7 +149,7 @@ class SanadatSarfController extends Controller
         $sanadat_sarf->balance = $balance;
         $sanadat_sarf->box_id = $box_id;
         $sanadat_sarf->user_id = $user_id;
-        $sanadat_sarf->byan = $byan;
+        $sanadat_sarf->notes = $notes;
 
         if ($target == 'customers') {
           $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
@@ -272,7 +272,7 @@ class SanadatSarfController extends Controller
     $box_id = $request->box_id;
     // dd($request->toArray());
 
-    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
+    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'user:id,name',
         'box:id,name,currency_id',
@@ -285,7 +285,7 @@ class SanadatSarfController extends Controller
       ->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])
       ->orderBy('id', 'DESC')
       ->get();
-      // dd($sanadat_sarf);
+    // dd($sanadat_sarf);
 
     $i = 1;
     $total = 0;
@@ -325,7 +325,7 @@ class SanadatSarfController extends Controller
               <td width="10%">' . $sanadat_sarf->balance . ' ' . $sanadat_sarf->box->currency->symbol . '</td>
               <td width="10%">' . $sanadat_sarf->box->name . '</td>
               <td width="10%">' . $sanadat_sarf->user->name . '</td>
-              <td width="20%">' . $sanadat_sarf->byan . '</td>
+              <td width="20%">' . $sanadat_sarf->notes . '</td>
             </tr>';
       $total += $sanadat_sarf->balance;
       $i++;
@@ -353,6 +353,10 @@ class SanadatSarfController extends Controller
     PDF::writeHTML($content);
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
+
+    if ($box_id != null) {
+      PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%">' . $total . ' ' . $sanadat_sarfs[0]->box->currency->symbol . '</td></tr></tbody></table>');
+    }
 
     // Ensure the directory exists before saving the file
     $directoryPath = storage_path('app/public/pdf/سندات الصرف' . '/' . date('Y-m-d'));

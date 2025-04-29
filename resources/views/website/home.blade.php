@@ -94,6 +94,9 @@
       <form id="create_product_form">
         <div class="modal-body">
           @csrf
+          <ul>
+            <li>ملف الاكسل: الرقم | الاسم | النوع</li>
+          </ul>
           <div class="row">
 
 

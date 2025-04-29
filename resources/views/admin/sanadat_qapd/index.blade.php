@@ -258,11 +258,11 @@
               <div class="form-group">
                 <label class="form-control-label">الملاحظات</label>
                 <div class="input-group">
-                  <textarea type="text" class="form-control @error('byan') is-invalid @enderror"
-                    name="byan" placeholder="الملاحظات (في حال كان فارغ : لايوجد)" autocomplete="byan"
-                    rows="3">{{ old('byan') }}</textarea>
+                  <textarea type="text" class="form-control @error('notes') is-invalid @enderror"
+                    name="notes" placeholder="الملاحظات (في حال كان فارغ : لايوجد)" autocomplete="notes"
+                    rows="3">{{ old('notes') }}</textarea>
                 </div>
-                @error('byan')
+                @error('notes')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
               </div>

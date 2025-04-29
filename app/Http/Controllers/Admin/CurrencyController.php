@@ -81,12 +81,12 @@ class CurrencyController extends Controller
 
         // Commit the transaction
         DB::commit();
-        return response()->json(['status' => 'success', 'message' => 'تم اضافة المسجد بنجاح']);
+        return response()->json(['status' => 'success', 'message' => 'تم اضافة العملة بنجاح']);
       } catch (Exception $e) {
         // Rollback the transaction in case of error
         DB::rollback();
         // return dd($e->getMessage());  // For debugging
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ العملات']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     }
@@ -98,7 +98,7 @@ class CurrencyController extends Controller
       $currency->save();
 
       DB::commit();
-      return response()->json(['status' => 'success']);
+      return response()->json(['status' => 'success', 'message' => 'تم اضافة العملة بنجاح']);
     } catch (Exception $e) {
       DB::rollBack();
       // return response()->json(['status' => 'error']);

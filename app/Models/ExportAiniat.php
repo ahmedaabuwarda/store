@@ -10,20 +10,8 @@ class ExportAiniat extends Model
     use HasFactory;
 
     protected $table = 'export_ainiats';
-    protected $fillable = ['id', 'total_profit', 'expense', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'user_id', 'number', 'date_created', 'notes', 'created_at', 'updated_at'];
 
-    public function provider()
-    {
-        return $this->belongsTo('App\Models\Provider');
-    }
-    public function customer()
-    {
-        return $this->belongsTo('App\Models\Customer');
-    }
-    public function worker()
-    {
-        return $this->belongsTo('App\Models\Worker');
-    }
     public function user()
     {
         return $this->belongsTo('App\Models\User');
@@ -35,5 +23,10 @@ class ExportAiniat extends Model
     public function sold_product()
     {
         return $this->hasMany('App\Models\SoldProduct');
+    }
+    // has many relationship with selective
+    public function selective()
+    {
+        return $this->hasMany('App\Models\Selective', 'export_ainiat_number', 'number');
     }
 }

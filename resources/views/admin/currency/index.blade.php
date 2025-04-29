@@ -82,6 +82,9 @@
       <form id="create_currency_form">
         <div class="modal-body">
           @csrf
+          <ul>
+            <li>ملف الاكسل: الرقم | الاسم | رمز العملة</li>
+          </ul>
           <div class="row">
             <div class="col-12">
 

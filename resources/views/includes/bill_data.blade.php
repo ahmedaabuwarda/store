@@ -93,8 +93,8 @@
     <div class="form-group">
       <label class="form-control-label">الملاحظات</label>
       <div class="input-group">
-        <textarea type="text" class="form-control" name="byan" placeholder="الملاحظات" autocomplete="byan"
-          rows="2" disabled>{{ $bill->byan }}</textarea>
+        <textarea type="text" class="form-control" name="notes" placeholder="الملاحظات" autocomplete="notes"
+          rows="2" disabled>{{ $bill->notes }}</textarea>
       </div>
     </div>
 

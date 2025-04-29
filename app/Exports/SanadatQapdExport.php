@@ -50,7 +50,7 @@ class SanadatQapdExport implements FromCollection
             $item->box && $item->box->currency ? $item->box->currency->name : null,
             $item->box->name,
             $item->user->name,
-            $item->byan,
+            $item->notes,
           ];
         })
     );

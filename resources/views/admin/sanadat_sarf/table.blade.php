@@ -25,7 +25,7 @@
                         data-placement="top" title="حذف" data-dataid="{{ $sanadat_sarf->id }}"
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
                 </td>
-                <td class="display-3 text-center">{{ $sanadat_sarf->byan }}</td>
+                <td class="display-3 text-center">{{ $sanadat_sarf->notes }}</td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->user->name }}</td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->box->name }}</td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->box->currency->symbol }} {{ $sanadat_sarf->balance }}</td>

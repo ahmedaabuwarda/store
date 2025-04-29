@@ -32,7 +32,7 @@ class ImportAiniatController extends Controller
   public function index()
   {
     $page = config('app.page');
-    $import_ainiats = ImportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id')->with('provider:id,name')->orderBy('id', 'DESC')->paginate($page);
+    $import_ainiats = ImportAiniat::select('id', 'number', 'date_created', 'notes', 'provider_id', 'user_id')->with(['provider:id,name','user:id,name'])->orderBy('id', 'DESC')->paginate($page);
     $pages = ceil(ImportAiniat::count() / $page);
 
     return view('admin.import_ainiat.index', compact('import_ainiats', 'pages'));
@@ -52,6 +52,7 @@ class ImportAiniatController extends Controller
   {
 
     $provider_id = $request['provider_id'];
+    $user_id = Auth::user()->id;
 
     DB::beginTransaction();
     try {
@@ -60,7 +61,8 @@ class ImportAiniatController extends Controller
       $import_ainiat->number = $request['number'];
       $import_ainiat->date_created = $request['date_created'];
       $import_ainiat->provider_id = $provider_id;
-      $import_ainiat->byan = $request['byan'] ?? 'لا يوجد';
+      $import_ainiat->user_id = $user_id;
+      $import_ainiat->notes = $request['notes'] ?? 'لا يوجد';
       $import_ainiat->save();
 
       $tblArray = explode(',', $request['tbl']);
@@ -100,7 +102,7 @@ class ImportAiniatController extends Controller
   public function show(Request $request)
   {
     $id = $request['id'];
-    $bill = ImportAiniat::select('id', 'number', 'date_created', 'provider_id', 'byan')->with('buyed_product:id,product_id,quantity,import_ainiat_id')->with('provider:id,name')->with('buyed_product.product:id,name')->where('id', $id)->first();
+    $bill = ImportAiniat::select('id', 'number', 'date_created', 'provider_id', 'notes')->with('buyed_product:id,product_id,quantity,import_ainiat_id')->with('provider:id,name')->with('buyed_product.product:id,name')->where('id', $id)->first();
 
     if ($bill != null) {
       $bill_data = view('includes.bill_data', compact('bill'))->render();
@@ -113,7 +115,7 @@ class ImportAiniatController extends Controller
   // edit
   public function edit($id)
   {
-    $import_ainiat = ImportAiniat::select('id', 'number', 'date_created', 'provider_id', 'byan')->with('buyed_product:id,product_id,quantity,import_ainiat_id')->where('id', $id)->first();
+    $import_ainiat = ImportAiniat::select('id', 'number', 'date_created', 'provider_id', 'notes')->with('buyed_product:id,product_id,quantity,import_ainiat_id')->where('id', $id)->first();
     $products = DB::select('SELECT id, name, quantity FROM products ORDER BY id DESC');
     return view('admin.import_ainiat.edit', compact('import_ainiat', 'products'));
   }
@@ -151,7 +153,7 @@ class ImportAiniatController extends Controller
         }
 
         $import_ainiat->update(
-          ['byan' => $request['byan']]
+          ['notes' => $request['notes']]
         );
 
         DB::commit();
@@ -216,7 +218,7 @@ class ImportAiniatController extends Controller
   {
     $from = date($request['from'] . ' 00:00:00');
     $to = date($request['to'] . ' 23:59:59');
-    $import_ainiats = ImportAiniat::select('id', 'number', 'date_created', 'byan', 'provider_id')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
+    $import_ainiats = ImportAiniat::select('id', 'number', 'date_created', 'notes', 'provider_id')->with('provider:id,name')->whereRaw('date_created >= ? AND date_created <= ?', [$from, $to])->orderBy('id', 'DESC')->get();
 
     $i = 1;
     $time = date('H:i:s');
@@ -241,7 +243,7 @@ class ImportAiniatController extends Controller
               <td width="20%">' . $import_ainiat->number . '</td>
               <td width="25%">' . $import_ainiat->date_created . '</td>
               <td width="25%">' . $import_ainiat->provider->name . '</td>
-              <td width="25%">' . $import_ainiat->byan . '</td>
+              <td width="25%">' . $import_ainiat->notes . '</td>
             </tr>';
       $i++;
     }

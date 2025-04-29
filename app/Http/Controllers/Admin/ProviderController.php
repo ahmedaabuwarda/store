@@ -144,13 +144,13 @@ class ProviderController extends Controller
     $id = $request->id;
 
     $provider = DB::select('SELECT name, balance FROM providers WHERE id = :id', ['id' => $id]);
-    $provider_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.byan FROM providers, sanadat_sarfs WHERE providers.id = sanadat_sarfs.provider_id AND providers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $provider_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.notes FROM providers, sanadat_sarfs WHERE providers.id = sanadat_sarfs.provider_id AND providers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-    $provider_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM providers, sanadat_qapds WHERE providers.id = sanadat_qapds.provider_id AND providers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $provider_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.notes FROM providers, sanadat_qapds WHERE providers.id = sanadat_qapds.provider_id AND providers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-    $provider_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.byan, import_ainiats.remaining_balance, import_ainiats.expense FROM providers, import_ainiats WHERE providers.id = import_ainiats.provider_id AND providers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $provider_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.notes, import_ainiats.remaining_balance, import_ainiats.expense FROM providers, import_ainiats WHERE providers.id = import_ainiats.provider_id AND providers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-    $provider_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM providers, export_ainiats WHERE providers.id = export_ainiats.provider_id AND providers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $provider_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.notes, export_ainiats.remaining_balance FROM providers, export_ainiats WHERE providers.id = export_ainiats.provider_id AND providers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
     $i = 1;
     $sarf_total = 0;
@@ -177,7 +177,7 @@ class ProviderController extends Controller
               <td width="25%">' . $sanadat_sarf->number . '</td>
               <td width="20%">' . $sanadat_sarf->date_created . '</td>
               <td width="20%">' . $sanadat_sarf->balance . '<span>&#8362;&#160;</span> - مدين -</td>
-              <td width="25%">' . $sanadat_sarf->byan . '</td>
+              <td width="25%">' . $sanadat_sarf->notes . '</td>
             </tr>';
       $sarf_total += $sanadat_sarf->balance;
       $i++;
@@ -204,7 +204,7 @@ class ProviderController extends Controller
               <td width="25%">' . $sanadat_qapd->number . '</td>
               <td width="20%">' . $sanadat_qapd->date_created . '</td>
               <td width="20%">' . $sanadat_qapd->balance . '<span>&#8362;&#160;</span> - دائن -</td>
-              <td width="25%">' . $sanadat_qapd->byan . '</td>
+              <td width="25%">' . $sanadat_qapd->notes . '</td>
             </tr>';
       $qapd_total += $sanadat_qapd->balance;
       $i++;
@@ -244,7 +244,7 @@ class ProviderController extends Controller
               <td width="15%">' . $import_ainiat->paid_balance . '<span>&#8362;&#160;</span></td>
               <td width="10%">' . $remaining . '</td>
               <td width="10%">' . $import_ainiat->expense . '<span>&#8362;&#160;</span></td>
-              <td width="20%">' . $import_ainiat->byan . '</td>
+              <td width="20%">' . $import_ainiat->notes . '</td>
             </tr>';
       $buy_total += $import_ainiat->remaining_balance;
       $expense_total += $import_ainiat->expense;
@@ -289,7 +289,7 @@ class ProviderController extends Controller
               <td width="20%">' . $export_ainiat->date_created . '</td>
               <td width="15%">' . $export_ainiat->paid_balance . '<span>&#8362;&#160;</span></td>
               <td width="20%">' . $remaining . '</td>
-              <td width="20%">' . $export_ainiat->byan . '</td>
+              <td width="20%">' . $export_ainiat->notes . '</td>
             </tr>';
       $sell_total += $export_ainiat->remaining_balance;
       $i++;

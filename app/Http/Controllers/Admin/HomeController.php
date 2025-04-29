@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\Controller;
+use App\Models\ImportAiniat;
 
 class HomeController extends Controller
 {
@@ -33,6 +34,7 @@ class HomeController extends Controller
         ( SELECT sum( expenses.balance ) FROM expenses ) AS total_expenses,
         ( SELECT sum( box.balance ) FROM box WHERE box.name LIKE :shekel) AS total_shekel,
         ( SELECT sum( box.balance ) FROM box WHERE box.name LIKE :dollar) AS total_dollar,
+        ( SELECT sum( salaries.balance ) FROM salaries ) AS total_salaries,
         ( SELECT sum( box.balance ) FROM box WHERE box.name LIKE :dinar) AS total_dinar
         FROM box;', ['shekel' => '%شيكل%', 'dollar' => '%دولار%', 'dinar' => '%دينار%']);
     // $totals = null;
@@ -92,10 +94,10 @@ class HomeController extends Controller
       $result = Provider::select('id', 'name', 'balance', 'notes', 'status')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     } else if ($target == 'customers') {
       $result = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'mosque_id', 'notes', 'status', 'created_at')
-      ->with('mosque:id,name')
-      ->where('name', 'like', '%' . $search_query . '%')
-      ->orderBy('id', 'DESC')
-      ->paginate($page);
+        ->with('mosque:id,name')
+        ->where('name', 'like', '%' . $search_query . '%')
+        ->orderBy('id', 'DESC')
+        ->paginate($page);
     } else if ($target == 'selectives') {
       $result = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'mosque_id', 'notes', 'status', 'created_at')
         ->with('mosque:id,name')
@@ -104,9 +106,11 @@ class HomeController extends Controller
         ->orderBy('id', 'DESC')
         ->paginate($page);
     } else if ($target == 'products') {
-      $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'original_price', 'taqseet_price', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+      $result = Product::select('id', 'name', 'quantity', 'original_quantity', 'status', 'type')->where('name', 'like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     } else if ($target == 'export_ainiats') {
-      $result = ExportAiniat::where('number', date($search_query))->orderBy('id', 'DESC')->get();
+      $result = ExportAiniat::where('number', 'Like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
+    } else if ($target == 'import_ainiats') {
+      $result = ImportAiniat::where('number', 'Like', '%' . $search_query . '%')->orderBy('id', 'DESC')->paginate($page);
     }
     $pages = ceil(count($result) / $page);
     return view('website.search', compact('result', 'pages', 'target'));

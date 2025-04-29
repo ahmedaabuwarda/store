@@ -25,7 +25,7 @@ class CreateSanadatQapdsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->double('balance', 15, 4);
-            $table->string('byan');
+            $table->string('notes');
             $table->timestamps();
         });
     }

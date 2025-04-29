@@ -113,6 +113,32 @@ class SelectiveController extends Controller
     }
   }
 
+  // delete
+  public function delete(Request $request, $id)
+  {
+    $selective = Selective::where('id', $id)->with('export_ainiat:id,number')->first();
+    $product = Product::where('id', $selective->product_id)->first();
+    // Start transaction
+    DB::beginTransaction();
+    try {
+
+      $product->update([
+        'quantity' => $product->quantity + 1,
+      ]);
+
+      $selective->delete();
+
+      // Commit the transaction
+      DB::commit();
+      return redirect('/export_ainiat/edit/' . $selective->export_ainiat->id)->with(['success' => 'تم حذف العينية بنجاح']);
+    } catch (Exception $e) {
+      // Rollback the transaction in case of error
+      DB::rollback();
+      // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+      return redirect('/export_ainiat/edit/' . $selective->export_ainiat->id)->with(['error', $e->getMessage()]);
+    }
+  }
+
   // to pdf
   public function to_pdf(Request $request)
   {
@@ -229,23 +255,23 @@ class SelectiveController extends Controller
 
     // $customer = DB::select('SELECT name, balance, phone, identity, family_number FROM customers WHERE id = :id', ['id' => $id]);
 
-    $customer_sarf = Sanadat_Sarf::select('id', 'date_created', 'number', 'balance', 'byan', 'customer_id', 'box_id', 'user_id')
+    $customer_sarf = Sanadat_Sarf::select('id', 'date_created', 'number', 'balance', 'notes', 'customer_id', 'box_id', 'user_id')
       ->with(['customer', 'box', 'user'])
       ->whereBetween('date_created', [$from, $to])
       ->where('customer_id', $id)
       ->orderBy('id', 'DESC')
       ->get();
 
-    $customer_qapd = Sanadat_Qapd::select('id', 'date_created', 'number', 'balance', 'byan', 'customer_id', 'box_id', 'user_id')
+    $customer_qapd = Sanadat_Qapd::select('id', 'date_created', 'number', 'balance', 'notes', 'customer_id', 'box_id', 'user_id')
       ->with(['customer', 'box', 'user'])
       ->whereBetween('date_created', [$from, $to])
       ->where('customer_id', $id)
       ->orderBy('id', 'DESC')
       ->get();
 
-    $customer_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.byan, import_ainiats.remaining_balance FROM customers, import_ainiats WHERE customers.id = import_ainiats.customer_id AND customers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $customer_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.notes, import_ainiats.remaining_balance FROM customers, import_ainiats WHERE customers.id = import_ainiats.customer_id AND customers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.notes, export_ainiats.remaining_balance FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
     $customer_ainiat = Customer::with([
       'selective.product:id,name',
@@ -288,7 +314,7 @@ class SelectiveController extends Controller
                 <td width="10%">' . $sanadat_sarf->balance . ' ' . $sanadat_sarf->box->currency->symbol . '</td>
                 <td width="20%">' . $sanadat_sarf->box->name . '</td>
                 <td width="15%">' . $sanadat_sarf->user->name . '</td>
-                <td width="20%">' . $sanadat_sarf->byan . '</td>
+                <td width="20%">' . $sanadat_sarf->notes . '</td>
               </tr>';
       $sarf_total += $sanadat_sarf->balance;
       $i++;
@@ -320,7 +346,7 @@ class SelectiveController extends Controller
                 <td width="10%">' . $sanadat_qapd->balance . ' ' . $sanadat_qapd->box->currency->symbol . '</td>
                 <td width="15%">' . $sanadat_qapd->box->name . '</td>
                 <td width="15%">' . $sanadat_qapd->user->name . '</td>
-                <td width="20%">' . $sanadat_qapd->byan . '</td>
+                <td width="20%">' . $sanadat_qapd->notes . '</td>
               </tr>';
       $qapd_total += $sanadat_qapd->balance;
       $i++;
@@ -385,7 +411,7 @@ class SelectiveController extends Controller
                 <td width="20%">' . $import_ainiat->date_created . '</td>
                 <td width="15%">' . $import_ainiat->paid_balance . '<span>&#8362;&#160;</span></td>
                 <td width="20%">' . $remaining . '</td>
-                <td width="20%">' . $import_ainiat->byan . '</td>
+                <td width="20%">' . $import_ainiat->notes . '</td>
               </tr>';
       $buy_total += $import_ainiat->remaining_balance;
       $i++;
@@ -430,7 +456,7 @@ class SelectiveController extends Controller
                 <td width="20%">' . $export_ainiat->date_created . '</td>
                 <td width="15%">' . $export_ainiat->paid_balance . '</td>
                 <td width="20%">' . $remaining . '</td>
-                <td width="20%">' . $export_ainiat->byan . '</td>
+                <td width="20%">' . $export_ainiat->notes . '</td>
               </tr>';
       $sell_total += $export_ainiat->remaining_balance;
       $i++;

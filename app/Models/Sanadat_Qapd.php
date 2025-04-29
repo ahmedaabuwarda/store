@@ -20,7 +20,7 @@ class Sanadat_Qapd extends Model
     'date_created',
     'number',
     'balance',
-    'byan',
+    'notes',
     'create_at',
     'updated_at',
   ];

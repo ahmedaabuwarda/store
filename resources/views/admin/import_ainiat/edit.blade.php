@@ -175,9 +175,9 @@
                     <div class="form-group">
                       <label class="form-control-label">الملاحظات</label>
                       <div class="input-group">
-                        <textarea type="text" class="form-control @error('byan') is-invalid @enderror" name="byan" placeholder="الملاحظات" autocomplete="byan" rows="2">{{ $import_ainiat->byan }}</textarea>
+                        <textarea type="text" class="form-control @error('notes') is-invalid @enderror" name="notes" placeholder="الملاحظات" autocomplete="notes" rows="2">{{ $import_ainiat->notes }}</textarea>
                       </div>
-                      @error('byan')
+                      @error('notes')
                       <span class="text-danger">{{ $message }}</span>
                       @enderror
                     </div>
@@ -189,8 +189,8 @@
                   </div>
 
                   <div class="m-auto">
-                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>تحديث</button>
                     <a href="{{ URL('/import_ainiats') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+                    <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>تحديث</button>
                   </div>
 
                 </div>

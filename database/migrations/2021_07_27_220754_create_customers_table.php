@@ -17,13 +17,13 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('identity')->unique()->nullable();
-            $table->string('phone')->unique()->nullable();
+            $table->string('phone')->nullable();
             $table->string('family_number')->nullable();
             $table->unsignedBigInteger('mosque_id')->nullable();
             $table->foreign('mosque_id')->references('id')->on('mosques')->onDelete('cascade');
-            $table->double('balance', 15, 4);
+            $table->double('balance', 15, 4)->nullable();
             $table->boolean('status')->default(true)->comment('0: مرشح, 1: مستفيد');
-            $table->string('notes');
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

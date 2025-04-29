@@ -11,7 +11,7 @@ class ImportAiniat extends Model
     use HasFactory;
 
     protected $table = 'import_ainiats';
-    protected $fillable = ['id', 'number', 'date_created', 'provider_id', 'byan', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'number', 'date_created', 'provider_id', 'notes', 'created_at', 'updated_at'];
 
     public function provider()
     {

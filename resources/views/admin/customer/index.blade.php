@@ -81,7 +81,11 @@
       <form id="create_customer_form">
         <div class="modal-body">
           @csrf
+          <ul>
+            <li>ملف الاكسل: الرقم | الاسم | رقم الهوية | الهاتف | عدد افراد الاسرة | المسجد | ملاحظات</li>
+          </ul>
           <div class="row">
+
             <div class="col-md-6 col-sm-12">
 
               <div class="form-group">

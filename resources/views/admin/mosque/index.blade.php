@@ -85,6 +85,10 @@
           <div class="row">
             <div class="col-12">
 
+              <ul>
+                <li>ملف الاكسل: الرقم | الاسم | ملاحظات</li>
+              </ul>
+
               <div class="form-group">
                 <label class="form-control-label">اسم المسجد</label>
                 <div class="input-group">

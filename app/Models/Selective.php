@@ -12,6 +12,7 @@ class Selective extends Model
   protected $table = 'selectives';
   protected $fillable = [
     'id',
+    'export_ainiat_number',
     'user_id',
     'customer_id',
     'product_id',
@@ -34,4 +35,10 @@ class Selective extends Model
   {
     return $this->belongsTo('App\Models\Product');
   }
+
+  public function export_ainiat()
+  {
+    return $this->belongsTo('App\Models\ExportAiniat', 'export_ainiat_number', 'number');
+  }
+
 }

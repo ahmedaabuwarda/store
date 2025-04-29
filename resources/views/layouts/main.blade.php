@@ -113,6 +113,73 @@
             <li class="nav-item dropdown">
               <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
+                <i class="fas fa-child"></i> الأيتام
+              </a>
+              <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">
+                <!-- Dropdown header -->
+                <div class="px-3 py-3">
+                  <h6 class="text-sm text-muted m-0"><strong class="text-primary">Choose |
+                      اختار</strong></h6>
+                </div>
+                <!-- List group -->
+                <div class="list-group list-group-flush">
+                  @can('add_sanadat_sarfs')
+                  <a href="{{ URL('/kafeels') }}"
+                    class="btn list-group-item list-group-item-action">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <i class="fa fa-cloud text-danger"></i>
+                      </div>
+                      <div class="col ml--2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="mb-0 text-sm">Kafeels | الكفلاء</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  @endcan
+                  @can('add_sanadat_qapds')
+                  <a href="{{ URL('/wasis') }}"
+                    class="btn list-group-item list-group-item-action">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <i class="fa fa-bookmark text-success"></i>
+                      </div>
+                      <div class="col ml--2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="mb-0 text-sm">Wasis | الأوصياء</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  @endcan
+                  @can('add_import_ainiats')
+                  <a href="{{ URL('/orphans') }}"
+                    class="btn list-group-item list-group-item-action">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+                        <i class="fa fa-child text-primary"></i>
+                      </div>
+                      <div class="col ml--2">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <div>
+                            <h4 class="mb-0 text-sm">Orphans | الأيتام</h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                  @endcan
+                </div>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
                 <i class="fas fa-university"></i> السندات والعينيات
               </a>
               <div class="dropdown-menu dropdown-menu-xl dropdown-menu-right py-0 overflow-hidden">

@@ -47,6 +47,9 @@
             @elseif($target == 'export_ainiats')
               @php $export_ainiats = $result; @endphp
               @include('admin.export_ainiat.table')
+            @elseif($target == 'import_ainiats')
+              @php $import_ainiats = $result; @endphp
+              @include('admin.import_ainiat.table')
             @endif
           </table>
         </div>

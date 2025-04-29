@@ -83,6 +83,7 @@ Route::get('/selectives', [App\Http\Controllers\Admin\SelectiveController::class
 Route::post('/selective/store', [App\Http\Controllers\Admin\SelectiveController::class, 'store']);
 Route::get('/selective/edit/{id}', [App\Http\Controllers\Admin\SelectiveController::class, 'edit']);
 Route::post('/selective/update', [App\Http\Controllers\Admin\SelectiveController::class, 'update']);
+Route::post('/selective/delete/{id}', [App\Http\Controllers\Admin\SelectiveController::class, 'delete']);
 Route::post('/selective/to_pdf', [App\Http\Controllers\Admin\SelectiveController::class, 'to_pdf']);
 Route::post('/selective/kashf_to_pdf', [App\Http\Controllers\Admin\SelectiveController::class, 'kashf_to_pdf']);
 Route::post('/selective/to_xlsx', [App\Http\Controllers\Admin\SelectiveController::class, 'to_xlsx']);
@@ -140,17 +141,44 @@ Route::post('/sanadat_sarf/to_xlsx', [App\Http\Controllers\Admin\SanadatSarfCont
 
 // export_ainiats
 Route::get('/export_ainiats', [App\Http\Controllers\Admin\ExportAiniatController::class, 'index']);
-Route::get('/export_ainiat/create', [App\Http\Controllers\Admin\ExportAiniatController::class, 'create']);
 Route::post('/export_ainiat/store', [App\Http\Controllers\Admin\ExportAiniatController::class, 'store']);
-Route::get('/export_ainiat/show', [App\Http\Controllers\Admin\ExportAiniatController::class, 'show']);
 Route::get('/export_ainiat/edit/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'edit']);
 Route::post('/export_ainiat/update/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'update']);
 Route::post('/export_ainiat/delete', [App\Http\Controllers\Admin\ExportAiniatController::class, 'delete']);
 Route::post('/export_ainiat/delete_product/{id}', [App\Http\Controllers\Admin\ExportAiniatController::class, 'delete_product']);
 Route::post('/export_ainiat/to_pdf', [App\Http\Controllers\Admin\ExportAiniatController::class, 'to_pdf']);
+Route::post('/export_ainiat/to_xlsx', [App\Http\Controllers\Admin\ExportAiniatController::class, 'to_xlsx']);
 
 // workers
 Route::get('/workers', [App\Http\Controllers\Admin\WorkerController::class, 'index']);
 Route::post('/worker/store', [App\Http\Controllers\Admin\WorkerController::class, 'store']);
 Route::post('/worker/to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'to_pdf']);
 Route::post('/worker/kashf_to_pdf', [App\Http\Controllers\Admin\WorkerController::class, 'kashf_to_pdf']);
+
+// kafeels
+Route::get('/kafeels', [App\Http\Controllers\Admin\KafeelController::class, 'index']);
+Route::post('/kafeel/store', [App\Http\Controllers\Admin\KafeelController::class, 'store']);
+Route::get('/kafeel/edit/{id}', [App\Http\Controllers\Admin\KafeelController::class, 'edit']);
+Route::post('/kafeel/update', [App\Http\Controllers\Admin\KafeelController::class, 'update']);
+Route::post('/kafeel/to_pdf', [App\Http\Controllers\Admin\KafeelController::class, 'to_pdf']);
+Route::post('/kafeel/to_xlsx', [App\Http\Controllers\Admin\KafeelController::class, 'to_xlsx']);
+Route::post('/kafeel/kashf_to_pdf', [App\Http\Controllers\Admin\KafeelController::class, 'kashf_to_pdf']);
+
+// orphans
+Route::get('/orphans', [App\Http\Controllers\Admin\OrphanController::class, 'index']);
+Route::post('/orphan/store', [App\Http\Controllers\Admin\OrphanController::class, 'store']);
+Route::get('/orphan/edit/{id}', [App\Http\Controllers\Admin\OrphanController::class, 'edit']);
+Route::post('/orphan/update', [App\Http\Controllers\Admin\OrphanController::class, 'update']);
+Route::post('/orphan/to_pdf', [App\Http\Controllers\Admin\OrphanController::class, 'to_pdf']);
+Route::post('/orphan/payment/to_pdf', [App\Http\Controllers\Admin\OrphanController::class, 'payment_to_pdf']);
+Route::post('/orphan/to_xlsx', [App\Http\Controllers\Admin\OrphanController::class, 'to_xlsx']);
+Route::post('/orphan/kashf_to_pdf', [App\Http\Controllers\Admin\OrphanController::class, 'kashf_to_pdf']);
+
+// wasis
+Route::get('/wasis', [App\Http\Controllers\Admin\WasiController::class, 'index']);
+Route::post('/wasi/store', [App\Http\Controllers\Admin\WasiController::class, 'store']);
+Route::get('/wasi/edit/{id}', [App\Http\Controllers\Admin\WasiController::class, 'edit']);
+Route::post('/wasi/update', [App\Http\Controllers\Admin\WasiController::class, 'update']);
+Route::post('/wasi/to_pdf', [App\Http\Controllers\Admin\WasiController::class, 'to_pdf']);
+Route::post('/wasi/to_xlsx', [App\Http\Controllers\Admin\WasiController::class, 'to_xlsx']);
+Route::post('/wasi/kashf_to_pdf', [App\Http\Controllers\Admin\WasiController::class, 'kashf_to_pdf']);

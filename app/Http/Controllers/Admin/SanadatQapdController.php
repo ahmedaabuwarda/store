@@ -32,7 +32,7 @@ class SanadatQapdController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
+    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'worker:id,name',
         'customer:id,name',
@@ -82,7 +82,7 @@ class SanadatQapdController extends Controller
       $sanadat_qapd->balance = $balance;
       $sanadat_qapd->box_id = $box_id;
       $sanadat_qapd->user_id = $user_id;
-      $sanadat_qapd->byan = $request['byan'] ?? 'لا يوجد';
+      $sanadat_qapd->notes = $request['notes'] ?? 'لا يوجد';
 
       if ($request['target'] == 'customers') {
         $customer = Customer::where('id', $customer_id)->select('name', 'balance')->first();
@@ -202,7 +202,7 @@ class SanadatQapdController extends Controller
   {
     $from = date($request['from'] . ' 00:00:00');
     $to = date($request['to'] . ' 23:59:59');
-    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'byan', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
+    $sanadat_qapds = Sanadat_Qapd::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')
       ->with([
         'user:id,name',
         'box:id,name,currency_id',
@@ -253,7 +253,7 @@ class SanadatQapdController extends Controller
               <td width="10%">' . $sanadat_qapd->balance . ' ' . $sanadat_qapd->box->currency->symbol . '</td>
               <td width="10%">' . $sanadat_qapd->box->name . '</td>
               <td width="10%">' . $sanadat_qapd->user->name . '</td>
-              <td width="20%">' . $sanadat_qapd->byan . '</td>
+              <td width="20%">' . $sanadat_qapd->notes . '</td>
             </tr>';
       $total += $sanadat_qapd->balance;
       $i++;

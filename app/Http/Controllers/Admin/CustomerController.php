@@ -337,21 +337,21 @@ class CustomerController extends Controller
     $to = date($request->to . ' 23:59:59');
     $id = $request->from_to;
 
-    $customer_sarf = Sanadat_Sarf::select('id', 'date_created', 'number', 'balance', 'byan', 'customer_id', 'box_id', 'user_id')
+    $customer_sarf = Sanadat_Sarf::select('id', 'date_created', 'number', 'balance', 'notes', 'customer_id', 'box_id', 'user_id')
       ->with(['customer', 'box', 'user'])
       ->whereBetween('date_created', [$from, $to])
       ->where('customer_id', $id)
       ->orderBy('id', 'DESC')
       ->get();
 
-    $customer_qapd = Sanadat_Qapd::select('id', 'date_created', 'number', 'balance', 'byan', 'customer_id', 'box_id', 'user_id')
+    $customer_qapd = Sanadat_Qapd::select('id', 'date_created', 'number', 'balance', 'notes', 'customer_id', 'box_id', 'user_id')
       ->with(['customer', 'box', 'user'])
       ->whereBetween('date_created', [$from, $to])
       ->where('customer_id', $id)
       ->orderBy('id', 'DESC')
       ->get();
 
-    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.byan FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+    $customer_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.notes FROM customers, export_ainiats WHERE customers.id = export_ainiats.customer_id AND customers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
     $customer_ainiat = Customer::with([
       'selective.product:id,name',
@@ -394,7 +394,7 @@ class CustomerController extends Controller
               <td width="10%">' . $sanadat_sarf->balance . ' ' . $sanadat_sarf->box->currency->symbol . '</td>
               <td width="20%">' . $sanadat_sarf->box->name . '</td>
               <td width="15%">' . $sanadat_sarf->user->name . '</td>
-              <td width="20%">' . $sanadat_sarf->byan . '</td>
+              <td width="20%">' . $sanadat_sarf->notes . '</td>
             </tr>';
       $sarf_total += $sanadat_sarf->balance;
       $i++;
@@ -426,7 +426,7 @@ class CustomerController extends Controller
               <td width="10%">' . $sanadat_qapd->balance . ' ' . $sanadat_qapd->box->currency->symbol . '</td>
               <td width="15%">' . $sanadat_qapd->box->name . '</td>
               <td width="15%">' . $sanadat_qapd->user->name . '</td>
-              <td width="20%">' . $sanadat_qapd->byan . '</td>
+              <td width="20%">' . $sanadat_qapd->notes . '</td>
             </tr>';
       $qapd_total += $sanadat_qapd->balance;
       $i++;
@@ -481,7 +481,7 @@ class CustomerController extends Controller
               <td width="25%">' . $i . '</td>
               <td width="25%">' . $export_ainiat->number . '</td>
               <td width="25%">' . $export_ainiat->date_created . '</td>
-              <td width="25%">' . $export_ainiat->byan . '</td>
+              <td width="25%">' . $export_ainiat->notes . '</td>
             </tr>';
       $i++;
     }

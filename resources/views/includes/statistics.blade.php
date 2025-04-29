@@ -5,9 +5,10 @@ $total_expenses = $totals[0]->total_expenses;
 $total_shekel = $totals[0]->total_shekel;
 $total_dollar = $totals[0]->total_dollar;
 $total_dinar = $totals[0]->total_dinar;
+$total_salaries = $totals[0]->total_salaries;
 }
 @endphp
-<div class="col-xl-4">
+<div class="col-xl-3">
   <div class="card">
     <div class="table-responsive">
       <!-- statistics table -->
@@ -21,30 +22,34 @@ $total_dinar = $totals[0]->total_dinar;
             <td class="display-3 text-center">&#8362;@if($totals != null) {{ $total_expenses }} @endif</td>
             <td class="display-3 text-center">اجمالي المصاريف الكلي شيكل</td>
           </tr>
+          <tr>
+            <td class="display-3 text-center">&#8362;@if($totals != null) {{ $total_salaries }} @endif</td>
+            <td class="display-3 text-center">اجمالي الرواتب شيكل</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 </div>
 
-<div class="col-xl-4">
+<div class="col-xl-3">
   <div class="card">
     <div class="table-responsive">
       <!-- statistics table -->
       <table class="table align-items-center table-flush table-hover">
         <tbody>
+          @can('add_sanadat_qapds')
           <tr>
             <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
-            <td class="display-3 text-center">سند قبض</td>
+            <td class="display-3 text-center">سند قبض شيكل</td>
           </tr>
           <tr>
             <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
-            <td class="display-3 text-center">سند صرف</td>
+            <td class="display-3 text-center">سند قبض دولار</td>
           </tr>
-          @can('add_workers')
           <tr>
             <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
-            <td class="display-3 text-center">اجمالي الرواتب</td>
+            <td class="display-3 text-center">سند قبض دينار</td>
           </tr>
           @endcan
         </tbody>
@@ -53,7 +58,33 @@ $total_dinar = $totals[0]->total_dinar;
   </div>
 </div>
 
-<div class="col-xl-4">
+<div class="col-xl-3">
+  <div class="card">
+    <div class="table-responsive">
+      <!-- statistics table -->
+      <table class="table align-items-center table-flush table-hover">
+        <tbody>
+          @can('add_sanadat_sarfs')
+          <tr>
+            <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
+            <td class="display-3 text-center">سند صرف شيكل</td>
+          </tr>
+          <tr>
+            <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
+            <td class="display-3 text-center">سند صرف دولار</td>
+          </tr>
+          <tr>
+            <td class="display-3 text-center">({{ 0 }}) - &#8362;{{ 0 }}</td>
+            <td class="display-3 text-center">سند صرف دينار</td>
+          </tr>
+          @endcan
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="col-xl-3">
   <div class="card">
     <div class="table-responsive">
       <!-- statistics table -->

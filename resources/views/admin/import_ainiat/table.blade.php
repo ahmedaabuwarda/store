@@ -2,6 +2,7 @@
     <tr>
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">الملاحظات</th>
+        <th scope="col" class="text-center">بواسطة</th>
         <th scope="col" class="text-center">المستفيد</th>
         <th scope="col" class="text-center">التاريخ</th>
         <th scope="col" class="text-center">رقم الفاتورة</th>
@@ -26,7 +27,8 @@
                     <a href="{{ URL('/import_ainiat/edit/' . $import_ainiat->id) }}" class="btn btn-sm btn-info"
                         data-toggle="tooltip" data-placement="top" title="تعديل"><i class="fa fa-pen"></i></a>
                 </td>
-                <td class="display-3 text-center">{{ $import_ainiat->byan }}</td>
+                <td class="display-3 text-center">{{ $import_ainiat->notes }}</td>
+                <td class="display-3 text-center">{{ $import_ainiat->user->name }}</td>
                 <td class="display-3 text-center">{{ $import_ainiat->provider->name }} - داعم</td>
                 <td class="display-3 text-center">{{ $import_ainiat->date_created }}</td>
                 <td class="display-3 text-center">{{ $import_ainiat->number }}</td>

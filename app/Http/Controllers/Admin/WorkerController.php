@@ -156,13 +156,13 @@ class WorkerController extends Controller
         $id = $request->id;
 
         $worker = DB::select('SELECT name, balance FROM workers WHERE id = :id', ['id' => $id]);
-        $worker_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.byan FROM workers, sanadat_sarfs WHERE workers.id = sanadat_sarfs.worker_id AND workers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_sarf = DB::select('SELECT sanadat_sarfs.date_created, sanadat_sarfs.number, sanadat_sarfs.balance, sanadat_sarfs.notes FROM workers, sanadat_sarfs WHERE workers.id = sanadat_sarfs.worker_id AND workers.id = :id AND sanadat_sarfs.date_created >= :from AND sanadat_sarfs.date_created <= :to ORDER BY sanadat_sarfs.id DESC', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $worker_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.byan FROM workers, sanadat_qapds WHERE workers.id = sanadat_qapds.worker_id AND workers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_qapd = DB::select('SELECT sanadat_qapds.date_created, sanadat_qapds.number, sanadat_qapds.balance, sanadat_qapds.notes FROM workers, sanadat_qapds WHERE workers.id = sanadat_qapds.worker_id AND workers.id = :id AND sanadat_qapds.date_created >= :from AND sanadat_qapds.date_created <= :to ORDER BY sanadat_qapds.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $worker_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.byan, import_ainiats.remaining_balance FROM workers, import_ainiats WHERE workers.id = import_ainiats.worker_id AND workers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_buy = DB::select('SELECT import_ainiats.date_created, import_ainiats.number, import_ainiats.paid_balance, import_ainiats.notes, import_ainiats.remaining_balance FROM workers, import_ainiats WHERE workers.id = import_ainiats.worker_id AND workers.id = :id AND import_ainiats.date_created >= :from AND import_ainiats.date_created <= :to ORDER BY import_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
-        $worker_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.byan, export_ainiats.remaining_balance FROM workers, export_ainiats WHERE workers.id = export_ainiats.worker_id AND workers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
+        $worker_sell = DB::select('SELECT export_ainiats.date_created, export_ainiats.number, export_ainiats.paid_balance, export_ainiats.notes, export_ainiats.remaining_balance FROM workers, export_ainiats WHERE workers.id = export_ainiats.worker_id AND workers.id = :id AND export_ainiats.date_created >= :from AND export_ainiats.date_created <= :to ORDER BY export_ainiats.id DESC;', ['id' => $id, 'from' => $from, 'to' => $to]);
 
         $worker_salary = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = ? AND workers.id = ? AND salaries.date_created >= ? AND salaries.date_created <= ? ORDER BY salaries.date_created DESC', [$id, $id, $from, $to]);
 
@@ -187,7 +187,7 @@ class WorkerController extends Controller
               <td width="25%">'.$sanadat_sarf->number.'</td>
               <td width="20%">'.$sanadat_sarf->date_created.'</td>
               <td width="20%">'.$sanadat_sarf->balance.'<span>&#8362;&#160;</span> - مدين -</td>
-              <td width="25%">'.$sanadat_sarf->byan.'</td>
+              <td width="25%">'.$sanadat_sarf->notes.'</td>
             </tr>';
             $sarf_total += $sanadat_sarf->balance; $i++;
         }
@@ -212,7 +212,7 @@ class WorkerController extends Controller
               <td width="25%">'.$sanadat_qapd->number.'</td>
               <td width="20%">'.$sanadat_qapd->date_created.'</td>
               <td width="20%">'.$sanadat_qapd->balance.'<span>&#8362;&#160;</span> - دائن -</td>
-              <td width="25%">'.$sanadat_qapd->byan.'</td>
+              <td width="25%">'.$sanadat_qapd->notes.'</td>
             </tr>';
             $qapd_total += $sanadat_qapd->balance; $i++;
         }
@@ -247,7 +247,7 @@ class WorkerController extends Controller
               <td width="20%">'.$import_ainiat->date_created.'</td>
               <td width="15%">'.$import_ainiat->paid_balance.'<span>&#8362;&#160;</span></td>
               <td width="20%">'.$remaining.'</td>
-              <td width="20%">'.$import_ainiat->byan.'</td>
+              <td width="20%">'.$import_ainiat->notes.'</td>
             </tr>';
             $buy_total += $import_ainiat->remaining_balance; $i++;
         }
@@ -289,7 +289,7 @@ class WorkerController extends Controller
               <td width="20%">'.$export_ainiat->date_created.'</td>
               <td width="15%">'.$export_ainiat->paid_balance.'<span>&#8362;&#160;</span></td>
               <td width="20%">'.$remaining.'</td>
-              <td width="20%">'.$export_ainiat->byan.'</td>
+              <td width="20%">'.$export_ainiat->notes.'</td>
             </tr>';
             $sell_total += $export_ainiat->remaining_balance; $i++;
         }

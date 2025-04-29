@@ -25,7 +25,7 @@
                         data-placement="top" title="حذف" data-dataid="{{ $sanadat_qapd->id }}"
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
                 </td>
-                <td class="display-3 text-center">{{ $sanadat_qapd->byan }}</td>
+                <td class="display-3 text-center">{{ $sanadat_qapd->notes }}</td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->user->name }}</td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->box->name }}</td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->box->currency->symbol }} {{ $sanadat_qapd->balance }}</td>

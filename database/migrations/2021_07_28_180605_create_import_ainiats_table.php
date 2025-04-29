@@ -18,7 +18,7 @@ class CreateImportAiniatsTable extends Migration
             $table->bigInteger('number')->unique();
             $table->date('date_created');
             $table->integer('provider_id')->default(0);
-            $table->string('byan');
+            $table->string('notes');
             $table->timestamps();
         });
     }
