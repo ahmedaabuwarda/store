@@ -37,7 +37,7 @@ class CustomerController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $customers = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'notes', 'status', 'mosque_id', 'created_at')->with('mosque:id,name')->orderBy('id', 'DESC')->paginate($page);
+    $customers = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'notes', 'status','balance', 'mosque_id', 'created_at')->with('mosque:id,name')->orderBy('id', 'DESC')->paginate($page);
     $mosques = Mosque::select('id', 'name')->get();
 
     if ($request->ajax()) {
@@ -98,7 +98,7 @@ class CustomerController extends Controller
         // Rollback the transaction in case of error
         DB::rollback();
         // return dd($e->getMessage());  // For debugging
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     } else {
@@ -121,10 +121,10 @@ class CustomerController extends Controller
         $customer->save();
 
         DB::commit();
-        return response()->json(['status' => 'success', 'message' => 'تم اضافة المستفيد بنجاح']);
+        return response()->json(['status' => 'success', 'message' => 'تم اضافة الزبون بنجاح']);
       } catch (\Exception $e) {
         DB::rollback();
-        return response()->json(['status' => 'error', 'message' => 'حدث خطا اثناء اضافة المستفيد!']);
+        return response()->json(['status' => 'error', 'message' => 'حدث خطا اثناء اضافة الزبون!']);
       }
     }
   }
@@ -214,10 +214,10 @@ class CustomerController extends Controller
       ]);
 
       DB::commit();
-      return redirect('/customers')->with('success', 'تم تحديث المستفيد بنجاح');
+      return redirect('/customers')->with('success', 'تم تحديث الزبون بنجاح');
     } catch (\Exception $e) {
       DB::rollback();
-      // return redirect('/customer/edit/' . $customer_id)->with('error', 'حدث خطا اثناء تحديث المستفيد!');
+      // return redirect('/customer/edit/' . $customer_id)->with('error', 'حدث خطا اثناء تحديث الزبون!');
       return redirect('/customer/edit/' . $customer_id)->with('error', $e->getMessage());
     }
   }
@@ -228,7 +228,7 @@ class CustomerController extends Controller
     $from = date($request->from . ' 00:00:00');
     $to = date($request->to . ' 23:59:59');
     $mosque_id = $request->mosque_id;
-    $customers = Customer::select('id', 'name', 'identity', 'phone', 'family_number', 'notes', 'status', 'mosque_id', 'created_at')
+    $customers = Customer::select('id', 'name', 'identity', 'phone', 'family_number','balance', 'notes', 'status', 'mosque_id', 'created_at')
       ->with('mosque:id,name')
       ->where('mosque_id', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : $mosque_id)
       ->where('status', $mosque_id == null ? '!=' : '=', $mosque_id == null ? null : 1)
@@ -242,18 +242,15 @@ class CustomerController extends Controller
     $date = date('Y-m-d');
     $by = Auth::user()->name;
 
-    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل المستفيدون</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
+    $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4><h1 align="center">كشف كل الزبائن</h1></br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br>';
     $table_content = '<table border="1" cellspacing="0" cellpadding="5" align="center">
         <thead>
           <tr>
             <th width="5%" bgcolor="#eee">الرقم</th>
             <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">الاسم</th>
-            <th width="10%" bgcolor="#eee">رقم الهوية</th>
-            <th width="10%" bgcolor="#eee">رقم الجوال</th>
-            <th width="5%" bgcolor="#eee">عدد افراد الاسرة</th>
-            <th width="10%" bgcolor="#eee">المسجد</th>
-            <th width="10%" bgcolor="#eee">الحالة</th>
+            <th width="20%" bgcolor="#eee">الاسم</th>
+            <th width="20%" bgcolor="#eee">رقم الجوال</th>
+            <th width="20%" bgcolor="#eee">الرصيد</th>
             <th width="20%" bgcolor="#eee">ملاحظات</th>
           </tr>
         </thead>
@@ -261,7 +258,7 @@ class CustomerController extends Controller
     foreach ($customers as $customer) {
       $status = '';
       if ($customer->status == 1) {
-        $status = 'مستفيد';
+        $status = 'زبون';
       } else {
         $status = 'مرشح';
       }
@@ -272,12 +269,9 @@ class CustomerController extends Controller
       $table_content .= '<tr>
               <td width="5%">' . $i . '</td>
               <td width="15%">' . $customer->created_at . '</td>
-              <td width="15%">' . $customer->name . '</td>
-              <td width="10%">' . $customer->identity . '</td>
-              <td width="10%">' . $customer->phone . '</td>
-              <td width="5%">' . $customer->family_number . '</td>
-              <td width="10%">' . $mosque . '</td>
-              <td width="10%">' . $status . '</td>
+              <td width="20%">' . $customer->name . '</td>
+              <td width="20%">' . $customer->phone . '</td>
+              <td width="20%">' . $customer->balance . '</td>
               <td width="20%">' . $customer->notes . '</td>
             </tr>';
       $total += $customer->balance;
@@ -291,7 +285,7 @@ class CustomerController extends Controller
       $total = $total;
     }
     $table_content .= '</tbody></table>';
-    PDF::SetTitle('كل المستفيدون');
+    PDF::SetTitle('كل الزبائن');
     PDF::SetAuthor($by);
     // set some language dependent data:
     $lg = array();
@@ -313,13 +307,13 @@ class CustomerController extends Controller
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
     // Ensure the directory exists before saving the file
-    $directoryPath = storage_path('app/public/pdf/المستفيدون' . '/' . date('Y-m-d'));
+    $directoryPath = storage_path('app/public/pdf/الزبائن' . '/' . date('Y-m-d'));
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the storage folder
-    $filePath = $directoryPath . '/كشف المستفيدون_' . date('Y-m-d-his') . '.pdf';
+    $filePath = $directoryPath . '/كشف الزبائن_' . date('Y-m-d-his') . '.pdf';
     PDF::Output($filePath, 'F');
     // dd($filePath);
     // Ensure the symbolic link exists for the storage folder
@@ -370,7 +364,7 @@ class CustomerController extends Controller
     $by = Auth::user()->name;
     $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4>
     <h1 align="center">كشف حساب</h1>
-    </br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br><p>الاسم: ' . $customer_ainiat->name . ' - مستفيد' . '&#160;&#160;رقم الهوية: ' . $customer_ainiat->identity . '&#160;&#160;رقم الجوال: ' . $customer_ainiat->phone . '&#160;&#160;عدد افراد الاسرة: ' . $customer_ainiat->family_number . '</p></br>';
+    </br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br><p>الاسم: ' . $customer_ainiat->name . ' - زبون' . '&#160;&#160;رقم الهوية: ' . $customer_ainiat->identity . '&#160;&#160;رقم الجوال: ' . $customer_ainiat->phone . '&#160;&#160;عدد افراد الاسرة: ' . $customer_ainiat->family_number . '</p></br>';
 
     // sanadat sarf
     $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
@@ -449,7 +443,7 @@ class CustomerController extends Controller
         </thead>
         <tbody>';
     foreach ($customer_ainiat->selective as $selective) {
-      $status = $selective->status == 0 ? 'مرشج' : 'مستفيد';
+      $status = $selective->status == 0 ? 'مرشج' : 'زبون';
       $ainiat_table .= '<tr>
               <td width="10%">' . $i . '</td>
               <td width="20%">' . $selective->created_at . '</td>
@@ -539,14 +533,14 @@ class CustomerController extends Controller
 
     PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">الرصيد</td><td width="20%">' . $balance . '</td></tr></tbody></table>');
     // Ensure the directory exists before saving the file
-    $directoryPath = storage_path('app/public/pdf/المستفيدون' . '/' . date('Y-m-d'));
+    $directoryPath = storage_path('app/public/pdf/الزبائن' . '/' . date('Y-m-d'));
     // $directoryPath = '/media/ahmed/Downloads';
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the storage folder
-    $filePath = $directoryPath . '/' . 'كشف مستفيد_' . $customer_ainiat->name . '_' . date('Y-m-d-his') . '.pdf';
+    $filePath = $directoryPath . '/' . 'كشف زبون_' . $customer_ainiat->name . '_' . date('Y-m-d-his') . '.pdf';
     PDF::Output($filePath, 'F');
     // dd($filePath);
     // Ensure the symbolic link exists for the storage folder
@@ -561,16 +555,16 @@ class CustomerController extends Controller
   public function to_xlsx(Request $request)
   {
     // dd(date($request->from . ' 00:00:00'));
-    $fileName = 'كشف المستفيدون_' . date('Y-m-d_His') . '.xlsx';
+    $fileName = 'كشف الزبائن_' . date('Y-m-d_His') . '.xlsx';
 
     // Ensure the directory exists
-    $directoryPath = public_path('storage/xlsx/المستفيدون' . '/' . date('Y-m-d'));
+    $directoryPath = public_path('storage/xlsx/الزبائن' . '/' . date('Y-m-d'));
     if (!file_exists($directoryPath)) {
       mkdir($directoryPath, 0755, true);
     }
 
     // Save the file to the specified path
-    Excel::store(new CustomerExport(), 'xlsx/المستفيدون' . '/' . date('Y-m-d') . '/' . $fileName, 'public');
+    Excel::store(new CustomerExport(), 'xlsx/الزبائن' . '/' . date('Y-m-d') . '/' . $fileName, 'public');
 
     // Return the file path for download
     return response()->json(['status' => 'success', 'file' => asset('storage/xlsx/' . $fileName)]);
