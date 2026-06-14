@@ -42,6 +42,7 @@ Route::get('/boxes', [App\Http\Controllers\Admin\BoxController::class, 'index'])
 Route::post('/box/store', [App\Http\Controllers\Admin\BoxController::class, 'store']);
 Route::get('/box/edit/{id}', [App\Http\Controllers\Admin\BoxController::class, 'edit']);
 Route::post('/box/update', [App\Http\Controllers\Admin\BoxController::class, 'update']);
+Route::post('/box/delete', [App\Http\Controllers\Admin\BoxController::class, 'destroy']);
 Route::post('/box/convert', [App\Http\Controllers\Admin\BoxController::class, 'convert']);
 Route::post('/box/to_pdf', [App\Http\Controllers\Admin\BoxController::class, 'to_pdf']);
 Route::post('/box/to_xlsx', [App\Http\Controllers\Admin\BoxController::class, 'to_xlsx']);
@@ -186,3 +187,7 @@ Route::post('/wasi/update', [App\Http\Controllers\Admin\WasiController::class, '
 Route::post('/wasi/to_pdf', [App\Http\Controllers\Admin\WasiController::class, 'to_pdf']);
 Route::post('/wasi/to_xlsx', [App\Http\Controllers\Admin\WasiController::class, 'to_xlsx']);
 Route::post('/wasi/kashf_to_pdf', [App\Http\Controllers\Admin\WasiController::class, 'kashf_to_pdf']);
+
+// sms
+Route::get('/sms/show/{reciever}', [App\Http\Controllers\Admin\SmsController::class, 'show']);
+Route::post('/sms/send', [App\Http\Controllers\Admin\SmsController::class, 'send']);
