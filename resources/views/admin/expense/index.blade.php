@@ -48,26 +48,7 @@
   </div>
 
   <!-- paginate -->
-  <nav aria-label="..." class="justify-content-center">
-    <ul class="pagination justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="{{ Request::fullUrl() }}" tabindex="-1">
-          <i class="fa fa-angle-left"></i>
-          <span class="sr-only">Previous</span>
-        </a>
-      </li>
-      @for ($p = 1; $p <= $pages; $p++)
-        <li class="page-item @if (Request::fullUrl() == URL('/expenses?page=' . $p)) active @endif"><a class="page-link"
-          href="{{ URL('/expenses?page=' . $p) }}">{{ $p }}</a></li>
-        @endfor
-        <li class="page-item">
-          <a class="page-link" href="{{ Request::fullUrl() }}">
-            <i class="fa fa-angle-right"></i>
-            <span class="sr-only">Next</span>
-          </a>
-        </li>
-    </ul>
-  </nav>
+  @include('includes.pagination', ['paginator' => $expenses])
 
   <!-- Footer -->
   @include('includes.footer')

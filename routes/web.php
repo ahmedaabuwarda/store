@@ -15,12 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes([
-    'register' => true,
-    'reset' => false,
-    'verify' => false,
+  'register' => true,
+  'reset' => false,
+  'verify' => false,
 ]);
 
-Route::get('/', function () { return redirect('/home'); });
+Route::get('/', function () {
+  return redirect('/home');
+});
 Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index']);
 Route::get('/search', [App\Http\Controllers\Admin\HomeController::class, 'search']);
 Route::get('/settings', [App\Http\Controllers\Admin\HomeController::class, 'settings']);
@@ -50,12 +52,14 @@ Route::post('/movement/to_pdf', [App\Http\Controllers\Admin\MovementController::
 Route::post('/movement/to_xlsx', [App\Http\Controllers\Admin\MovementController::class, 'to_xlsx']);
 
 // currency
-Route::get('/currencies', [App\Http\Controllers\Admin\CurrencyController::class, 'index']);
-Route::post('/currency/store', [App\Http\Controllers\Admin\CurrencyController::class, 'store']);
-Route::get('/currency/edit/{id}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit']);
-Route::post('/currency/update', [App\Http\Controllers\Admin\CurrencyController::class, 'update']);
-Route::post('/currency/to_pdf', [App\Http\Controllers\Admin\CurrencyController::class, 'to_pdf']);
-Route::post('/currency/to_xlsx', [App\Http\Controllers\Admin\CurrencyController::class, 'to_xlsx']);
+Route::group(['prefix' => '/currency'], function () {
+  Route::get('/', [App\Http\Controllers\Admin\CurrencyController::class, 'index']);
+  Route::post('/store', [App\Http\Controllers\Admin\CurrencyController::class, 'store']);
+  Route::get('/edit/{id}', [App\Http\Controllers\Admin\CurrencyController::class, 'edit']);
+  Route::post('/update', [App\Http\Controllers\Admin\CurrencyController::class, 'update']);
+  Route::post('/to_pdf', [App\Http\Controllers\Admin\CurrencyController::class, 'to_pdf']);
+  Route::post('/to_xlsx', [App\Http\Controllers\Admin\CurrencyController::class, 'to_xlsx']);
+});
 
 // import_ainiats
 Route::get('/import_ainiats', [App\Http\Controllers\Admin\ImportAiniatController::class, 'index']);

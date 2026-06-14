@@ -55,7 +55,7 @@
             </div>
 
             <div class="modal-footer justify-content-center mt--3">
-              <a href="{{ URL('/currencies') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
+              <a href="{{ URL('/currency') }}" class="btn btn-danger" type="button"><i class="fa fa-door-open mr-1"></i>الغاء</a>
               <button class="btn btn-icon btn-primary" type="submit"><i class="fa fa-plus mr-1"></i>حفظ</button>
             </div>
           </div>

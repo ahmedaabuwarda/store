@@ -34,7 +34,7 @@ class KafeelController extends Controller
       ->with(['user:id,name'])
       ->orderBy('id', 'DESC')
       ->paginate($page);
-    $pages = ceil(Kafeel::count() / $page);
+    $pages = $kafeels->lastPage();
     if ($request->ajax()) {
       $table = view('admin.kafeel.table', compact('kafeels'))->render();
       return response()->json(['table' => $table]);

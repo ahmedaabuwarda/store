@@ -45,7 +45,7 @@ class SelectiveController extends Controller
       $table = view('admin.selective.table', compact('customers'))->render();
       return response()->json(['table' => $table]);
     } else {
-      $pages = ceil(Selective::count() / $page);
+      $pages = $customers->lastPage();
       return view('admin.selective.index', compact('customers', 'pages', 'products'));
     }
   }

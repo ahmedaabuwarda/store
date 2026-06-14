@@ -41,12 +41,11 @@ class ExportAiniatController extends Controller
     // dd($export_ainiats->toArray());
     $products = Product::select('id', 'name')->get();
 
-    $pages = ceil(ExportAiniat::count() / $page);
     if ($request->ajax()) {
       $table = view('admin.export_ainiat.table', compact('export_ainiats'))->render();
       return response()->json(['status' => 'success', 'table' => $table]);
     } else {
-      return view('admin.export_ainiat.index', compact('export_ainiats', 'pages', 'products'));
+      return view('admin.export_ainiat.index', compact('export_ainiats', 'products'));
     }
   }
 

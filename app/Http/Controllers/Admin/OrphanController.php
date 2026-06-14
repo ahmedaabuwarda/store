@@ -37,7 +37,7 @@ class OrphanController extends Controller
       ->with(['kafeel:id,name', 'wasi:id,name', 'user:id,name'])
       ->orderBy('id', 'DESC')
       ->paginate($page);
-    $pages = ceil(Orphan::count() / $page);
+    $pages = $orphans->lastPage();
     $boxes = Box::select('id', 'name', 'balance')->get();
     if ($request->ajax()) {
       $table = view('admin.orphan.table', compact('orphans'))->render();

@@ -37,7 +37,7 @@ class CurrencyController extends Controller
       return response()->json(['table' => $table]);
     } else {
       // $currencies = Currency::select('id', 'name', 'symbol')->orderBy('id', 'DESC')->paginate($page);
-      $pages = ceil(Currency::count() / $page);
+      $pages = $currencies->lastPage();
       return view('admin.currency.index', compact('currencies', 'pages'));
     }
   }
@@ -131,12 +131,12 @@ class CurrencyController extends Controller
       ]);
 
       DB::commit();
-      return redirect('/currencies')->with('success', 'تم تحديث العملة بنجاح');
+      return redirect('/currency')->with('success', 'تم تحديث العملة بنجاح');
     } catch (Exception $e) {
       DB::rollBack();
       // return $e->getMessage();
       // return response()->json(['status' => 'error']);
-      return redirect('/currencies')->with('error', 'حدث خطأ أثناء تحديث العملة');
+      return redirect('/currency')->with('error', 'حدث خطأ أثناء تحديث العملة');
     }
   }
 

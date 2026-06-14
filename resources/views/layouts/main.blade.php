@@ -375,7 +375,7 @@
                 <!-- List group -->
                 <div class="list-group list-group-flush">
                   @can('add_currencies')
-                  <a href="{{ URL('/currencies') }}" class="btn list-group-item list-group-item-action">
+                  <a href="{{ URL('/currency') }}" class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
                       <div class="col-auto">
                         <i class="fa fa-arrow-up text-primary"></i>

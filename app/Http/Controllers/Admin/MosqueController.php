@@ -36,7 +36,7 @@ class MosqueController extends Controller
       return response()->json(['table' => $table]);
     } else {
       // $mosques = Mosque::select('id', 'name', 'notes', 'created_at')->orderBy('id', 'DESC')->paginate($page);
-      $pages = ceil(Mosque::count() / $page);
+      $pages = $mosques->lastPage();
       return view('admin.mosque.index', compact('mosques', 'pages'));
     }
   }

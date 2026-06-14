@@ -37,7 +37,7 @@ class BoxController extends Controller
       $table = view('admin.box.table', compact('boxes'))->render();
       return response()->json(['table' => $table]);
     } else {
-      $pages = ceil(Box::count() / $page);
+      $pages = $boxes->lastPage();
       return view('admin.box.index', compact('boxes', 'pages', 'currencies'));
     }
   }

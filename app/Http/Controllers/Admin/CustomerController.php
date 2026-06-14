@@ -44,7 +44,7 @@ class CustomerController extends Controller
       $table = view('admin.customer.table', compact('customers'))->render();
       return response()->json(['table' => $table]);
     } else {
-      $pages = ceil(Customer::count() / $page);
+      $pages = $customers->lastPage();
       return view('admin.customer.index', compact('customers', 'pages', 'mosques'));
     }
   }

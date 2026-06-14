@@ -15,7 +15,7 @@
     <td colspan="7" class="text-center">لا يوجد بيانات</td>
   </tr>
   @else
-    @php $i=1; @endphp
+    @php $i = $workers->firstItem() ?? 1; @endphp
     @foreach($workers as $worker)
     <tr>
       <td class="display-3 text-center">

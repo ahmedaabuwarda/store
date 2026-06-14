@@ -33,9 +33,8 @@ class ImportAiniatController extends Controller
   {
     $page = config('app.page');
     $import_ainiats = ImportAiniat::select('id', 'number', 'date_created', 'notes', 'provider_id', 'user_id')->with(['provider:id,name','user:id,name'])->orderBy('id', 'DESC')->paginate($page);
-    $pages = ceil(ImportAiniat::count() / $page);
 
-    return view('admin.import_ainiat.index', compact('import_ainiats', 'pages'));
+    return view('admin.import_ainiat.index', compact('import_ainiats'));
   }
 
   // create

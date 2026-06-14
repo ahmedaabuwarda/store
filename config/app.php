@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'page' => 100,
+    'page' => 200,
     'company' => 'لجنة',
 
     /*

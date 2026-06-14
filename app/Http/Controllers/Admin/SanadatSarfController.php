@@ -48,8 +48,8 @@ class SanadatSarfController extends Controller
       $customers = DB::select('SELECT id, name FROM customers ORDER BY id DESC');
       $providers = DB::select('SELECT id, name FROM providers ORDER BY id DESC');
       $workers = DB::select('SELECT id, name FROM workers ORDER BY id DESC');
-      $pages = ceil(Sanadat_Sarf::count() / $page);
-      return view('admin.sanadat_sarf.index', compact('sanadat_sarfs', 'customers', 'providers', 'workers', 'pages', 'boxes'));
+      // $pages = $sanadat_sarfs->lastPage();
+      return view('admin.sanadat_sarf.index', compact('sanadat_sarfs', 'customers', 'providers', 'workers',  'boxes'));
     }
   }
 

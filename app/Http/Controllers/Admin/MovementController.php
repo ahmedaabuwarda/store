@@ -31,7 +31,7 @@ class MovementController extends Controller
       return response()->json(['table' => $table]);
     } else {
       $movements = Movement::select('id', 'box_id', 'user_id', 'balance', 'date_created', 'type', 'from')->with('box:id,name,currency_id')->with('box.currency:id,symbol')->with('user:id,name')->orderBy('id', 'DESC')->paginate($page);
-      $pages = ceil(Movement::count() / $page);
+      $pages = $movements->lastPage();
       return view('admin.movement.index', compact('movements', 'pages'));
     }
   }

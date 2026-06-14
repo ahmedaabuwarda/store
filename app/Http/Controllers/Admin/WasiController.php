@@ -33,7 +33,7 @@ class WasiController extends Controller
       ->with(['user:id,name'])
       ->orderBy('id', 'DESC')
       ->paginate($page);
-    $pages = ceil(Wasi::count() / $page);
+    $pages = $wasis->lastPage();
     if ($request->ajax()) {
       $table = view('admin.wasi.table', compact('wasis'))->render();
       return response()->json(['table' => $table]);

@@ -30,7 +30,7 @@ class ProviderController extends Controller
       return response()->json(['table' => $table]);
     } else {
       $providers = Provider::select('id', 'name', 'notes', 'status', 'created_at')->orderBy('id', 'DESC')->paginate($page);
-      $pages = ceil(Provider::count() / $page);
+      $pages = $providers->lastPage();
       return view('admin.provider.index', compact('providers', 'pages'));
     }
   }

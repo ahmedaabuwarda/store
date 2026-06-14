@@ -41,7 +41,7 @@ class ExpensesController extends Controller
       return response()->json(['table' => $table]);
       // if the request is not ajax
     } else {
-      $pages = ceil(Expense::count() / $page);
+      $pages = $expenses->lastPage();
       return view('admin.expense.index', compact('expenses', 'pages', 'users', 'boxes'));
     }
   }

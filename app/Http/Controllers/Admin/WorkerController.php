@@ -41,9 +41,8 @@ class WorkerController extends Controller
         } else {
             // $workers = Worker::select('id', 'name', 'balance', 'notes', 'status', 'created_at')->orderBy('created_at', 'DESC')->paginate($page);
             $salaries = DB::select('SELECT salaries.id, salaries.worker_id, salaries.remaining_balance, salaries.balance, salaries.net_balance, salaries.date_created, salaries.notes, workers.name, workers.id FROM salaries, workers WHERE salaries.worker_id = workers.id ORDER BY salaries.date_created DESC LIMIT 20');
-            $pages = ceil(Worker::count()/$page);
 
-            return view('admin.worker.index', compact('workers', 'salaries', 'pages', 'boxes'));
+            return view('admin.worker.index', compact('workers', 'salaries', 'boxes'));
         }
     }
 
