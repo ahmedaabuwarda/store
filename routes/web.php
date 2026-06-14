@@ -189,5 +189,9 @@ Route::post('/wasi/to_xlsx', [App\Http\Controllers\Admin\WasiController::class, 
 Route::post('/wasi/kashf_to_pdf', [App\Http\Controllers\Admin\WasiController::class, 'kashf_to_pdf']);
 
 // sms
+Route::get('/sms', [App\Http\Controllers\Admin\SmsController::class, 'index']);
+Route::post('/sms/store', [App\Http\Controllers\Admin\SmsController::class, 'store']);
+Route::get('/sms/edit/{id}', [App\Http\Controllers\Admin\SmsController::class, 'edit']);
+Route::post('/sms/update', [App\Http\Controllers\Admin\SmsController::class, 'update']);
 Route::get('/sms/show/{reciever}', [App\Http\Controllers\Admin\SmsController::class, 'show']);
 Route::post('/sms/send', [App\Http\Controllers\Admin\SmsController::class, 'send']);

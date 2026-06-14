@@ -228,7 +228,7 @@ class SanadatQapdController extends Controller
             <th width="5%" bgcolor="#eee">الرقم</th>
             <th width="15%" bgcolor="#eee">رقم السند</th>
             <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">المستفيد</th>
+            <th width="15%" bgcolor="#eee">الزبون</th>
             <th width="10%" bgcolor="#eee">المبلغ</th>
             <th width="10%" bgcolor="#eee">الصندوق</th>
             <th width="10%" bgcolor="#eee">بواسطة</th>
@@ -241,7 +241,7 @@ class SanadatQapdController extends Controller
       if ($sanadat_qapd->provider_id > 0) {
         $target = $sanadat_qapd->provider->name . ' - داعم';
       } elseif ($sanadat_qapd->customer_id > 0) {
-        $target = $sanadat_qapd->customer->name . ' - مستفيد';
+        $target = $sanadat_qapd->customer->name . ' - زبون';
       } elseif ($sanadat_qapd->worker_id > 0) {
         $target = $sanadat_qapd->worker->name . ' - موظف';
       }
@@ -282,7 +282,7 @@ class SanadatQapdController extends Controller
     PDF::SetFont('freeserif', '', 11);
     PDF::writeHTML($table_content);
 
-    // PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
+    PDF::writeHTML('<table border="1" cellspacing="0" cellpadding="5" align="center"><tbody><tr><td width="10%">#</td><td width="30%">المجموع</td><td width="20%" color="#fff" bgcolor="#003B36">' . $total . '<span>&#8362;&#160;</span></td></tr></tbody></table>');
     // Ensure the directory exists before saving the file
     $directoryPath = storage_path('app/public/pdf/سندات القبض' . '/' . date('Y-m-d'));
     // $directoryPath = '/media/ahmed/Downloads';

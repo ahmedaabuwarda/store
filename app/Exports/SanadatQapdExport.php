@@ -19,7 +19,7 @@ class SanadatQapdExport implements FromCollection
         'رقم السند',
         'تاريخ الانشاء',
         'العمال',
-        'المستفيدون',
+        'الزبائن',
         'الموردون',
         'المبلغ',
         'العملة',

@@ -22,12 +22,12 @@
   @foreach ($customers as $customer)
   <tr>
     <td class="display-3 text-center">
-      <a href="{{ url('/customer/edit/' . $customer->id) }}" class="btn btn-sm btn-info edit_customer_button" data-toggle="tooltip" data-placement="top" title="تعديل مستفيد" data-fromto="{{ $customer->id }}"><i class="fa fa-pen"></i></a>
+      <a href="{{ url('/customer/edit/' . $customer->id) }}" class="btn btn-sm btn-info edit_customer_button" data-toggle="tooltip" data-placement="top" title="تعديل زبون" data-fromto="{{ $customer->id }}"><i class="fa fa-pen"></i></a>
       <button class="btn btn-sm btn-primary from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="كشف حساب" data-fromto="{{ $customer->id }}"><i class="fa fa-eye"></i></button>
     </td>
     <td class="text-center">
       @if ($customer->status)
-      <span class="badge badge-pill badge-success badge-lg">مستفيد</span>
+      <span class="badge badge-pill badge-success badge-lg">زبون</span>
       @else
       <span class="badge badge-pill badge-danger badge-lg">مرشح</span>
       @endif

@@ -4,7 +4,7 @@
     <th scope="col" class="text-center">صافي الراتب</th>
     <th scope="col" class="text-center">راتب اساسي</th>
     <th scope="col" class="text-center">رصيد متبقي</th>
-    <th scope="col" class="text-center">المستفيد</th>
+    <th scope="col" class="text-center">الزبون</th>
     <th scope="col" class="text-center">تاريخ الانشاء</th>
     <th scope="col" class="text-center">الرقم</th>
   </tr>

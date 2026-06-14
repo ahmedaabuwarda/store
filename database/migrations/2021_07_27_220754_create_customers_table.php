@@ -22,7 +22,7 @@ class CreateCustomersTable extends Migration
             $table->unsignedBigInteger('mosque_id')->nullable();
             $table->foreign('mosque_id')->references('id')->on('mosques')->onDelete('cascade');
             $table->double('balance', 15, 4)->nullable();
-            $table->boolean('status')->default(true)->comment('0: مرشح, 1: مستفيد');
+            $table->boolean('status')->default(true)->comment('0: مرشح, 1: زبون');
             $table->string('notes')->nullable();
             $table->timestamps();
         });

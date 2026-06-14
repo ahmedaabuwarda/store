@@ -23,7 +23,7 @@
               <h3 class="mb-0">المرشحين</h3>
             </div>
             <div class="col-xl-6 col-md-12 text-center">
-              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن مستفيد">
+              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن زبون">
             </div>
             <div class="col-xl-4 col-md-12 text-right">
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>

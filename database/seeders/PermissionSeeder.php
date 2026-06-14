@@ -20,8 +20,8 @@ class PermissionSeeder extends Seeder
     Permission::create(['name' => 'show_currencies', 'description' => 'عرض العملات']);
     Permission::create(['name' => 'add_import_ainiats', 'description' => 'إضافة عينيات واردة']);
     Permission::create(['name' => 'show_import_ainiats', 'description' => 'عرض عينيات واردة']);
-    Permission::create(['name' => 'add_customers', 'description' => 'إضافة مستفيدين']);
-    Permission::create(['name' => 'show_customers', 'description' => 'عرض مستفيدين']);
+    Permission::create(['name' => 'add_customers', 'description' => 'إضافة زبونين']);
+    Permission::create(['name' => 'show_customers', 'description' => 'عرض زبونين']);
     Permission::create(['name' => 'add_mosques', 'description' => 'اضافة مسجد']);
     Permission::create(['name' => 'show_mosques', 'description' => 'عرض المساجد']);
     Permission::create(['name' => 'add_expenses', 'description' => 'إضافة مصاريف']);

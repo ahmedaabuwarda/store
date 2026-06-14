@@ -151,13 +151,13 @@
 
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio11" type="radio"
-                  value="providers" checked>
+                  value="providers">
                 <label class="custom-control-label" for="customRadio11">الداعمون</label>
               </div>
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio22" type="radio"
-                  value="customers">
-                <label class="custom-control-label" for="customRadio22">المستفيدون</label>
+                  value="customers" checked>
+                <label class="custom-control-label" for="customRadio22">الزبائن</label>
               </div>
               <div class="custom-control custom-radio mb-3 d-inline mr-3">
                 <input name="target" class="custom-control-input" id="customRadio33" type="radio"
@@ -193,7 +193,7 @@
             <div class="col-xl-4 col-md-12">
 
               <div class="form-group">
-                <label class="form-control-label">المستفيدون</label>
+                <label class="form-control-label">الزبائن</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i
@@ -298,6 +298,7 @@
             'تم اضافة سند الصرف بنجاح',
             'success'
           );
+          window.location.reload();
           get_sanadat_qapd();
           $('#create_sanadat_qapd_form')[0].reset();
           $('#create_sanadat_qapd_modal').modal('hide');
@@ -397,6 +398,7 @@
                 'تم حذف السند بنجاح',
                 'success'
               );
+              window.location.reload();
               // refresh table
               get_sanadat_qapd();
             } else {

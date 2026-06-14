@@ -308,7 +308,7 @@ class WorkerController extends Controller
             <tr>
                 <th width="5%" bgcolor="#eee">#</th>
                 <th width="20%" bgcolor="#eee">تاريخ الانشاء</th>
-                <th width="20%" bgcolor="#eee">المستفيد</th>
+                <th width="20%" bgcolor="#eee">الزبون</th>
                 <th width="20%" bgcolor="#eee">رصيد متبقي</th>
                 <th width="15%" bgcolor="#eee">راتب اساسي</th>
                 <th width="10%" bgcolor="#eee">صافي الراتب</th>

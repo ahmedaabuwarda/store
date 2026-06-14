@@ -5,7 +5,7 @@
         <th scope="col" class="text-center">بواسطة</th>
         <th scope="col" class="text-center">الصندوق</th>
         <th scope="col" class="text-center">المبلغ</th>
-        <th scope="col" class="text-center">المستفيد</th>
+        <th scope="col" class="text-center">الزبون</th>
         <th scope="col" class="text-center">تاريخ الانشاء</th>
         <th scope="col" class="text-center">رقم السند</th>
         <th scope="col" class="text-center">#</th>
@@ -33,7 +33,7 @@
                     @if ($sanadat_sarf->worker_id > 0)
                         {{ $sanadat_sarf->worker->name }} - موظف
                     @elseif($sanadat_sarf->customer_id > 0)
-                        {{ $sanadat_sarf->customer->name }} - مستفيد
+                        {{ $sanadat_sarf->customer->name }} - زبون
                     @elseif($sanadat_sarf->provider_id > 0)
                         {{ $sanadat_sarf->provider->name }} - داعم
                     @endif

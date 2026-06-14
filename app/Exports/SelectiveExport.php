@@ -38,7 +38,7 @@ class SelectiveExport implements FromCollection
             $item->phone,
             $item->family_number,
             $item->mosque == null ? null : $item->mosque->name,
-            $item->status == 1 ? 'مستفيد' : 'مرشح',
+            $item->status == 1 ? 'زبون' : 'مرشح',
             $item->notes,
           ];
         })

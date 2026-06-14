@@ -105,7 +105,7 @@ class SelectiveController extends Controller
       } catch (Exception $e) {
         // Rollback the transaction in case of error
         DB::rollback();
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     } else {
@@ -134,7 +134,7 @@ class SelectiveController extends Controller
     } catch (Exception $e) {
       // Rollback the transaction in case of error
       DB::rollback();
-      // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+      // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
       return redirect('/export_ainiat/edit/' . $selective->export_ainiat->id)->with(['error', $e->getMessage()]);
     }
   }
@@ -177,7 +177,7 @@ class SelectiveController extends Controller
     foreach ($customers as $customer) {
       $status = '';
       if ($customer->status == 1) {
-        $status = 'مستفيد';
+        $status = 'زبون';
       } else {
         $status = 'مرشح';
       }
@@ -290,7 +290,7 @@ class SelectiveController extends Controller
     $by = Auth::user()->name;
     $content = '<h4 align="center">بسم الله الرحمن الرحيم</h4>
       <h1 align="center">كشف حساب</h1>
-      </br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br><p>الاسم: ' . $customer_ainiat->name . ' - مستفيد' . '&#160;&#160;رقم الهوية: ' . $customer_ainiat->identity . '&#160;&#160;رقم الجوال: ' . $customer_ainiat->phone . '&#160;&#160;عدد افراد الاسرة: ' . $customer_ainiat->family_number . '</p></br>';
+      </br><p align="right">التاريخ: ' . $date . '&#160;&#160;الوقت: ' . $time . '&#160;&#160;&#160;&#160;بواسطة: ' . $by . '&#160;&#160;من: ' . $from . ' - الى: ' . $to . '</p></br><p>الاسم: ' . $customer_ainiat->name . ' - زبون' . '&#160;&#160;رقم الهوية: ' . $customer_ainiat->identity . '&#160;&#160;رقم الجوال: ' . $customer_ainiat->phone . '&#160;&#160;عدد افراد الاسرة: ' . $customer_ainiat->family_number . '</p></br>';
 
     // sanadat sarf
     $sarf_table = '<h2>سندات الصرف</h2></br><table border="1" cellspacing="0" cellpadding="5" align="center">
@@ -368,7 +368,7 @@ class SelectiveController extends Controller
           </thead>
           <tbody>';
     foreach ($customer_ainiat->selective as $selective) {
-      $status = $selective->status == 0 ? 'مرشج' : 'مستفيد';
+      $status = $selective->status == 0 ? 'مرشج' : 'زبون';
       $ainiat_table .= '<tr>
                 <td width="20%">' . $i . '</td>
                 <td width="20%">' . $selective->created_at . '</td>

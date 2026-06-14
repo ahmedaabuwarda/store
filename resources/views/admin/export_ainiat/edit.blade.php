@@ -79,7 +79,7 @@
                         <th class="text-center">الرقم</th>
                         <th class="text-center">رقم العينية</th>
                         <th class="text-center">اسم العينية</th>
-                        <th class="text-center">المستفيد</th>
+                        <th class="text-center">الزبون</th>
                         <th class="text-center">الكمية</th>
                         <th class="text-center">حذف</th>
                       </tr>

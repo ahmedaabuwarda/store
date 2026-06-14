@@ -77,7 +77,7 @@ class ProductController extends Controller
       } catch (Exception $e) {
         // Rollback the transaction in case of error
         DB::rollback();
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     }
@@ -180,7 +180,7 @@ class ProductController extends Controller
             <th width="10%" bgcolor="#eee">#</th>
             <th width="20%" bgcolor="#eee">تاريخ الترشيح</th>
             <th width="20%" bgcolor="#eee">تاريخ الاستفادة</th>
-            <th width="20%" bgcolor="#eee">اسم المستفيد</th>
+            <th width="20%" bgcolor="#eee">اسم الزبون</th>
             <th width="20%" bgcolor="#eee">بواسطة</th>
             <th width="10%" bgcolor="#eee">الحالة</th>
           </tr>
@@ -194,7 +194,7 @@ class ProductController extends Controller
         $product_status = 'موجود';
       }
       if ($selective->status == 1) {
-        $status = 'مستفيد';
+        $status = 'زبون';
         $up_date = $selective->updated_at;
       }
       $table_content .= '<tr>

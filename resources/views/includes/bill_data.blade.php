@@ -36,7 +36,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1"><i class="fa fa-box text-info"></i></span>
         </div>
-        <input type="text" class="form-control" placeholder="المستفيد"
+        <input type="text" class="form-control" placeholder="الزبون"
           value="{{ $bill->provider->name }}" disabled>
       </div>
     </div>

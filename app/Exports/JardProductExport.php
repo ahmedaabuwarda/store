@@ -18,7 +18,7 @@ class JardProductExport implements FromCollection
         'اسم العينية',
         'تاريخ الترشيح',
         'تاريخ الاستفادة',
-        'اسم المستفيد',
+        'اسم الزبون',
         'بواسطة',
         'الحالة',
       ]
@@ -40,7 +40,7 @@ class JardProductExport implements FromCollection
             $item->status == 1 ? $item->updated_at : "",
             $item->customer->name,
             $item->user->name,
-            $item->status == 1 ? 'مستفيد' : 'مرشح',
+            $item->status == 1 ? 'زبون' : 'مرشح',
           ];
         })
     );

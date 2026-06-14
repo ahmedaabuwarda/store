@@ -3,7 +3,7 @@
         <th scope="col" class="text-center">خيارات</th>
         <th scope="col" class="text-center">الملاحظات</th>
         <th scope="col" class="text-center">بواسطة</th>
-        <th scope="col" class="text-center">المستفيد</th>
+        <th scope="col" class="text-center">الزبون</th>
         <th scope="col" class="text-center">التاريخ</th>
         <th scope="col" class="text-center">رقم الفاتورة</th>
         <th scope="col" class="text-center">#</th>

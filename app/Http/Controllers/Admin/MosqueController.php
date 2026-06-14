@@ -85,7 +85,7 @@ class MosqueController extends Controller
         // Rollback the transaction in case of error
         DB::rollback();
         // return dd($e->getMessage());  // For debugging
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     }

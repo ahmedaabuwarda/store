@@ -86,7 +86,7 @@
             <div class="col-md-6 col-sm-12">
               <!-- Add input here to attach a file -->
               <div class="form-group">
-                <label class="form-control-label">استيراد مستفيدين</label>
+                <label class="form-control-label">استيراد زبونين</label>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input @error('file_attachment') is-invalid @enderror" name="file_attachment" accept=".xls,.xlsx">
                   <label class="custom-file-label" for="file_attachment">اختر ملفاً...</label>

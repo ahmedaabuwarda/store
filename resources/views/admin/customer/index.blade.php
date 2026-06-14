@@ -20,15 +20,15 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col-2">
-              <h3 class="mb-0">المستفيدون</h3>
+              <h3 class="mb-0">الزبائن</h3>
             </div>
             <div class="col-xl-6 col-md-12 text-center">
-              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن مستفيد">
+              <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن زبون">
             </div>
             <div class="col-xl-4 col-md-12 text-right">
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
-              <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_customer_modal"><i class="fa fa-plus"></i> اضافة مستفيد</a>
+              <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_customer_modal"><i class="fa fa-plus"></i> اضافة زبون</a>
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">اضافة مستفيد جديد</h5>
+        <h5 class="modal-title" id="exampleModalLabel">اضافة زبون جديد</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -71,12 +71,12 @@
             <div class="col-md-6 col-sm-12">
 
               <div class="form-group">
-                <label class="form-control-label">اسم المستفيد</label>
+                <label class="form-control-label">اسم الزبون</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" minlength="6" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم المستفيد" value="{{ old('name') }}" autocomplete="name" autofocus>
+                  <input type="text" minlength="6" class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم الزبون" value="{{ old('name') }}" autocomplete="name" autofocus>
                 </div>
                 @error('name')
                 <span class="text-danger">{{ $message }}</span>
@@ -164,7 +164,7 @@
             <div class="col-md-6 col-sm-12">
               <!-- Add input here to attach a file -->
               <div class="form-group">
-                <label class="form-control-label">استيراد مستفيدون</label>
+                <label class="form-control-label">استيراد زبائن</label>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input @error('file_attachment') is-invalid @enderror" name="file_attachment" accept=".xls,.xlsx">
                   <label class="custom-file-label" for="file_attachment">اختر ملفاً...</label>
@@ -191,6 +191,8 @@
 
 @include('admin.customer.from_to_xlsx')
 
+@include('admin.sms.modal')
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   $(document).ready(function() {
@@ -202,6 +204,7 @@
     });
   });
   // create new customer form
+
   $('#create_customer_form').submit(function(e) {
     e.preventDefault();
     let data = new FormData(this);
@@ -240,6 +243,7 @@
       }
     });
   });
+
   // show customer kashf to pdf modal
   $('#customer_table').on('click', '.from_to_pdf_button', function(e) {
     let from_to = $(this).data('fromto');
@@ -308,6 +312,70 @@
     $('#from_to_xlsx_form')[0].reset();
     $('#from_to_xlsx_modal').modal('hide');
   });
+
+  $('#customer_table').on('click', '.sms_button', function(e) {
+    let recieverId = $(this).data('reciever');
+    console.log(recieverId);
+    // $('#sms_modal').modal('show');
+    // $('#recieverPhone').val(recieverPhone);
+    $.ajax({
+      url: "/sms/show/" + recieverId,
+      type: "GET",
+      success: function(response) {
+        $('#sms_form .row').html('');
+        $('#sms_form .row').append(response.data);
+        $('#sms_modal').modal('show');
+        $('#recieverPhone').val(recieverPhone);
+      },
+      error: function(response) {
+        Swal.fire(
+          'خطأ',
+          'حدث خطأ أثناء جلب البيانات',
+          'error'
+        );
+      }
+    });
+  });
+
+  $('#sms_form').submit(function(e) {
+    e.preventDefault();
+    let data = new FormData(this);
+    $.ajax({
+      url: "/sms/send",
+      type: "POST",
+      data: data,
+      processData: false,
+      contentType: false,
+      cache: false,
+      success: function(response) {
+        if (response.status == "success") {
+          Swal.fire(
+            'تم!',
+            response.message,
+            'success'
+          );
+          // refresh the table
+          get_customers();
+          $('#sms_form')[0].reset();
+          $('#sms_modal').modal('hide');
+        } else {
+          Swal.fire(
+            'عفواً',
+            response.message,
+            'error'
+          );
+        }
+      },
+      error: function(response) {
+        Swal.fire(
+          'عفواً',
+          response.message,
+          'error'
+        );
+      }
+    });
+  });
+
   // get all customers
   function get_customers() {
     $.ajax({
@@ -320,7 +388,7 @@
       error: function(response) {
         Swal.fire(
           'خطأ',
-          'حدث خطأ أثناء جلب الملاحظاتات',
+          'حدث خطأ أثناء جلب الزبائن',
           'error'
         );
       }

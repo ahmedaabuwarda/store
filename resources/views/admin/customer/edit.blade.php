@@ -20,7 +20,7 @@
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
-              <h3 class="mb-0">تعديل مستفيد ({{ $customer->name }})</h3>
+              <h3 class="mb-0">تعديل زبون ({{ $customer->name }})</h3>
             </div>
           </div>
         </div>
@@ -31,12 +31,12 @@
             <div class="col-md-6 col-sm-12">
 
               <div class="form-group">
-                <label class="form-control-label">اسم المستفيد</label>
+                <label class="form-control-label">اسم الزبون</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" minlength='6' class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم المستفيد" value="{{ $customer->name }}" autocomplete="name" autofocus>
+                  <input type="text" minlength='6' class="form-control @error('name') is-invalid @enderror" name="name" placeholder="اسم الزبون" value="{{ $customer->name }}" autocomplete="name" autofocus>
                   <input type="hidden" name="id" value="{{ $customer->id }}">
                 </div>
                 @error('name')
@@ -120,7 +120,7 @@
                         class="fa fa-heart text-info"></i></span>
                   </div>
                   <select class="form-control selectpicker" name="status">
-                    <option value="1" @if($customer->status == 1) selected @endif>مستفيد</option>
+                    <option value="1" @if($customer->status == 1) selected @endif>زبون</option>
                     <option value="0" @if($customer->status == 0) selected @endif>مرشح</option>
                   </select>
                 </div>

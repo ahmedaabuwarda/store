@@ -138,7 +138,7 @@ class ExportAiniatController extends Controller
       } catch (Exception $e) {
         // Rollback the transaction in case of error
         DB::rollback();
-        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ المستفيدون']);
+        // return response()->json(['status' => 'error', 'message' => 'حدث خطأ أثناء حفظ الزبائن']);
         return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
       }
     }

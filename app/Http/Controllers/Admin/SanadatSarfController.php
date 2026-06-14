@@ -300,7 +300,7 @@ class SanadatSarfController extends Controller
             <th width="5%" bgcolor="#eee">الرقم</th>
             <th width="15%" bgcolor="#eee">رقم السند</th>
             <th width="15%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="15%" bgcolor="#eee">المستفيد</th>
+            <th width="15%" bgcolor="#eee">الزبون</th>
             <th width="10%" bgcolor="#eee">المبلغ</th>
             <th width="10%" bgcolor="#eee">الصندوق</th>
             <th width="10%" bgcolor="#eee">بواسطة</th>
@@ -313,7 +313,7 @@ class SanadatSarfController extends Controller
       if ($sanadat_sarf->provider_id > 0) {
         $target = $sanadat_sarf->provider->name . ' - داعم';
       } elseif ($sanadat_sarf->customer_id > 0) {
-        $target = $sanadat_sarf->customer->name . ' - مستفيد';
+        $target = $sanadat_sarf->customer->name . ' - زبون';
       } elseif ($sanadat_sarf->worker_id > 0) {
         $target = $sanadat_sarf->worker->name . ' - موظف';
       }

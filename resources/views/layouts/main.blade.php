@@ -25,14 +25,14 @@
                 </div>
                 @csrf
                 <input class="form-control" name="search_field"
-                  placeholder="...ابحث عن اسم داعم او مستفيد او عينية" type="text" value="{{ old('search_field') }}">
+                  placeholder="...ابحث عن اسم داعم او زبون او عينية" type="text" value="{{ old('search_field') }}">
                 <div class="input-group-append align-items-center">
                   <div class="dropdown">
                     <button class="btn btn-gray btn-sm btn-round dropdown-toggle" type="button"
                       id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false"></button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    @can('add_import_ainiats')
+                      @can('add_import_ainiats')
                       <a class="dropdown-item" href="#">
                         <div class="custom-control custom-radio">
                           <input name="target" class="custom-control-input" id="customRadio2"
@@ -78,7 +78,7 @@
                           <input name="target" class="custom-control-input" id="customRadio6"
                             type="radio" value="customers" checked>
                           <label class="custom-control-label"
-                            for="customRadio6">المستفيدون</label>
+                            for="customRadio6">الزبائن</label>
                         </div>
                       </a>
                       @endcan
@@ -273,6 +273,21 @@
                       اختار</strong></h6>
                 </div>
                 <!-- List group -->
+                <a href="{{ URL('/sms') }}"
+                  class="btn list-group-item list-group-item-action">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <i class="fa fa-sms text-primary"></i>
+                    </div>
+                    <div class="col ml--2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <h4 class="mb-0 text-sm">SMS | قسم الرسائل</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
                 @can('add_mosques')
                 <a href="{{ URL('/mosques') }}"
                   class="btn list-group-item list-group-item-action">
@@ -317,7 +332,7 @@
                     <div class="col ml--2">
                       <div class="d-flex justify-content-between align-items-center">
                         <div>
-                          <h4 class="mb-0 text-sm">Customers | قسم المستفيدون</h4>
+                          <h4 class="mb-0 text-sm">Customers | قسم الزبائن</h4>
                         </div>
                       </div>
                     </div>

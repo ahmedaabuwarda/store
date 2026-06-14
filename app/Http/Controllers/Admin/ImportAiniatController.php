@@ -231,7 +231,7 @@ class ImportAiniatController extends Controller
             <th width="5%" bgcolor="#eee">#</th>
             <th width="20%" bgcolor="#eee">رقم الفاتورة</th>
             <th width="25%" bgcolor="#eee">تاريخ الانشاء</th>
-            <th width="25%" bgcolor="#eee">المستفيد</th>
+            <th width="25%" bgcolor="#eee">الزبون</th>
             <th width="25%" bgcolor="#eee">الملاحظات</th>
           </tr>
         </thead>
