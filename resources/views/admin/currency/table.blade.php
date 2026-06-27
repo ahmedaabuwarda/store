@@ -17,7 +17,9 @@
         @foreach ($currencies as $currency)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_currencies')
                     <a href="{{ url('/currency/edit/' . $currency->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل العملة"><i class="fa fa-pen"></i></a>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $currency->symbol }}</td>
                 <td class="display-3 text-center">{{ $currency->name }}</td>

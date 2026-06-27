@@ -27,9 +27,11 @@
                 placeholder="...ابحث عن فاتورة عينيات صادرة">
             </div>
             <div class="col-xl-4 col-md-12 text-xl-right text-md-center">
+              @can('add_export_ainiats')
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <button class="btn btn-dark create_export_ainiat_button" data-toggle="tooltip" data-placement="top" title="فاتورة جديدة"><i class="fas fa-plus fa-lg mr-1"></i> فاتورة عينيات صادرة</button>
+              @endcan
             </div>
           </div>
         </div>

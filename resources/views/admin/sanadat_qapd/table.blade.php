@@ -21,9 +21,11 @@
         @foreach ($sanadat_qapds as $sanadat_qapd)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_sanadat_qapds')
                     <button type="submit" class="btn btn-sm text-dark delete_sanadat_qapd_button" data-toggle="tooltip"
                         data-placement="top" title="حذف" data-dataid="{{ $sanadat_qapd->id }}"
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->notes }}</td>
                 <td class="display-3 text-center">{{ $sanadat_qapd->user->name }}</td>

@@ -18,7 +18,9 @@
         @foreach ($boxes as $box)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_to_box')
                     <a href="{{ url('/box/edit/' . $box->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل الصندوق"><i class="fa fa-pen"></i></a>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $box->balance }} {{ $box->currency->symbol }}</td>
                 <td class="display-3 text-center">{{ $box->currency->name }}</td>

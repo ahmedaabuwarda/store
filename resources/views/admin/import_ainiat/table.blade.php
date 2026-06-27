@@ -19,13 +19,13 @@
         @foreach ($import_ainiats as $import_ainiat)
             <tr>
                 <td class="display-3 text-center">
-                    @if (Auth::user()->id == 1)
-                        <button class="btn btn-sm btn-danger delete_import_ainiat_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $import_ainiat->id }}"><i class="fa fa-trash"></i></button>
-                    @endif
+                    @can('add_import_ainiats')
+                    <button class="btn btn-sm btn-danger delete_import_ainiat_button" data-toggle="tooltip" data-placement="top" title="حذف" data-id="{{ $import_ainiat->id }}"><i class="fa fa-trash"></i></button>
                     <button class="btn btn-sm btn-primary show_button" data-toggle="tooltip" data-placement="top"
                         title="عرض" data-dataid="{{ $import_ainiat->id }}"><i class="fa fa-eye"></i></button>
                     <a href="{{ URL('/import_ainiat/edit/' . $import_ainiat->id) }}" class="btn btn-sm btn-info"
                         data-toggle="tooltip" data-placement="top" title="تعديل"><i class="fa fa-pen"></i></a>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $import_ainiat->notes }}</td>
                 <td class="display-3 text-center">{{ $import_ainiat->user->name }}</td>

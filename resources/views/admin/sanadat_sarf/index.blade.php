@@ -26,9 +26,11 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن سند صرف">
             </div>
             <div class="col-xl-3 col-md-12 text-xl-right text-md-center">
+              @can('add_sanadat_sarfs')
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn btn-dark text-white" data-toggle="modal" data-target="#create_sanadat_sarf_modal"><i class="fa fa-plus"></i> سند صرف </a>
+              @endcan
             </div>
           </div>
         </div>

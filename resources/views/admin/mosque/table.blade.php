@@ -17,7 +17,9 @@
         @foreach ($mosques as $mosque)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_mosques')
                     <a href="{{ url('/mosque/edit/' . $mosque->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل المسجد"><i class="fa fa-pen"></i></a>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $mosque->notes }}</td>
                 <td class="display-3 text-center">{{ $mosque->name }}</td>

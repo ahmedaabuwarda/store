@@ -19,8 +19,10 @@
     @foreach($workers as $worker)
     <tr>
       <td class="display-3 text-center">
+        @can('add_workers')
         <button class="btn btn-sm btn-info create_salary_button" data-toggle="tooltip" data-placement="top" title="اضافة راتب" data-dataid="{{ $worker->id }}"><i class="fa fa-plus"></i></button>
         <button class="btn btn-sm btn-primary from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="كشف حساب" data-fromto="{{ $worker->id }}"><i class="fa fa-eye"></i></button>
+        @endcan
       </td>
       <td class="text-center">
         @if($worker->status)

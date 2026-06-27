@@ -152,7 +152,7 @@ Store/
 
 ## Permissions
 
-Permissions are seeded via `PermissionSeeder` and follow the pattern `add_*` / `show_*`:
+Permissions are seeded via `PermissionSeeder` (idempotent — safe to re-run) and follow the pattern `add_*` / `show_*`:
 
 | Entity | Permissions |
 |---|---|
@@ -173,7 +173,7 @@ Permissions are seeded via `PermissionSeeder` and follow the pattern `add_*` / `
 | Sanadat Sarf | `add_sanadat_sarfs` `show_sanadat_sarfs` |
 | Selectives | `add_selectives` `show_selectives` |
 | SMS | `add_sms` `show_sms` |
-| Wasils | `add_wasis` `show_wasis` |
+| Wasis | `add_wasis` `show_wasis` |
 | Workers | `add_workers` `show_workers` |
 
 ## License

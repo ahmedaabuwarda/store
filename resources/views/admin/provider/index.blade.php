@@ -26,8 +26,10 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن داعم">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              @can('add_providers')
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_provider_modal"><i class="fa fa-plus"></i> اضافة داعم</a>
+              @endcan
             </div>
           </div>
         </div>

@@ -18,8 +18,10 @@
         @foreach ($providers as $provider)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_providers')
                     <button class="btn btn-sm btn-primary from_to_pdf_button" data-toggle="tooltip" data-placement="top"
                         title="كشف حساب" data-fromto="{{ $provider->id }}"><i class="fa fa-eye"></i></button>
+                    @endcan
                 </td>
                 <td class="text-center">
                     @if ($provider->status)

@@ -26,9 +26,11 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن موظف">
             </div>
             <div class="col-xl-3 text-right">
+              @can('add_workers')
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="-1"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn text-white" data-toggle="modal" data-target="#show_salaries_modal" style="background-color: #297F87;"><i class="fa fa-chart-bar"></i> الرواتب</a>
               <a class="btn btn-dark  text-white" data-toggle="modal" data-target="#create_worker_modal"><i class="fa fa-plus"></i> موظف</a>
+              @endcan
             </div>
           </div>
         </div>

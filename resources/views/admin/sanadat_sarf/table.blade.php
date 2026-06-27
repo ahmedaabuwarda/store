@@ -21,9 +21,11 @@
         @foreach ($sanadat_sarfs as $sanadat_sarf)
             <tr>
                 <td class="display-3 text-center">
+                    @can('add_sanadat_sarfs')
                     <button type="submit" class="btn btn-sm text-dark delete_sanadat_sarf_button" data-toggle="tooltip"
                         data-placement="top" title="حذف" data-dataid="{{ $sanadat_sarf->id }}"
                         style="background-color: #FFB740;"><i class="fa fa-trash"></i></button>
+                    @endcan
                 </td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->notes }}</td>
                 <td class="display-3 text-center">{{ $sanadat_sarf->user->name }}</td>

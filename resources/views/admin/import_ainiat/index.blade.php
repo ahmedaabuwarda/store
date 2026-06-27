@@ -26,10 +26,12 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن فاتورة عينيات واردة">
             </div>
             <div class="col-xl-4 col-md-12 text-xl-right text-md-center">
-            <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
+              @can('add_import_ainiats')
+              <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a href="{{ URL('/import_ainiat/create') }}" class="btn btn-dark text-white">
                 <i class="fa fa-plus"></i> فاتورة عينيات واردة</a>
+              @endcan
             </div>
           </div>
         </div>

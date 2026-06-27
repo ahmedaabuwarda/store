@@ -27,6 +27,7 @@
                 placeholder="...ابحث عن خصم او مصروف">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              @can('add_expenses')
               <button class="btn btn-success" data-toggle="modal" data-target="#from_to_xlsx_modal"><i
                   class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger" data-toggle="modal" data-target="#from_to_pdf_modal"><i
@@ -34,6 +35,7 @@
               <a class="btn btn-dark text-white position-relative" data-toggle="modal" data-target="#create_expense_modal"><i class="fa fa-plus"></i>
                 مصروف
               </a>
+              @endcan
             </div>
           </div>
         </div>

@@ -27,9 +27,11 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن صلاحية">
             </div>
             <div class="col-xl-5 col-md-12 text-right">
+              @can('add_to_box')
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a href="{{ url('/permission/upgrade') }}" class="btn text-white btn-primary"><i class="fa fa-plus"></i> تطوير الصلاحيات</a>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_permission_modal"><i class="fa fa-plus"></i> اضافة صلاحية</a>
+              @endcan
             </div>
           </div>
         </div>
