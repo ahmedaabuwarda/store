@@ -21,7 +21,9 @@
   @foreach ($wasis as $wasi)
   <tr>
     <td class="display-3 text-center">
+      @can('add_wasis')
       <a href="{{ url('/wasi/edit/' . $wasi->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل الوصي"><i class="fa fa-pen"></i></a>
+      @endcan
     </td>
     <td class="display-3 text-center">{{ $wasi->notes }}</td>
     <td class="display-3 text-center">

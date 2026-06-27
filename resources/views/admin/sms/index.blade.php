@@ -27,9 +27,11 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن رسالة">
             </div>
             <div class="col-xl-3 col-md-12 text-right">
+              @can('add_sms')
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
               <a class="btn text-white btn-dark" data-toggle="modal" data-target="#create_sms_modal"><i class="fa fa-plus"></i> اضافة قالب</a>
+              @endcan
             </div>
           </div>
         </div>

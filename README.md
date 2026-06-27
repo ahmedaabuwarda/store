@@ -1,62 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<h1 align="center">Store</h1>
 
 <p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <strong>Inventory &amp; charity management system built with Laravel 8</strong>
 </p>
 
-## About Laravel
+<p align="center">
+  <img src="https://img.shields.io/badge/php-7.4%2F8.0-777BB4?style=flat-square&logo=php" alt="PHP">
+  <img src="https://img.shields.io/badge/laravel-8.x-FF2D20?style=flat-square&logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/mysql-8.0-4479A1?style=flat-square&logo=mysql" alt="MySQL">
+  <img src="https://img.shields.io/badge/docker-ready-2496ED?style=flat-square&logo=docker" alt="Docker">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## About
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Store** is an Arabic-language web application for managing store inventory, customers, providers, expenses, salaries, and charitable aid (عينيات). It includes SMS notifications, PDF/Excel export, and role-based access control.
 
-## Learning Laravel
+Built for **IyadMarket**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Category | Details |
+|---|---|
+| **Products** | Add, edit, delete items; track quantity and status; import/export via Excel |
+| **Customers** | Full customer profiles with identity, phone, family number, mosque affiliation |
+| **Providers** | Track suppliers with balance and notes |
+| **Mosques** | Manage mosque affiliations for customers |
+| **Selectives (عينيات)** | Candidate selection and approval workflow for product distribution |
+| **Import/Export Ainiat** | Track incoming and outgoing charitable goods with product-level detail |
+| **Sanadat Sarf (سندات صرف)** | Disbursement vouchers with box and currency tracking |
+| **Sanadat Qapd (سندات قبض)** | Receipt vouchers with box and currency tracking |
+| **Expenses** | Log and categorize expenses |
+| **Salaries** | Manage employee salaries |
+| **Workers** | Employee registry |
+| **Kafeels (كفيل)** | Sponsor management with kashf hesap (account statement) |
+| **Orphans (يتامى)** | Orphan registry with payment tracking |
+| **Wasis (وصي)** | Guardian management |
+| **Boxes (صناديق)** | Multi-currency cash boxes with conversion support |
+| **Currencies** | Manage exchange rates |
+| **Movements** | Track fund movements between boxes |
+| **SMS** | Send single or bulk SMS via hi5sms.com; template management with balance placeholders |
+| **PDF Export** | Generate Arabic RTL PDFs (individual kashf hesap, bulk reports) via TCPDF |
+| **Excel Export** | Export any entity to `.xlsx` via Maatwebsite Excel |
+| **Permissions** | Role-based access via Spatie Laravel Permission |
+| **Search** | Global search across customers, providers, products, ainiat |
+| **Settings** | User profile management |
 
-## Laravel Sponsors
+## Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **Backend:** Laravel 8 (PHP 7.4/8.0)
+- **Database:** MySQL 8.0
+- **Frontend:** Argon Dashboard (Bootstrap 4), jQuery
+- **PDF:** TCPDF via `elibyy/tcpdf-laravel`
+- **Excel:** Maatwebsite Excel + `rap2hpoutre/fast-excel`
+- **Permissions:** `spatie/laravel-permission`
+- **SMS:** hi5sms.com API
+- **Containerization:** Docker + Docker Compose
 
-### Premium Partners
+## Prerequisites
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/)
+- **OR** PHP 7.4/8.0 + MySQL 8.0 (for local development without Docker)
 
-## Contributing
+## Installation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### With Docker (recommended)
 
-## Code of Conduct
+```bash
+git clone https://github.com/your-username/Store.git
+cd Store
+cp .env.example .env
+docker compose up --build
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The app will be available at **http://localhost:8000**.
 
-## Security Vulnerabilities
+Docker handles everything: PHP extensions, Composer dependencies, database migrations, seeding, and the dev server.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Without Docker
+
+```bash
+git clone https://github.com/your-username/Store.git
+cd Store
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure your `.env` database credentials, then:
+
+```bash
+php artisan migrate --seed
+php artisan serve
+```
+
+### Frontend Assets (optional)
+
+```bash
+npm install
+npm run dev      # development
+npm run prod     # production
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `APP_NAME` | Application name | `Laravel` |
+| `APP_ENV` | Environment (`local`, `production`) | `local` |
+| `APP_URL` | Application URL | `http://localhost` |
+| `DB_CONNECTION` | Database driver | `mysql` |
+| `DB_HOST` | Database host | `127.0.0.1` |
+| `DB_PORT` | Database port | `3306` |
+| `DB_DATABASE` | Database name | `store` |
+| `DB_USERNAME` | Database user | `root` |
+| `DB_PASSWORD` | Database password | (empty) |
+| `SMS_USERNAME` | hi5sms.com username | - |
+| `SMS_PASSWORD` | hi5sms.com password | - |
+| `SMS_SENDER` | SMS sender name | - |
+
+## Project Structure
+
+```
+Store/
+├── app/
+│   ├── Exports/          # Maatwebsite Excel export classes (16)
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── Admin/    # All controllers (21)
+│   ├── Imports/          # Maatwebsite Excel import classes (10)
+│   └── Models/           # Eloquent models (23)
+├── database/
+│   ├── migrations/       # Database migrations (26)
+│   └── seeders/          # PermissionSeeder defines all roles
+├── Docker/
+│   └── entrypoint.sh     # Container startup (waits for MySQL, migrates, serves)
+├── public/               # Compiled assets, index.php
+├── resources/
+│   └── views/
+│       ├── admin/        # Blade views per domain (21 subdirectories)
+│       ├── layouts/      # Main layout (main.blade.php)
+│       └── includes/     # Shared partials (pagination, statistics, alerts)
+├── routes/
+│   └── web.php           # All application routes
+├── docker-compose.yml    # PHP + MySQL services
+├── Dockerfile            # PHP 7.4-FPM with extensions
+└── webpack.mix.js        # Laravel Mix asset compilation
+```
+
+## Permissions
+
+Permissions are seeded via `PermissionSeeder` and follow the pattern `add_*` / `show_*`:
+
+| Entity | Permissions |
+|---|---|
+| Boxes | `add_to_box` `show_boxes` |
+| Currencies | `add_currencies` `show_currencies` |
+| Customers | `add_customers` `show_customers` |
+| Expenses | `add_expenses` `show_expenses` |
+| Export Ainiat | `add_export_ainiats` `show_export_ainiats` |
+| Import Ainiat | `add_import_ainiats` `show_import_ainiats` |
+| Kafeels | `add_kafeels` `show_kafeels` |
+| Movements | `show_movements` |
+| Mosques | `add_mosques` `show_mosques` |
+| Orphans | `add_orphans` `show_orphans` |
+| Products | `add_products` `show_products` `edit_products` |
+| Providers | `add_providers` `show_providers` |
+| Salaries | `add_salaries` `show_salaries` |
+| Sanadat Qapd | `add_sanadat_qapds` `show_sanadat_qapds` |
+| Sanadat Sarf | `add_sanadat_sarfs` `show_sanadat_sarfs` |
+| Selectives | `add_selectives` `show_selectives` |
+| SMS | `add_sms` `show_sms` |
+| Wasils | `add_wasis` `show_wasis` |
+| Workers | `add_workers` `show_workers` |
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT License. See [LICENSE](LICENSE) for details.

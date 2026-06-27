@@ -21,7 +21,9 @@
   @foreach ($kafeels as $kafeel)
   <tr>
     <td class="display-3 text-center">
+      @can('add_kafeels')
       <a href="{{ url('/kafeel/edit/' . $kafeel->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل الكفيل"><i class="fa fa-pen"></i></a>
+      @endcan
     </td>
     <td class="display-3 text-center">{{ $kafeel->notes }}</td>
     <td class="display-3 text-center">

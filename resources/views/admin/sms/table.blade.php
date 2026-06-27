@@ -16,7 +16,9 @@
   @foreach ($smses as $sms)
   <tr>
     <td class="display-3 text-center">
+      @can('add_sms')
       <a href="{{ url('/sms/edit/' . $sms->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل القالب"><i class="fa fa-pen"></i></a>
+      @endcan
     </td>
     <td class="display-3 text-center">{{ $sms->body }}</td>
     <td class="display-3 text-center">{{ $sms->created_at }}</td>

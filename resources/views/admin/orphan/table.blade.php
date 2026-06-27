@@ -22,8 +22,10 @@
   @foreach ($orphans as $orphan)
   <tr>
     <td class="display-3 text-center">
+      @can('add_orphans')
       <button class="btn btn-sm btn-danger table_from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="جرد pdf" data-fromto="{{ $orphan->id }}"><i class="fa fa-file-pdf"></i></button>
       <a href="{{ url('/orphan/edit/' . $orphan->id) }}" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="تعديل العملة"><i class="fa fa-pen"></i></a>
+      @endcan
     </td>
     <td class="display-3 text-center">{{ $orphan->notes }}</td>
     <td class="display-3 text-center">

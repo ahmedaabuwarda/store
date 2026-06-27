@@ -27,8 +27,10 @@
               <input type="text" name="search_input" id="search_input" class="form-control" placeholder="...ابحث عن حركة">
             </div>
             <div class="col-xl-4 col-md-12 text-right">
+              @can('show_movements')
               <button class="btn btn-success from_to_xlsx_button" data-toggle="tooltip" data-placement="top" title="تصدير xlsx" data-fromto="0"><i class="fas fa-file-excel fa-lg mr-1"></i></button>
               <button class="btn btn-danger from_to_pdf_button" data-toggle="tooltip" data-placement="top" title="تصدير pdf" data-fromto="0"><i class="fas fa-file-pdf fa-lg mr-1"></i></button>
+              @endcan
               <a class="btn text-white btn-dark disabled" data-toggle="modal" data-target="#create_movement_modal"><i class="fa fa-plus"></i> اضافة حركة</a>
             </div>
           </div>

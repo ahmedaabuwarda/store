@@ -123,7 +123,7 @@
                 </div>
                 <!-- List group -->
                 <div class="list-group list-group-flush">
-                  @can('add_sanadat_sarfs')
+                  @can('add_kafeels')
                   <a href="{{ URL('/kafeels') }}"
                     class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
@@ -140,7 +140,7 @@
                     </div>
                   </a>
                   @endcan
-                  @can('add_sanadat_qapds')
+                  @can('add_wasis')
                   <a href="{{ URL('/wasis') }}"
                     class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
@@ -157,7 +157,7 @@
                     </div>
                   </a>
                   @endcan
-                  @can('add_import_ainiats')
+                  @can('add_orphans')
                   <a href="{{ URL('/orphans') }}"
                     class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
@@ -273,6 +273,7 @@
                       اختار</strong></h6>
                 </div>
                 <!-- List group -->
+                @can('add_sms')
                 <a href="{{ URL('/sms') }}"
                   class="btn list-group-item list-group-item-action">
                   <div class="row align-items-center">
@@ -288,6 +289,7 @@
                     </div>
                   </div>
                 </a>
+                @endcan
                 @can('add_mosques')
                 <a href="{{ URL('/mosques') }}"
                   class="btn list-group-item list-group-item-action">
@@ -421,6 +423,7 @@
                     </div>
                   </a>
                   @endcan
+                  @can('show_movements')
                   <a href="{{url('/movements')}}" class="btn list-group-item list-group-item-action">
                     <div class="row align-items-center">
                       <div class="col-auto">
@@ -435,6 +438,7 @@
                       </div>
                     </div>
                   </a>
+                  @endcan
                   @can('add_expenses')
                   <a href="{{ URL('/expenses') }}"
                     class="btn list-group-item list-group-item-action">
