@@ -40,7 +40,7 @@ class SanadatQapdController extends Controller
         'box:id,name,currency_id',
         'user:id,name',
       ])
-      ->orderBy('date_created', 'DESC')
+      ->orderBy('id', 'DESC')
       ->paginate($page);
 
     $boxes = Box::select('id', 'name', 'balance')->get();

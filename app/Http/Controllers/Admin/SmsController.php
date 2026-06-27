@@ -112,18 +112,15 @@ class SmsController extends Controller
 
     $sms_reciever = '972' . $request->reciever;
     $sms_body_id = $request->sms_body_id;
-    $sms_body = SMS::where('id', $sms_body_id)->first()->body;
-    $customer = Customer::where('id', '=', $request->customer_id)->first();
-    $sms_body = str_replace("<b>", abs($customer->balance), $sms_body);
+    $sms_template_body = SMS::where('id', $sms_body_id)->first()->body;
     $select_all_customers = $request->select_all_customers;
-
-    $sms_url_service = 'https://hi5sms.com/api.php?comm=sendsms&user=' . $sms_user . '&pass=' . $sms_password . '&to=' . $sms_reciever . '&message=' . $sms_body . '&sender=' . $sms_sender;
 
     // if the select_all_customers is checked then send the sms to all customers which have phone number no 00000 (8 zeroes sometimes 10 zeroes) and the balance is less than 0
     if ($select_all_customers) {
       $customers = Customer::where('phone', '!=', '0000000000')->where('balance', '<', 0)->get();
       foreach ($customers as $customer) {
         $sms_reciever = '972' . $customer->phone;
+        $sms_body = str_replace("<b>", abs($customer->balance), $sms_template_body);
         $sms_body = str_replace("<c>", abs($customer->balance), $sms_body);
         $sms_url_service = 'https://hi5sms.com/api.php?comm=sendsms&user=' . $sms_user . '&pass=' . $sms_password . '&to=' . $sms_reciever . '&message=' . $sms_body . '&sender=' . $sms_sender;
         try {
@@ -151,6 +148,12 @@ class SmsController extends Controller
         'message' => 'تم ارسال الرسائل بنجاح'
       ]);
     }
+    // single customer send
+    $customer = Customer::where('id', '=', $request->customer_id)->first();
+    $sms_body = str_replace("<b>", abs($customer->balance), $sms_template_body);
+    $sms_body = str_replace("<c>", abs($customer->balance), $sms_body);
+    $sms_url_service = 'https://hi5sms.com/api.php?comm=sendsms&user=' . $sms_user . '&pass=' . $sms_password . '&to=' . $sms_reciever . '&message=' . $sms_body . '&sender=' . $sms_sender;
+
     // perform the get request
     try {
 

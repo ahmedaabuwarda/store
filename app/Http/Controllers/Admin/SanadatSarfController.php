@@ -32,7 +32,7 @@ class SanadatSarfController extends Controller
   public function index(Request $request)
   {
     $page = config('app.page');
-    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->with('user:id,name')->orderBy('date_created', 'DESC')->paginate($page);
+    $sanadat_sarfs = Sanadat_Sarf::select('id', 'number', 'date_created', 'balance', 'notes', 'provider_id', 'customer_id', 'worker_id', 'box_id', 'user_id')->with('worker:id,name')->with('customer:id,name')->with('provider:id,name')->with('box:id,name,currency_id')->with('user:id,name')->orderBy('id', 'DESC')->paginate($page);
 
     $boxes = Box::select('id', 'name', 'balance')->get();
 

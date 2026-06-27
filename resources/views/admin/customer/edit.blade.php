@@ -69,7 +69,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-user text-primary"></i></span>
                   </div>
-                  <input type="text" maxlength='10' minlength='10' class="form-control @error('phone') is-invalid @enderror" name="phone" placeholder="رقم الجوال" value="{{ $customer->phone }}" autocomplete="phone" autofocus>
+                  <input type="text" maxlength='9' minlength='9' class="form-control @error('phone') is-invalid @enderror" name="phone" placeholder="رقم الجوال" value="{{ $customer->phone }}" autocomplete="phone" autofocus>
                 </div>
                 @error('phone')
                 <span class="text-danger">{{ $message }}</span>

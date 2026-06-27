@@ -11,10 +11,18 @@ else
     echo "env file exists."
 fi
 
-# php artisan route:cache
-# php artisan route:clear
-# php artisan config:cache
-# php artisan config:clear
+# Wait for MySQL to be ready
+echo "Waiting for MySQL..."
+until php -r "
+  \$env = parse_ini_file('.env');
+  \$pass = trim(\$env['DB_PASSWORD'] ?? 'root', \"'\\\" \");
+  new PDO('mysql:host=database;port=3306', 'root', \$pass);
+" 2>/dev/null; do
+  echo "MySQL is not ready yet. Retrying in 3s..."
+  sleep 3
+done
+echo "MySQL is ready!"
+
 php artisan optimize:clear
 php artisan migrate --seed
 php artisan serve --port=$PORT --host=0.0.0.0 --env=.env
